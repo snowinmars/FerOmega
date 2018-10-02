@@ -417,7 +417,7 @@ namespace FerOmega.Services
             var priority = 1;
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Equals, FixityType.Prefix, "!", "not"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Not, FixityType.Prefix, "!", "not"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryPlus, FixityType.Prefix, "+"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryMinus, FixityType.Prefix, "-"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Invert, FixityType.Prefix, "~"));
@@ -461,6 +461,11 @@ namespace FerOmega.Services
             priority = AddOperators(priority,
                 new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.OpenRoundBracket, FixityType.Circumflex, "("),
                 new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.CloseRoundBracket, FixityType.Circumflex, ")"));
+
+
+            priority = AddOperators(priority,
+                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.OpenCurlyBracket, FixityType.Circumflex, "{"),
+                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.CloseCurlyBracket, FixityType.Circumflex, "}"));
 
             priority = AddOperators(priority,
                 new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.OpenSquareBracket, FixityType.Circumflex, "["),
