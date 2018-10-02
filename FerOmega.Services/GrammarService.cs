@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 using FerOmega.Entities;
 
@@ -32,7 +31,6 @@ namespace FerOmega.Services
 
             CheckOperators();
         }
-
 
         private readonly OperatorType[] openBrackets =
         {
@@ -117,10 +115,6 @@ namespace FerOmega.Services
             }
         }
 
-       
-
-       
-
         private Operator GetOperator(OperatorType type)
         {
             if (!Enum.IsDefined(typeof(OperatorType), type))
@@ -130,12 +124,6 @@ namespace FerOmega.Services
 
             return Operators.First(x => x.OperatorType == type);
         }
-
-        
-
-
-
-      
 
         private void SetOperators()
         {
@@ -168,10 +156,11 @@ namespace FerOmega.Services
                 new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.NotEquals, FixityType.Infix, "!=", "<>", "neq"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Multiarity, AssociativityType.Right, OperatorType.InRange, FixityType.Infix, "in"),
-                new Operator(ArityType.Binary, AssociativityType.Right, OperatorType.Contains, FixityType.Infix, "con"),
-                new Operator(ArityType.Binary, AssociativityType.Right, OperatorType.StartsWith, FixityType.Infix, "stw"),
-                new Operator(ArityType.Binary, AssociativityType.Right, OperatorType.EndsWith, FixityType.Infix, "edw"),
+                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.InRange, FixityType.Infix, "in"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Contains, FixityType.Infix, "con"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.StartsWith, FixityType.Infix, "stw"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.EndsWith, FixityType.Infix, "edw"),
+
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Empty, FixityType.Prefix, "emp"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.NotEmpty, FixityType.Prefix, "nep"));
 
