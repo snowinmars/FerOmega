@@ -9,35 +9,15 @@ namespace FerOmega.Services
 {
     public class GrammarService
     {
-        private class Token
-        {
-            public string Current { get; set; }
+        public string[] BracketsDenotations { get; }
 
-            public string Next { get; set; }
+        public Operator CloseEscapeOperator { get; }
 
-            public string Previous { get; set; }
+        public Operator OpenEscapeOperator { get; }
 
-            public Token(string[] tokens, int i)
-            {
-                Previous = i == 0 ? NonExistingOperator : tokens[i - 1].Trim();
-                Current = tokens[i].Trim();
-                Next = i == tokens.Length - 1 ? NonExistingOperator : tokens[i + 1].Trim();
-            }
-        }
+        public string[] OperatorDenotations { get; }
 
-        private const string NonExistingOperator = "";
-
-        private string[] BracketsDenotations { get; }
-
-        private Operator CloseEscapeOperator { get; }
-
-        private Operator OpenEscapeOperator { get; }
-
-        private string[] OperatorDenotations { get; }
-
-        private string OperatorRegex { get; }
-
-        private IList<Operator> Operators { get; }
+        public IList<Operator> Operators { get; }
 
         public GrammarService()
         {
@@ -48,143 +28,65 @@ namespace FerOmega.Services
             CloseEscapeOperator = GetOperator(OperatorType.CloseSquareBracket);
 
             OperatorDenotations = Operators.SelectMany(x => x.Denotations).ToArray();
-            BracketsDenotations = Operators.Where(x => x.IsBracket()).SelectMany(x => x.Denotations).ToArray();
-
-            OperatorRegex = CreateRegexToSplitByOperators();
+            BracketsDenotations = Operators.Where(IsBracket).SelectMany(x => x.Denotations).ToArray();
 
             CheckOperators();
         }
 
-        public Queue<AbstractToken> Parse(string equation)
+
+        private readonly OperatorType[] openBrackets =
         {
-            var tokens = Regex.Split(equation, OperatorRegex, RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            OperatorType.OpenCurlyBracket,
+            OperatorType.OpenRoundBracket,
+            OperatorType.OpenSquareBracket,
+        };
 
-            var stack = new Stack<AbstractToken>(tokens.Length);
-            var queue = new Queue<AbstractToken>(tokens.Length);
+        private readonly OperatorType[] closeBrackets =
+        {
+            OperatorType.CloseCurlyBracket,
+            OperatorType.CloseRoundBracket,
+            OperatorType.CloseSquareBracket,
+        };
 
-            for (int i = 0; i < tokens.Length; i++)
-            {
-                var token = new Token(tokens, i);
+        public bool IsOpenBracket(OperatorType operatorType)
+        {
+            return openBrackets.Contains(operatorType);
+        }
 
-                if (IsOperand(token.Current))
-                {
-                    var operand = new Operand(token.Current);
+        public bool IsCloseBracket(OperatorType operatorType)
+        {
+            return closeBrackets.Contains(operatorType);
+        }
 
-                    queue.Enqueue(operand);
-                    continue;
-                }
+        public bool IsBracket(OperatorType operatorType)
+        {
+            return IsOpenBracket(operatorType) || IsCloseBracket(operatorType);
+        }
 
-                if (IsOperator(token.Current))
-                {
-                    var possibleOperators = GetPossibleOperators(token.Current);
+        public bool IsOpenBracket(AbstractToken @operator)
+        {
+            return IsOpenBracket(@operator.OperatorType);
+        }
 
-                    // length != 1 means we have overloads
-                    var @operator = possibleOperators.Length == 1 ? possibleOperators[0] : Resolve(token, possibleOperators);
+        public bool IsCloseBracket(AbstractToken @operator)
+        {
+            return IsCloseBracket(@operator.OperatorType);
+        }
 
-                    if (@operator.IsOpenBracket())
-                    {
-                        stack.Push(@operator);
-                        continue;
-                    }
+        public bool IsBracket(AbstractToken @operator)
+        {
+            return IsOpenBracket(@operator) || IsCloseBracket(@operator);
+        }
 
-                    if (@operator.IsCloseBracket())
-                    {
-                        while (stack.Count >= 0)
-                        {
-                            if (stack.Count == 0)
-                            {
-                                throw new InvalidOperationException();
-                            }
+        public bool IsOperand(string input)
+        {
+            return input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal)
+                   && input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
+        }
 
-                            var abstractToken = stack.Pop();
-
-                            if (abstractToken.IsOpenBracket())
-                            {
-                                break;
-                            }
-
-                            queue.Enqueue(abstractToken);
-                        }
-
-                        continue;
-                    }
-
-                    // if we're here, the operator is not any type of bracket, so it's evaluatable operator
-
-                    if (@operator.Arity == ArityType.Unary && @operator.Fixity == FixityType.Postfix)
-                    {
-                        queue.Enqueue(@operator);
-                        continue;
-                    }
-
-                    if (@operator.Arity == ArityType.Unary && @operator.Fixity == FixityType.Prefix)
-                    {
-                        stack.Push(@operator);
-                        continue;
-                    }
-
-                    if (@operator.Arity == ArityType.Binary)
-                    {
-                        if (stack.Count > 0)
-                        {
-                            if (@operator.Associativity == AssociativityType.Left)
-                            {
-                                var popedOperator = stack.Peek();
-
-                                if (popedOperator.Priority <= @operator.Priority && stack.Count > 0)
-                                {
-                                    popedOperator = stack.Pop();
-                                }
-
-                                while (popedOperator.Priority <= @operator.Priority)
-                                {
-                                    queue.Enqueue(popedOperator);
-
-                                    if (stack.Count == 0)
-                                    {
-                                        break;
-                                    }
-
-                                    popedOperator = stack.Peek();
-
-                                    if (popedOperator.Priority <= @operator.Priority && stack.Count > 0)
-                                    {
-                                        popedOperator = stack.Pop();
-                                    }
-                                }
-
-                                stack.Push(@operator);
-
-                                continue;
-                            }
-
-                            if (@operator.Associativity == AssociativityType.Right)
-                            {
-                                var popedOperator = stack.Peek();
-
-                                if (popedOperator.Priority <= @operator.Priority && stack.Count > 0)
-                                {
-                                    popedOperator = stack.Pop();
-                                    queue.Enqueue(popedOperator);
-                                }
-
-                                stack.Push(@operator);
-
-                                continue;
-                            }
-                        }
-
-                        stack.Push(@operator);
-                    }
-                }
-            }
-
-            while (stack.Count > 0)
-            {
-                queue.Enqueue(stack.Pop());
-            }
-
-            return queue;
+        public bool IsOperator(string input)
+        {
+            return !IsOperand(input) && OperatorDenotations.Contains(input);
         }
 
         private int AddOperators(int priority, params Operator[] operators)
@@ -207,7 +109,7 @@ namespace FerOmega.Services
                 throw new InvalidOperationException();
             }
 
-            var isNonExistingOperatorExists = OperatorDenotations.Any(x => x == NonExistingOperator);
+            var isNonExistingOperatorExists = OperatorDenotations.Any(x => x == OperatorToken.NonExistingOperator);
 
             if (isNonExistingOperatorExists)
             {
@@ -215,65 +117,9 @@ namespace FerOmega.Services
             }
         }
 
-        private string CreateRegexToSplitByOperators()
-        {
-            // f.e.,
-            //      input: a>5  &&  b+7  ==2
-            //      regex: >|   &+| \+|  =+
-            var operatorRegex = string.Join("|", OperatorDenotations.Select(EscapeOperatorDenomination).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)));
+       
 
-            // if regex pattern is in the global scope, the delimiters will be included to the Matches collection
-            return $"({operatorRegex})";
-        }
-
-        private string EscapeOperatorDenomination(string symbol)
-        {
-            switch (symbol)
-            {
-                case "+":
-                    return @"\+";
-
-                case "=":
-                case "==":
-                case "===":
-                    return "=+";
-
-                case "&":
-                case "&&":
-                    return "&+";
-
-                case "*":
-                    return @"\*";
-
-                case "/":
-                    return @"\/";
-
-                case "|":
-                case "||":
-                    return @"\|+";
-
-                case "(":
-                    return @"\(";
-
-                case ")":
-                    return @"\)";
-
-                case "[":
-                    return "";
-
-                case "]":
-                    return "";
-
-                case "{":
-                    return @"\{";
-
-                case "}":
-                    return @"\}";
-
-                default:
-                    return symbol;
-            }
-        }
+       
 
         private Operator GetOperator(OperatorType type)
         {
@@ -285,131 +131,11 @@ namespace FerOmega.Services
             return Operators.First(x => x.OperatorType == type);
         }
 
-        private Operator[] GetPossibleOperators(string denotation)
-        {
-            return Operators.Where(x => x.Denotations.Contains(denotation)).ToArray();
-        }
+        
 
-        private bool IsInfixBinary(string previousToken, string nextToken, Operator[] possibleOperators)
-        {
-            // like 5 + 2
-            //        ^
-            var isInfixBinaryCase1 = IsOperand(previousToken) && IsOperand(nextToken) && possibleOperators.Any(x => x.Arity == ArityType.Binary && x.Fixity == FixityType.Infix);
 
-            // like 5 + (2 + 3)
-            //        ^
-            var isInfixBinaryCase2 = IsOperand(previousToken) && BracketsDenotations.Contains(nextToken) && possibleOperators.Any(x => x.Arity == ArityType.Binary && x.Fixity == FixityType.Infix);
 
-            // like (2 + 3) + 5
-            //              ^
-            var isInfixBinaryCase3 = BracketsDenotations.Contains(previousToken) && IsOperand(nextToken) && possibleOperators.Any(x => x.Arity == ArityType.Binary && x.Fixity == FixityType.Infix);
-
-            return isInfixBinaryCase1 || isInfixBinaryCase2 || isInfixBinaryCase3;
-        }
-
-        private bool IsOperand(string input)
-        {
-            return input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal)
-                   && input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
-        }
-
-        private bool IsOperator(string input)
-        {
-            return !IsOperand(input) && OperatorDenotations.Contains(input);
-        }
-
-        private bool IsUnaryPostfix(string previousToken, string nextToken, Operator[] possibleOperators)
-        {
-            // like 1 + 3!
-            //           ^
-            var isPostfixCase1 = IsOperand(previousToken)
-                                 && nextToken == NonExistingOperator
-                                 && possibleOperators.Any(x => x.Arity == ArityType.Unary && x.Fixity == FixityType.Postfix);
-
-            // like (1 + 3!)
-            //            ^
-            var isPostfixCase2 = IsOperand(previousToken)
-                                 && IsOperator(nextToken)
-                                 && possibleOperators.Any(x => x.Arity == ArityType.Unary && x.Fixity == FixityType.Postfix);
-
-            // like 3! + 1
-            //       ^
-            var isPostfixCase3 = IsOperand(previousToken)
-                                 && IsOperator(nextToken)
-                                 && possibleOperators.Any(x => x.Arity == ArityType.Unary && x.Fixity == FixityType.Postfix);
-
-            return isPostfixCase1 || isPostfixCase2 || isPostfixCase3;
-        }
-
-        private bool IsUnaryPrefix(string previousToken, string nextToken, Operator[] possibleOperators)
-        {
-            // like -1 - 2
-            //      ^
-            var isPrefixCase1 = IsOperand(nextToken)
-                                && previousToken == NonExistingOperator
-                                && possibleOperators.Any(x => x.Arity == ArityType.Unary && x.Fixity == FixityType.Prefix);
-
-            // like !a && !b
-            //            ^
-            var isPrefixCase2 = IsOperand(nextToken)
-                                && IsOperator(previousToken)
-                                && possibleOperators.Any(x => x.Arity == ArityType.Unary && x.Fixity == FixityType.Prefix);
-
-            // like -(1 - 2)
-            //      ^
-            var isPrefixCase3 = IsOperator(nextToken)
-                                && previousToken == NonExistingOperator
-                                && possibleOperators.Any(x => x.Arity == ArityType.Unary && x.Fixity == FixityType.Prefix);
-
-            return isPrefixCase1 || isPrefixCase2 || isPrefixCase3;
-        }
-
-        private Operator Resolve(Token token, Operator[] possibleOperators)
-        {
-            var isUnaryPrefix = IsUnaryPrefix(token.Previous, token.Next, possibleOperators);
-
-            if (isUnaryPrefix)
-            {
-                var acceptedOperators = possibleOperators.Where(x => x.Fixity == FixityType.Prefix && x.Arity == ArityType.Unary).ToArray();
-
-                if (acceptedOperators.Length != 1)
-                {
-                    throw new InvalidOperationException("Can't resolve operator overloaded by non-fixity and non-arity");
-                }
-
-                return acceptedOperators[0];
-            }
-
-            var isUnaryPostfix = IsUnaryPostfix(token.Previous, token.Next, possibleOperators);
-
-            if (isUnaryPostfix)
-            {
-                var acceptedOperators = possibleOperators.Where(x => x.Fixity == FixityType.Postfix && x.Arity == ArityType.Unary).ToArray();
-
-                if (acceptedOperators.Length != 1)
-                {
-                    throw new InvalidOperationException("Can't resolve operator overloaded by non-fixity and non-arity");
-                }
-
-                return acceptedOperators[0];
-            }
-
-            var isInfixBinary = IsInfixBinary(token.Previous, token.Next, possibleOperators);
-
-            if (isInfixBinary)
-            {
-                var acceptedOperators = possibleOperators.Where(x => x.Fixity == FixityType.Infix && x.Arity == ArityType.Binary).ToArray();
-
-                if (acceptedOperators.Length != 1)
-                {
-                    throw new InvalidOperationException("Can't resolve operator overloaded by non-fixity and non-arity");
-                }
-
-                return acceptedOperators[0];
-            }
-
-            throw new InvalidOperationException("Can't resolve fixity");
-        }
+      
 
         private void SetOperators()
         {

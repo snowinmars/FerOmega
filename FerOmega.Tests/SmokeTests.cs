@@ -10,10 +10,11 @@ namespace FerOmega.Tests
     public class SmokeTests
     {
         private readonly GrammarService grammarService;
-
+        private ShuntingYardService shuntingYardService;
         public SmokeTests()
         {
             grammarService = new GrammarService();
+            shuntingYardService = new ShuntingYardService();
         }
 
         [Test]
@@ -31,7 +32,7 @@ namespace FerOmega.Tests
 
             foreach (var infix in infixes)
             {
-                var result = grammarService.Parse(infix);
+                var result = shuntingYardService.Parse(infix);
 
                 var sb = new StringBuilder();
 
