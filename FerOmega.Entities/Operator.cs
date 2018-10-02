@@ -6,12 +6,12 @@ namespace FerOmega.Entities
     {
         public Operator(ArityType arity, AssociativityType associativity, OperatorType operatorType, FixityType fixityType, params string[] denotations) : base(operatorType, -1)
         {
-            this.Arity = arity;
-            this.Associativity = associativity;
-            this.Denotations = denotations;
-            this.Fixity = fixityType;
+            Arity = arity;
+            Associativity = associativity;
+            Denotations = denotations;
+            Fixity = fixityType;
         }
-        
+
         public ArityType Arity { get; set; }
 
         public AssociativityType Associativity { get; set; }
@@ -21,7 +21,6 @@ namespace FerOmega.Entities
         public FixityType Fixity { get; set; }
 
         public string MainDenotation => Denotations[0];
-
 
         public override string ToString()
         {
@@ -45,6 +44,7 @@ namespace FerOmega.Entities
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+
                     break;
                 case ArityType.Binary:
                     arityExample = $"a {MainDenotation} b";

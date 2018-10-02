@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FerOmega.Entities
+﻿namespace FerOmega.Entities
 {
     public abstract class AbstractToken
     {
@@ -14,8 +8,8 @@ namespace FerOmega.Entities
 
         protected AbstractToken(OperatorType operatorType, int priority)
         {
-            this.OperatorType = operatorType;
-            this.Priority = priority;
+            OperatorType = operatorType;
+            Priority = priority;
         }
 
         public override string ToString()

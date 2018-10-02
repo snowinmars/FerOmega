@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 using FerOmega.Entities;
 using FerOmega.Services;
@@ -17,7 +13,7 @@ namespace FerOmega.Tests
 
         public SmokeTests()
         {
-            this.grammarService = new GrammarService();
+            grammarService = new GrammarService();
         }
 
         [Test]
@@ -35,13 +31,13 @@ namespace FerOmega.Tests
 
             foreach (var infix in infixes)
             {
-                var result = this.grammarService.Parse(infix);
+                var result = grammarService.Parse(infix);
 
                 var sb = new StringBuilder();
 
                 foreach (var token in result)
                 {
-                    if (token.OperatorType == Entities.OperatorType.Variable)
+                    if (token.OperatorType == OperatorType.Variable)
                     {
                         var op = (Operand)token;
                         sb.Append($" {op.Value} ");

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 using FerOmega.Entities;
 
@@ -10,7 +6,7 @@ namespace FerOmega.Services
 {
     internal static class Extensions
     {
-        private static readonly OperatorType[] openBrackets = 
+        private static readonly OperatorType[] openBrackets =
         {
             OperatorType.OpenCurlyBracket,
             OperatorType.OpenRoundBracket,
@@ -33,6 +29,7 @@ namespace FerOmega.Services
         {
             return closeBrackets.Contains(operatorType);
         }
+
         public static bool IsBracket(this OperatorType operatorType)
         {
             return IsOpenBracket(operatorType) || IsCloseBracket(operatorType);
