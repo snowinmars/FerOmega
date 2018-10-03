@@ -49,6 +49,9 @@
     <Compile Include="OperatorType.cs" />
     <Compile Include="FixityType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AbstractSyntax\Color.cs" />
+    <Compile Include="AbstractSyntax\Node.cs" />
+    <Compile Include="AbstractSyntax\Tree.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

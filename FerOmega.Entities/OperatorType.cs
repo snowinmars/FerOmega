@@ -2,7 +2,7 @@
 {
     public enum OperatorType
     {
-        Variable,
+        Literal,
 
         /// <summary>
         ///     <para>

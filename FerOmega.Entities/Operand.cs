@@ -2,7 +2,7 @@
 {
     public class Operand : AbstractToken
     {
-        public Operand(string value) : base(OperatorType.Variable, 100)
+        public Operand(string value) : base(OperatorType.Literal, 100)
         {
             Value = value;
         }

@@ -42,10 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GrammarService.cs" />
+    <Compile Include="IShuntingYardService.cs" />
     <Compile Include="OperatorResolveService.cs" />
     <Compile Include="OperatorToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShuntingYardService.cs" />
+    <Compile Include="AbstractShuntingYardService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FerOmega.Entities\FerOmega.Entities.csproj">

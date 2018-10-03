@@ -7,7 +7,7 @@ using FerOmega.Entities;
 
 namespace FerOmega.Services
 {
-    public class ShuntingYardService
+    public class AbstractShuntingYardService : IShuntingYardService<Queue<AbstractToken>>
     {
         private GrammarService GrammarService { get; }
 
@@ -15,7 +15,7 @@ namespace FerOmega.Services
 
         private string OperatorRegex { get; }
 
-        public ShuntingYardService()
+        public AbstractShuntingYardService()
         {
             GrammarService = new GrammarService();
             OperatorResolveService = new OperatorResolveService();

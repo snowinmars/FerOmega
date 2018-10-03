@@ -10,11 +10,11 @@ namespace FerOmega.Tests
     public class SmokeTests
     {
         private readonly GrammarService grammarService;
-        private ShuntingYardService shuntingYardService;
+        private AbstractShuntingYardService shuntingYardService;
         public SmokeTests()
         {
             grammarService = new GrammarService();
-            shuntingYardService = new ShuntingYardService();
+            shuntingYardService = new AbstractShuntingYardService();
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace FerOmega.Tests
 
                 foreach (var token in result)
                 {
-                    if (token.OperatorType == OperatorType.Variable)
+                    if (token.OperatorType == OperatorType.Literal)
                     {
                         var op = (Operand)token;
                         sb.Append($" {op.Value} ");
