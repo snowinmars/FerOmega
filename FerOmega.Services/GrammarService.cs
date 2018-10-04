@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using FerOmega.Abstractions;
 using FerOmega.Entities;
 
 namespace FerOmega.Services
 {
-    public class GrammarService
+    public class GrammarService : IGrammarService
     {
         public string[] BracketsDenotations { get; }
 
@@ -23,8 +24,8 @@ namespace FerOmega.Services
             Operators = new List<Operator>();
             SetOperators();
 
-            OpenEscapeOperator = GetOperator(OperatorType.OpenSquareBracket);
-            CloseEscapeOperator = GetOperator(OperatorType.CloseSquareBracket);
+            OpenEscapeOperator = Get(OperatorType.OpenSquareBracket);
+            CloseEscapeOperator = Get(OperatorType.CloseSquareBracket);
 
             OperatorDenotations = Operators.SelectMany(x => x.Denotations).ToArray();
             BracketsDenotations = Operators.Where(IsBracket).SelectMany(x => x.Denotations).ToArray();
@@ -71,6 +72,16 @@ namespace FerOmega.Services
             return IsCloseBracket(@operator.OperatorType);
         }
 
+        public Operator Get(OperatorType operatorType)
+        {
+            if (!Enum.IsDefined(typeof(OperatorType), operatorType))
+            {
+                throw new ArgumentOutOfRangeException(nameof(operatorType), operatorType, $"Enum {nameof(OperatorType)} is out of range");
+            }
+
+            return Operators.First(x => x.OperatorType == operatorType).DeepClone();
+        }
+
         public bool IsBracket(AbstractToken @operator)
         {
             return IsOpenBracket(@operator) || IsCloseBracket(@operator);
@@ -115,14 +126,14 @@ namespace FerOmega.Services
             }
         }
 
-        private Operator GetOperator(OperatorType type)
+        public bool IsUniqueByArity(string denotation, ArityType arity)
         {
-            if (!Enum.IsDefined(typeof(OperatorType), type))
-            {
-                throw new ArgumentOutOfRangeException(nameof(type), type, $"Enum {nameof(OperatorType)} is out of range");
-            }
+            return Operators.Count(x => x.Denotations.Contains(denotation) && x.Arity == arity) == 1;
+        }
 
-            return Operators.First(x => x.OperatorType == type);
+        public bool IsUniqueByFixity(string denotation, FixityType fixity)
+        {
+            return Operators.Count(x => x.Denotations.Contains(denotation) && x.Fixity == fixity) == 1;
         }
 
         private void SetOperators()
@@ -131,6 +142,7 @@ namespace FerOmega.Services
             var priority = 1;
 
             priority = AddOperators(priority,
+                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.Factorial, FixityType.Postfix, "!"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Not, FixityType.Prefix, "!", "not"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryPlus, FixityType.Prefix, "+"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryMinus, FixityType.Prefix, "-"),
@@ -160,7 +172,6 @@ namespace FerOmega.Services
                 new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Contains, FixityType.Infix, "con"),
                 new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.StartsWith, FixityType.Infix, "stw"),
                 new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.EndsWith, FixityType.Infix, "edw"),
-
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Empty, FixityType.Prefix, "emp"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.NotEmpty, FixityType.Prefix, "nep"));
 

@@ -2,7 +2,7 @@
 {
     public enum OperatorType
     {
-        Literal,
+        Literal = 1,
 
         /// <summary>
         ///     <para>
@@ -12,7 +12,7 @@
         ///         <c>a == 1</c>
         ///     </para>
         /// </summary>
-        Equals,
+        Equals = 2,
 
         /// <summary>
         ///     <para>
@@ -25,7 +25,7 @@
         ///         <c>a neq 1</c> or
         ///     </para>
         /// </summary>
-        NotEquals,
+        NotEquals = 3,
 
         /// <summary>
         ///     <para>
@@ -35,7 +35,7 @@
         ///         <c>not a</c>
         ///     </para>
         /// </summary>
-        Not,
+        Not = 4,
 
         /// <summary>
         ///     <para>
@@ -45,7 +45,7 @@
         ///         <c>a gt 5</c>
         ///     </para>
         /// </summary>
-        GreaterThan,
+        GreaterThan = 5,
 
         /// <summary>
         ///     <para>
@@ -55,7 +55,7 @@
         ///         <c>a lt 5</c>
         ///     </para>
         /// </summary>
-        LesserThan,
+        LesserThan = 6,
 
         /// <summary>
         ///     <para>
@@ -65,7 +65,7 @@
         ///         <c>a geq 5</c>
         ///     </para>
         /// </summary>
-        GreaterOrEqualsThan,
+        GreaterOrEqualsThan = 7,
 
         /// <summary>
         ///     <para>
@@ -75,14 +75,14 @@
         ///         <c>a leq 5</c>
         ///     </para>
         /// </summary>
-        LesserOrEqualsThan,
+        LesserOrEqualsThan = 8,
 
         /// <summary>
         ///     <para>
         ///         <c>a in (5, 7, 8)</c>
         ///     </para>
         /// </summary>
-        InRange,
+        InRange = 9,
 
         /// <summary>
         ///     <para>
@@ -95,7 +95,7 @@
         ///         <c>a and b</c>
         ///     </para>
         /// </summary>
-        And,
+        And = 10,
 
         /// <summary>
         ///     <para>
@@ -108,7 +108,7 @@
         ///         <c>a or b</c>
         ///     </para>
         /// </summary>
-        Or,
+        Or = 11,
 
         /// <summary>
         ///     <para>
@@ -118,127 +118,134 @@
         ///         <c>a xor b</c>
         ///     </para>
         /// </summary>
-        Xor,
+        Xor = 12,
 
         /// <summary>
         ///     <para>
         ///         <c>a con example</c>
         ///     </para>
         /// </summary>
-        Contains,
+        Contains = 13,
 
         /// <summary>
         ///     <para>
         ///         <c>a stw example</c>
         ///     </para>
         /// </summary>
-        StartsWith,
+        StartsWith = 14,
 
         /// <summary>
         ///     <para>
         ///         <c>a edw example</c>
         ///     </para>
         /// </summary>
-        EndsWith,
+        EndsWith = 15,
 
         /// <summary>
         ///     <para>
         ///         <c>emp a</c>
         ///     </para>
         /// </summary>
-        Empty,
+        Empty = 16,
 
         /// <summary>
         ///     <para>
         ///         <c>nep a</c>
         ///     </para>
         /// </summary>
-        NotEmpty,
+        NotEmpty = 17,
 
         /// <summary>
         ///     <para>
         ///         <c>+5</c>
         ///     </para>
         /// </summary>
-        UnaryPlus,
+        UnaryPlus = 18,
 
         /// <summary>
         ///     <para>
         ///         <c>a + 5</c>
         ///     </para>
         /// </summary>
-        Plus,
+        Plus = 19,
 
         /// <summary>
         ///     <para>
         ///         <c>-5</c>
         ///     </para>
         /// </summary>
-        UnaryMinus,
+        UnaryMinus = 20,
 
         /// <summary>
         ///     <para>
         ///         <c>a - 5</c>
         ///     </para>
         /// </summary>
-        Minus,
+        Minus = 21,
 
         /// <summary>
         ///     <para>
         ///         <c>a * 2</c>
         ///     </para>
         /// </summary>
-        Multiple,
+        Multiple = 22,
 
         /// <summary>
         ///     <para>
         ///         <c>a % 2</c>
         ///     </para>
         /// </summary>
-        Reminder,
+        Reminder = 23,
 
         /// <summary>
         ///     <para>
         ///         <c>a / 2</c>
         ///     </para>
         /// </summary>
-        Divide,
+        Divide = 24,
 
         /// <summary>
         ///     <para>
         ///         <c>~a</c>
         ///     </para>
         /// </summary>
-        Invert,
+        Invert = 25,
 
         /// <summary>
         /// (
         /// </summary>
-        OpenRoundBracket,
+        OpenRoundBracket = 26,
 
         /// <summary>
         /// )
         /// </summary>
-        CloseRoundBracket,
+        CloseRoundBracket = 27,
 
         /// <summary>
         /// {
         /// </summary>
-        OpenCurlyBracket,
+        OpenCurlyBracket = 28,
 
         /// <summary>
         /// }
         /// </summary>
-        CloseCurlyBracket,
+        CloseCurlyBracket = 29,
 
         /// <summary>
         /// [
         /// </summary>
-        OpenSquareBracket,
+        OpenSquareBracket = 30,
 
         /// <summary>
         /// ]
         /// </summary>
-        CloseSquareBracket,
+        CloseSquareBracket = 31,
+
+        /// <summary>
+        ///     <para>
+        ///         <c>5!</c>
+        ///     </para>
+        /// </summary>
+        Factorial = 32,
     }
 }

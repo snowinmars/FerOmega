@@ -5,7 +5,7 @@ using FerOmega.Entities;
 
 namespace FerOmega.Services
 {
-    internal class OperatorResolveService
+    internal class OperatorResolveService : IOperatorResolveService
     {
         private GrammarService GrammarService { get; }
 
@@ -16,7 +16,7 @@ namespace FerOmega.Services
 
         public Operator Resolve(OperatorToken token, Operator[] possibleOperators)
         {
-            var isUnaryPrefix = IsUnaryPrefix(token.Previous, token.Next, possibleOperators);
+            var isUnaryPrefix = IsUnaryPrefix(token, possibleOperators);
 
             if (isUnaryPrefix)
             {
@@ -30,7 +30,7 @@ namespace FerOmega.Services
                 return acceptedOperators[0];
             }
 
-            var isUnaryPostfix = IsUnaryPostfix(token.Previous, token.Next, possibleOperators);
+            var isUnaryPostfix = IsUnaryPostfix(token, possibleOperators);
 
             if (isUnaryPostfix)
             {
@@ -44,7 +44,7 @@ namespace FerOmega.Services
                 return acceptedOperators[0];
             }
 
-            var isInfixBinary = IsInfixBinary(token.Previous, token.Next, possibleOperators);
+            var isInfixBinary = IsInfixBinary(token, possibleOperators);
 
             if (isInfixBinary)
             {
@@ -61,7 +61,7 @@ namespace FerOmega.Services
             throw new InvalidOperationException("Can't resolve fixity");
         }
 
-        private bool IsInfixBinary(string previousToken, string nextToken, Operator[] possibleOperators)
+        private bool IsInfixBinary(OperatorToken token, Operator[] possibleOperators)
         {
             if (!possibleOperators.Any(x => x.Arity == ArityType.Binary && x.Fixity == FixityType.Infix))
             {
@@ -70,25 +70,29 @@ namespace FerOmega.Services
 
             // like 5 + 2
             //        ^
-            var isInfixBinaryCase1 = GrammarService.IsOperand(previousToken)
-                                     && GrammarService.IsOperand(nextToken);
+            var isInfixBinaryCase1 = GrammarService.IsOperand(token.Previous)
+                                     && GrammarService.IsOperand(token.Next);
 
             // like 5 + (2 + 3)
             //        ^
-            var isInfixBinaryCase2 = GrammarService.IsOperand(previousToken)
-                                     && GrammarService.BracketsDenotations.Contains(nextToken);
-            ;
+            var isInfixBinaryCase2 = GrammarService.IsOperand(token.Previous)
+                                     && GrammarService.BracketsDenotations.Contains(token.Next);
 
             // like (2 + 3) + 5
             //              ^
-            var isInfixBinaryCase3 = GrammarService.BracketsDenotations.Contains(previousToken)
-                                     && GrammarService.IsOperand(nextToken);
-            ;
+            var isInfixBinaryCase3 = GrammarService.BracketsDenotations.Contains(token.Previous)
+                                     && GrammarService.IsOperand(token.Next);
 
-            return isInfixBinaryCase1 || isInfixBinaryCase2 || isInfixBinaryCase3;
+            // like 5! + 3
+            //         ^
+            var isInfixBinaryCase4 = GrammarService.IsOperator(token.Previous)
+                                     && GrammarService.IsOperand(token.Next)
+                                     && GrammarService.IsUniqueByFixity(token.Previous, FixityType.Postfix);
+
+            return isInfixBinaryCase1 || isInfixBinaryCase2 || isInfixBinaryCase3 || isInfixBinaryCase4;
         }
 
-        private bool IsUnaryPostfix(string previousToken, string nextToken, Operator[] possibleOperators)
+        private bool IsUnaryPostfix(OperatorToken token, Operator[] possibleOperators)
         {
             if (!possibleOperators.Any(x => x.Arity == ArityType.Unary && x.Fixity == FixityType.Postfix))
             {
@@ -97,23 +101,23 @@ namespace FerOmega.Services
 
             // like 1 + 3!
             //           ^
-            var isPostfixCase1 = GrammarService.IsOperand(previousToken)
-                                 && nextToken == OperatorToken.NonExistingOperator;
+            var isPostfixCase1 = GrammarService.IsOperand(token.Previous)
+                                 && token.Next == OperatorToken.NonExistingOperator;
 
             // like (1 + 3!)
             //            ^
-            var isPostfixCase2 = GrammarService.IsOperand(previousToken)
-                                 && GrammarService.IsOperator(nextToken);
+            var isPostfixCase2 = GrammarService.IsOperand(token.Previous)
+                                 && GrammarService.IsOperator(token.Next);
 
             // like 3! + 1
             //       ^
-            var isPostfixCase3 = GrammarService.IsOperand(previousToken)
-                                 && GrammarService.IsOperator(nextToken);
+            var isPostfixCase3 = GrammarService.IsOperand(token.Previous)
+                                 && GrammarService.IsOperator(token.Next);
 
             return isPostfixCase1 || isPostfixCase2 || isPostfixCase3;
         }
 
-        private bool IsUnaryPrefix(string previousToken, string nextToken, Operator[] possibleOperators)
+        private bool IsUnaryPrefix(OperatorToken token, Operator[] possibleOperators)
         {
             if (!possibleOperators.Any(x => x.Arity == ArityType.Unary && x.Fixity == FixityType.Prefix))
             {
@@ -122,18 +126,19 @@ namespace FerOmega.Services
 
             // like -1 - 2
             //      ^
-            var isPrefixCase1 = GrammarService.IsOperand(nextToken)
-                                && previousToken == OperatorToken.NonExistingOperator;
+            var isPrefixCase1 = GrammarService.IsOperand(token.Next)
+                                && token.Previous == OperatorToken.NonExistingOperator;
 
             // like !a && !b
             //            ^
-            var isPrefixCase2 = GrammarService.IsOperand(nextToken)
-                                && GrammarService.IsOperator(previousToken);
+            var isPrefixCase2 = GrammarService.IsOperand(token.Next)
+                                && GrammarService.IsOperator(token.Previous)
+                                && GrammarService.IsUniqueByArity(token.Previous, ArityType.Unary);
 
             // like -(1 - 2)
             //      ^
-            var isPrefixCase3 = GrammarService.IsOperator(nextToken)
-                                && previousToken == OperatorToken.NonExistingOperator;
+            var isPrefixCase3 = GrammarService.IsOperator(token.Next)
+                                && token.Previous == OperatorToken.NonExistingOperator;
 
             return isPrefixCase1 || isPrefixCase2 || isPrefixCase3;
         }

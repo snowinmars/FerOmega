@@ -42,17 +42,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GrammarService.cs" />
-    <Compile Include="IShuntingYardService.cs" />
+    <Compile Include="InternalEntities\OperatorToken.cs" />
+    <Compile Include="IOperatorResolveService.cs" />
     <Compile Include="OperatorResolveService.cs" />
-    <Compile Include="OperatorToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AbstractShuntingYardService.cs" />
+    <Compile Include="TokenizationService.cs" />
+    <Compile Include="TreeShuntingYardService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FerOmega.Abstractions\FerOmega.Abstractions.csproj">
+      <Project>{21433AE3-3102-49E8-9B53-49204656A165}</Project>
+      <Name>FerOmega.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FerOmega.Entities\FerOmega.Entities.csproj">
       <Project>{8CFF0AFD-AE88-48E1-B4A1-2D8394F0B96A}</Project>
       <Name>FerOmega.Entities</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

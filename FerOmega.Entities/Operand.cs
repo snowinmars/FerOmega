@@ -2,16 +2,24 @@
 {
     public class Operand : AbstractToken
     {
-        public Operand(string value) : base(OperatorType.Literal, 100)
+        public Operand(int value) : this(value.ToString(), false)
         {
-            Value = value;
+        }
+
+        public Operand(string value) : this(value, value.StartsWith("[") && value.EndsWith("]"))
+        {
+        }
+
+        public Operand(string value, bool isEscaped) : base(OperatorType.Literal, 100)
+        {
+            Value = isEscaped ? value : $"[{value}]";
         }
 
         public string Value { get; set; }
 
         public override string ToString()
         {
-            return $"Var: {Value}";
+            return $"{Value}";
         }
     }
 }

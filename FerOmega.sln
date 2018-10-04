@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FerOmega.Services", "FerOme
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FerOmega.Tests", "FerOmega.Tests\FerOmega.Tests.csproj", "{D1674B8D-18A4-4D89-A0AC-0FA32594165F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FerOmega.Abstractions", "FerOmega.Abstractions\FerOmega.Abstractions.csproj", "{21433AE3-3102-49E8-9B53-49204656A165}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D1674B8D-18A4-4D89-A0AC-0FA32594165F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1674B8D-18A4-4D89-A0AC-0FA32594165F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1674B8D-18A4-4D89-A0AC-0FA32594165F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21433AE3-3102-49E8-9B53-49204656A165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21433AE3-3102-49E8-9B53-49204656A165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21433AE3-3102-49E8-9B53-49204656A165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21433AE3-3102-49E8-9B53-49204656A165}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

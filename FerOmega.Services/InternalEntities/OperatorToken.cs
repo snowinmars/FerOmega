@@ -16,5 +16,10 @@
             Current = tokens[i].Trim();
             Next = i == tokens.Length - 1 ? NonExistingOperator : tokens[i + 1].Trim();
         }
+
+        public override string ToString()
+        {
+            return $"{Previous} {Current} {Next}";
+        }
     }
 }

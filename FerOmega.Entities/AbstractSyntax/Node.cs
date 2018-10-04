@@ -1,31 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FerOmega.Entities.RedBlack
 {
+    public static class NodeExtentions
+    {
+        public static Node<T> ToNode<T>(this T body)
+        {
+            return new Node<T>(body);
+        }
+    }
+
     public class Node<T>
     {
-        public Node() : this(default(T), Color.Black)
+        public Node() : this(default(T))
         {
         }
 
-        private Node(T body, Color color)
+        public Node(T body)
         {
-            this.Body = body;
-            this.Color = color;
+            Body = body;
 
-            this.Id = Guid.NewGuid();
-            this.children = new List<Node<T>>(4);
+            Id = Guid.NewGuid();
+
+            children = new List<Node<T>>();
         }
 
         public Guid Id { get; private set; }
 
         public T Body { get; set; }
-
-        public Color Color { get; set; }
 
         private readonly IList<Node<T>> children;
 
@@ -33,11 +37,33 @@ namespace FerOmega.Entities.RedBlack
 
         public Node<T> Parent { get; set; }
 
-        public void Add(Node<T> child)
+        public Node<T> Append(T body)
         {
-            this.children.Add(child);
+            return Append(new Node<T>(body));
         }
-        
+
+        public Node<T> Append(T body, Guid id)
+        {
+            var node = new Node<T>(body)
+            {
+                Id = id,
+            };
+
+            return Append(node);
+        }
+
+        public Node<T> Append(Tree<T> tree)
+        {
+            Append(tree.Root);
+            return this;
+        }
+
+        public Node<T> Append(Node<T> child)
+        {
+            children.Add(child);
+            return this;
+        }
+
         public override string ToString()
         {
             return $"{{ {Body} -> {children.Count} }}";
@@ -47,22 +73,63 @@ namespace FerOmega.Entities.RedBlack
         {
             var node = new Node<T>
             {
-                Color = this.Color,
-                Parent = this.Parent,
+                Parent = Parent,
             };
 
             if (useOldId)
             {
-                node.Id = this.Id;
+                node.Id = Id;
             }
 
-            foreach (var child in this.children)
+            foreach (var child in children)
             {
                 var nodeChild = child.DeepClone();
-                node.Add(nodeChild);
+                node.Append(nodeChild);
             }
 
             return node;
+        }
+
+        public bool IsLocus()
+        {
+            return children.Count == 0;
+        }
+
+        public Node<T> Find(Func<Node<T>, bool> filter)
+        {
+            if (IsLocus())
+            {
+                return null;
+            }
+
+            if (filter(this))
+            {
+                return this;
+            }
+
+            var thisNodeChild = Children.FirstOrDefault(filter);
+
+            if (thisNodeChild != null)
+            {
+                return thisNodeChild;
+            }
+
+            foreach (var child in Children)
+            {
+                var childNodeChild = child.Find(filter);
+
+                if (childNodeChild != null)
+                {
+                    return childNodeChild;
+                }
+            }
+
+            return null;
+        }
+
+        public Node<T> Find(Guid nodeId)
+        {
+            return Find(x => x.Id == nodeId);
         }
     }
 }

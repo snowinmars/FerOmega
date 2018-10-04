@@ -22,6 +22,14 @@ namespace FerOmega.Entities
 
         public string MainDenotation => Denotations[0];
 
+        public Operator DeepClone()
+        {
+            return new Operator(Arity, Associativity, OperatorType, Fixity, Denotations)
+            {
+                Priority = Priority,
+            };
+        }
+
         public override string ToString()
         {
             string arityExample = "";

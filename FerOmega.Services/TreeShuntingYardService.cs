@@ -4,25 +4,26 @@ using System.Linq;
 
 using FerOmega.Abstractions;
 using FerOmega.Entities;
+using FerOmega.Entities.RedBlack;
 
 namespace FerOmega.Services
 {
-    public class AbstractShuntingYardService : IShuntingYardService<Queue<AbstractToken>>
+    public class TreeShuntingYardService : IShuntingYardService<Tree<AbstractToken>>
     {
         private GrammarService GrammarService { get; }
 
         private OperatorResolveService OperatorResolveService { get; }
 
-        public AbstractShuntingYardService()
+        public TreeShuntingYardService()
         {
             GrammarService = new GrammarService();
             OperatorResolveService = new OperatorResolveService();
         }
 
-        public Queue<AbstractToken> Parse(string[] tokens)
+        public Tree<AbstractToken> Parse(string[] tokens)
         {
-            var stack = new Stack<AbstractToken>(tokens.Length);
-            var queue = new Queue<AbstractToken>(tokens.Length);
+            var stack = new Stack<Operator>(tokens.Length);
+            var trees = new List<Tree<AbstractToken>>();
 
             for (int i = 0; i < tokens.Length; i++)
             {
@@ -32,7 +33,9 @@ namespace FerOmega.Services
                 {
                     var operand = new Operand(token.Current);
 
-                    queue.Enqueue(operand);
+                    var tree = new Tree<AbstractToken>(operand);
+
+                    trees.Add(tree);
                     continue;
                 }
 
@@ -65,7 +68,7 @@ namespace FerOmega.Services
                                 break;
                             }
 
-                            queue.Enqueue(abstractToken);
+                            NewMethod(trees, abstractToken);
                         }
 
                         continue;
@@ -76,14 +79,20 @@ namespace FerOmega.Services
                     switch (@operator.Arity)
                     {
                         case ArityType.Unary when @operator.Fixity == FixityType.Postfix:
-                            queue.Enqueue(@operator);
+                        {
+                            NewMethod(trees, @operator);
                             break;
+                        }
 
                         case ArityType.Unary when @operator.Fixity == FixityType.Prefix:
+                        {
+                            // TODO: [DT] 
                             stack.Push(@operator);
                             break;
+                        }
 
                         case ArityType.Binary:
+                        {
                             if (stack.Count == 0)
                             {
                                 stack.Push(@operator);
@@ -103,7 +112,7 @@ namespace FerOmega.Services
 
                                     while (popedOperator.Priority <= @operator.Priority)
                                     {
-                                        queue.Enqueue(popedOperator);
+                                        NewMethod(trees, popedOperator);
 
                                         if (stack.Count == 0)
                                         {
@@ -129,8 +138,7 @@ namespace FerOmega.Services
 
                                     if (popedOperator.Priority <= @operator.Priority && stack.Count > 0)
                                     {
-                                        popedOperator = stack.Pop();
-                                        queue.Enqueue(popedOperator);
+                                        NewMethod(trees, stack.Pop());
                                     }
 
                                     stack.Push(@operator);
@@ -140,25 +148,80 @@ namespace FerOmega.Services
                             }
 
                             break;
+                        }
 
                         case ArityType.Nulary:
                         case ArityType.Ternary:
                         case ArityType.Kvatery:
                         case ArityType.Multiarity:
+                        {
                             throw new NotSupportedException();
+                        }
 
                         default:
+                        {
                             throw new ArgumentOutOfRangeException();
+                        }
                     }
                 }
             }
 
             while (stack.Count > 0)
             {
-                queue.Enqueue(stack.Pop());
+                NewMethod(trees, stack.Pop());
             }
 
-            return queue;
+            if (trees.Count != 1)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return trees[0];
+        }
+
+        private void NewMethod(List<Tree<AbstractToken>> trees, Operator @operator)
+        {
+            var operatorTree = new Tree<AbstractToken>(@operator);
+
+            switch (@operator.Arity)
+            {
+                case ArityType.Unary:
+                {
+                    var operandTree = trees[trees.Count - 1];
+                    trees.RemoveAt(trees.Count - 1);
+                    operatorTree.AppendToRoot(operandTree);
+                    trees.Add(operatorTree);
+                    break;
+                }
+
+                case ArityType.Binary:
+                {
+                    var leftOperandTree = trees[trees.Count - 1];
+                    trees.RemoveAt(trees.Count - 1);
+
+                    var rightOperandTree = trees[trees.Count - 1];
+                    trees.RemoveAt(trees.Count - 1);
+
+                    operatorTree.AppendToRoot(leftOperandTree);
+                    operatorTree.AppendToRoot(rightOperandTree);
+
+                    trees.Add(operatorTree);
+                    break;
+                }
+
+                case ArityType.Nulary:
+                case ArityType.Ternary:
+                case ArityType.Kvatery:
+                case ArityType.Multiarity:
+                {
+                    throw new NotSupportedException();
+                }
+
+                default:
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+            }
         }
 
         private Operator[] GetPossibleOperators(string denotation)
