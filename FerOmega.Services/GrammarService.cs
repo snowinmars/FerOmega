@@ -136,6 +136,16 @@ namespace FerOmega.Services
             return Operators.Count(x => x.Denotations.Contains(denotation) && x.Fixity == fixity) == 1;
         }
 
+        public bool IsUniqueByDenotation(string denotation)
+        {
+            return GetPossibleOperators(denotation).Length == 1;
+        }
+
+        public Operator[] GetPossibleOperators(string denotation)
+        {
+            return Operators.Where(x => x.Denotations.Contains(denotation)).ToArray();
+        }
+
         private void SetOperators()
         {
             // there are less priority operators at the bottom and more priority operators at the top

@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using FerOmega.Abstractions;
 using FerOmega.Entities;
@@ -28,7 +29,7 @@ namespace FerOmega.Tests
 
             public string ShortTreeForm { get; set; }
 
-            public Tree<AbstractToken> TreeForm => JsonConvert.DeserializeObject<ShortToken>(ShortTreeForm).ToTree();
+            public Tree<AbstractToken> ShortTreeFormAsTree => JsonConvert.DeserializeObject<ShortToken>(ShortTreeForm).ToTree();
 
             public Equation DeSpacify()
             {

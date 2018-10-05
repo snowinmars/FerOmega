@@ -16,6 +16,8 @@ namespace FerOmega.Abstractions
 
         IList<Operator> Operators { get; }
 
+        Operator[] GetPossibleOperators(string denotation);
+
         Operator Get(OperatorType operatorType);
 
         bool IsBracket(AbstractToken @operator);
@@ -37,5 +39,7 @@ namespace FerOmega.Abstractions
         bool IsUniqueByArity(string denotation, ArityType arity);
 
         bool IsUniqueByFixity(string denotation, FixityType fixity);
+
+        bool IsUniqueByDenotation(string denotation);
     }
 }

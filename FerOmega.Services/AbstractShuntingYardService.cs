@@ -38,7 +38,7 @@ namespace FerOmega.Services
 
                 if (GrammarService.IsOperator(token.Current))
                 {
-                    var possibleOperators = GetPossibleOperators(token.Current);
+                    var possibleOperators = GrammarService.GetPossibleOperators(token.Current);
 
                     // length != 1 means we have overloads
                     var @operator = possibleOperators.Length == 1 ? possibleOperators[0] : OperatorResolveService.Resolve(token, possibleOperators);
@@ -159,11 +159,6 @@ namespace FerOmega.Services
             }
 
             return queue;
-        }
-
-        private Operator[] GetPossibleOperators(string denotation)
-        {
-            return GrammarService.Operators.Where(x => x.Denotations.Contains(denotation)).ToArray();
         }
     }
 }

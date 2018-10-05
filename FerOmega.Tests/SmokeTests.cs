@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using FerOmega.Abstractions;
@@ -16,8 +18,9 @@ namespace FerOmega.Tests
     {
         private readonly IShuntingYardService<Queue<AbstractToken>> abstractShuntingYardService;
         private readonly ITokenizationService tokenizationService;
-        private IShuntingYardService<Tree<AbstractToken>> treeShuntingYardService;
         private IEquationGenerator equationGenerator;
+        private EquationGenerator.Equation[] equations;
+        private IShuntingYardService<Tree<AbstractToken>> treeShuntingYardService;
 
         public SmokeTests()
         {
@@ -29,8 +32,6 @@ namespace FerOmega.Tests
             equations = equationGenerator.GetEquations();
         }
 
-        private EquationGenerator.Equation[] equations;
-
         [Test]
         public void Foo()
         {
@@ -40,17 +41,12 @@ namespace FerOmega.Tests
                 var revertedPolishResult = abstractShuntingYardService.Parse(tokens);
                 var treeResult = treeShuntingYardService.Parse(tokens);
 
-                var revertedPolishResultString = RevertedPolishEquationToString(revertedPolishResult);
-                var treeResultString = TreeToString(treeResult);
+                var treeShortTokens = TreeToShortTokenTree(treeResult);
 
-                Assert.AreEqual(expected: equation.RevertedPolishForm, actual: revertedPolishResultString, message: $"Reverted polish: {equation.Id}");
-                Assert.AreEqual(expected: equation.ShortTreeForm, actual: treeResultString, message: $"Tree: {equation.Id}");
+                Assert.AreEqual(expected: equation.RevertedPolishForm, actual: RevertedPolishEquationToString(revertedPolishResult), message: $"Reverted polish: {equation.Id}");
+                var shortToken = ShortToken.FromTree(equation.ShortTreeFormAsTree);
+                Assert.AreEqual(expected: shortToken, actual: treeShortTokens, message: $"Tree: {equation.Id}");
             }
-        }
-
-        private string TreeToString(Tree<AbstractToken> treeResult)
-        {
-            return EquationGenerator.DeSpacify(JsonConvert.SerializeObject(ShortToken.FromTree(treeResult), Formatting.None));
         }
 
         private static string RevertedPolishEquationToString(Queue<AbstractToken> abstractResult)
@@ -72,6 +68,80 @@ namespace FerOmega.Tests
             }
 
             return EquationGenerator.DeSpacify(sb.ToString());
+        }
+
+        private static ShortToken RevertedPolishEquationToShortTokenTree(Queue<AbstractToken> abstractResult)
+        {
+            var trees = new List<Tree<AbstractToken>>();
+
+            foreach (var token in abstractResult)
+            {
+                if (token.OperatorType == OperatorType.Literal)
+                {
+                    trees.Add(new Tree<AbstractToken>(token));
+                }
+                else
+                {
+                    NewMethod(trees, (Operator)token);
+                }
+            }
+
+            if (trees.Count != 1)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return ShortToken.FromTree(trees[0]);
+        }
+
+        private ShortToken TreeToShortTokenTree(Tree<AbstractToken> treeResult)
+        {
+            return ShortToken.FromTree(treeResult);
+        }
+
+        private static void NewMethod(List<Tree<AbstractToken>> trees, Operator @operator)
+        {
+            var operatorTree = new Tree<AbstractToken>(@operator);
+
+            switch (@operator.Arity)
+            {
+                case ArityType.Unary:
+                {
+                    var operandTree = trees[trees.Count - 1];
+                    trees.RemoveAt(trees.Count - 1);
+                    operatorTree.AppendToRoot(operandTree);
+                    trees.Add(operatorTree);
+                    break;
+                }
+
+                case ArityType.Binary:
+                {
+                    var leftOperandTree = trees[trees.Count - 1];
+                    trees.RemoveAt(trees.Count - 1);
+
+                    var rightOperandTree = trees[trees.Count - 1];
+                    trees.RemoveAt(trees.Count - 1);
+
+                    operatorTree.AppendToRoot(leftOperandTree);
+                    operatorTree.AppendToRoot(rightOperandTree);
+
+                    trees.Add(operatorTree);
+                    break;
+                }
+
+                case ArityType.Nulary:
+                case ArityType.Ternary:
+                case ArityType.Kvatery:
+                case ArityType.Multiarity:
+                {
+                    throw new NotSupportedException();
+                }
+
+                default:
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+            }
         }
     }
 }
