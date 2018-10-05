@@ -39,7 +39,7 @@ Could be
 
 **Priority** - operator with priority 3 will be calculated before operator with priority 5
 
-**Denominations** - symbols that presents the operator.
+**Denominations** - symbols that presents the operator. One operator can have several denominations. One denomination can present several operators (like '+' is unary and binary plus).
 
 ## Current priority list
 TODO check FerOmega.Services.GrammarService::SetOperators() for now
@@ -54,7 +54,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Equals = 2
     * Binary infix operator. 
-      * Possible forms: '==', 'eq'
+      * Denominations: '==', 'eq'
       * Consumes (left/right): T/T
       * Returns bool
     * Usage:
@@ -63,7 +63,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.NotEquals = 3
     * Binary infix operator.
-      * Possible forms: '!=', '<>', 'neq'
+      * Denominations: '!=', '<>', 'neq'
       * Consumes (left/right): T/T
       * Returns bool
     * Usage:
@@ -72,7 +72,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Not = 4
     * Unary prefix operator.
-      * Possible forms: '!', 'not'
+      * Denominations: '!', 'not'
       * Consumes (right): bool
       * Returns bool
     * Usage:
@@ -81,7 +81,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.GreaterThan = 5
     * Binary infix operator.
-      * Possible forms: '>', 'gt'
+      * Denominations: '>', 'gt'
       * Consumes (left/right): number/number
       * Returns bool
     * Usage:
@@ -90,7 +90,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.LesserThan = 6
     * Binary infix operator.
-      * Possible forms: '<', 'lt'
+      * Denominations: '<', 'lt'
       * Consumes (left/right): number/number
       * Returns bool
     * Usage:
@@ -99,7 +99,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.GreaterOrEqualsThan = 7
     * Binary infix operator.
-      * Possible forms: '>=', 'geq'
+      * Denominations: '>=', 'geq'
       * Consumes (left/right): number/number
       * Returns bool
     * Usage:
@@ -108,7 +108,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.LesserOrEqualsThan = 8
     * Binary infix operator.
-      * Possible forms: '<=', 'leq'
+      * Denominations: '<=', 'leq'
       * Consumes (left/right): number/number
       * Returns bool
     * Usage:
@@ -117,7 +117,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.InRange = 9
     * Binary infix operator.
-      * Possible forms: 'in'
+      * Denominations: 'in'
       * Consumes (left/right): number/number[]
       * Returns bool
     * Usage:
@@ -125,7 +125,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.And = 10
     * Binary infix operator.
-      * Possible forms: '&', '&&', 'and'
+      * Denominations: '&', '&&', 'and'
       * Consumes (left/right): bool/bool
       * Returns bool
     * Usage:
@@ -135,7 +135,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Or = 11
     * Binary infix operator.
-      * Possible forms: '|', '||', 'or'
+      * Denominations: '|', '||', 'or'
       * Consumes (left/right): bool/bool
       * Returns bool
     * Usage:
@@ -145,14 +145,14 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Xor = 12
     * Binary infix operator.
-      * Possible forms: '^' 'xor'
+      * Denominations: '^' 'xor'
       * Consumes (left/right): bool/bool
       * Returns bool
     * Usage: 
   
   * OperatorType.Contains = 13
     * Binary infix operator.
-      * Possible forms: 'con'
+      * Denominations: 'con'
       * Consumes (left/right): string/string
       * Returns bool
     * Usage:
@@ -160,7 +160,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.StartsWith = 14
     * Binary infix operator.
-      * Possible forms: 'stw'
+      * Denominations: 'stw'
       * Consumes (left/right): string/string
       * Returns bool
     * Usage:
@@ -168,7 +168,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.EndsWith = 15
     * Binary infix operator.
-      * Possible forms: 'edw'
+      * Denominations: 'edw'
       * Consumes (left/right): string/string
       * Returns bool
     * Usage:
@@ -176,7 +176,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Empty = 16
     * Unary prefix operator.
-      * Possible forms: 'emp'
+      * Denominations: 'emp'
       * Consumes (right): T
       * Returns bool
     * Usage:
@@ -184,7 +184,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.NotEmpty = 17
     * Unary prefix operator.
-      * Possible forms: 'nep'
+      * Denominations: 'nep'
       * Consumes (right): T
       * Returns bool
     * Usage:
@@ -192,7 +192,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.UnaryPlus = 18
     * Unary prefix operator.
-      * Possible forms: '+'
+      * Denominations: '+'
       * Consumes (right): number
       * Returns number
     * Usage:
@@ -200,7 +200,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Plus = 19
     * Binary infix operator.
-      * Possible forms: '+'
+      * Denominations: '+'
       * Consumes (left/right): number/number
       * Returns number
     * Usage:
@@ -208,7 +208,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.UnaryMinus = 20
     * Unary prefix operator.
-      * Possible forms: '-'
+      * Denominations: '-'
       * Consumes (right): number
       * Returns number
     * Usage:
@@ -216,7 +216,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Minus = 21
     * Binary infix operator.
-      * Possible forms: '-'
+      * Denominations: '-'
       * Consumes (left/right): number/number
       * Returns number
     * Usage:
@@ -224,7 +224,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Multiple = 22
     * Binary infix operator.
-      * Possible forms: '\*'
+      * Denominations: '\*'
       * Consumes (left/right): number/number
       * Returns number
     * Usage:
@@ -232,7 +232,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Reminder = 23
     * Binary infix operator.
-      * Possible forms: '%'
+      * Denominations: '%'
       * Consumes (left/right): number/number
       * Returns number
     * Usage:
@@ -240,7 +240,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Divide = 24
     * Binary infix operator.
-      * Possible forms: '/'
+      * Denominations: '/'
       * Consumes (left/right): number/number
       * Returns number
     * Usage:
@@ -248,7 +248,7 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.Invert = 25
     * Binary infix operator.
-      * Possible forms: '~'
+      * Denominations: '~'
       * Consumes (right): bool
       * Returns bool
     * Usage:
@@ -256,39 +256,39 @@ TODO check FerOmega.Services.GrammarService::SetOperators() for now
   
   * OperatorType.OpenRoundBracket = 26
     * Multiarity circumflex operator.
-      * Possible forms: '('
+      * Denominations: '('
       * Consumes (some): operators
       * Returns T
   
   * OperatorType.CloseRoundBracket = 27
     * Multiarity circumflex operator.
-      * Possible forms: ')'
+      * Denominations: ')'
       * Consumes (some): operators
       * Returns T
   
   * OperatorType.OpenCurlyBracket = 28
     * Multiarity circumflex operator.
-      * Possible forms: '{'
+      * Denominations: '{'
       * To be developed
   
   * OperatorType.CloseCurlyBracket = 29
     * Multiarity circumflex operator.
-      * Possible forms: '}'
+      * Denominations: '}'
       * To be developed
   
   * OperatorType.OpenSquareBracket = 30
     * Multiarity circumflex operator.
-      * Possible forms: '['
+      * Denominations: '['
       * To be developed
   
   * OperatorType.CloseSquareBracket = 31
     * Multiarity circumflex operator.
-      * Possible forms: ']'
+      * Denominations: ']'
       * To be developed
   
   * OperatorType.Factorial = 32   
     * Unary postfix operator.
-      * Possible forms: '!'
+      * Denominations: '!'
       * Consumes (left): number
       * Returns number
     * Usage:
