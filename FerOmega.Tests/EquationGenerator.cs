@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using FerOmega.Abstractions;
@@ -58,6 +59,71 @@ namespace FerOmega.Tests
                 ConstructEquation6(),
                 ConstructEquation7(),
             };
+        }
+
+        // TODO: [DT] 
+        private static Random random = new Random(); 
+
+        public Equation GetAlgebraEquation()
+        {
+            var operators = grammarService.GetOperatorsForSection(GrammarSectionType.Algebra | GrammarSectionType.Equality | GrammarSectionType.Inequality);
+            var operatorsCount = random.Next(5, 7);
+
+            for (int i = 0; i < operatorsCount; i++)
+            {
+                var @operator = operators[random.Next(0, operators.Length - 1)];
+
+                int operandsCount;
+                switch (@operator.Arity)
+                {
+                    case ArityType.Unary:
+                        operandsCount = 1;
+                        break;
+                    case ArityType.Binary:
+                        operandsCount = 2;
+                        break;
+                    case ArityType.Nulary:
+                    case ArityType.Ternary:
+                    case ArityType.Kvatery:
+                    case ArityType.Multiarity:
+                        throw new NotSupportedException();
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                switch (@operator.Fixity)
+                {
+                    case FixityType.Infix:
+                        Func<string, string, string, string> pattern = (left, op, right) => $"{left} {op} {right}";
+                        break;
+                    case FixityType.Prefix:
+                        Func<string, string, string, string> pattern = (left, op, right) => $"{left} {op} {right}";
+                        break;
+                    case FixityType.Postfix:
+                        break;
+                    case FixityType.Circumflex:
+                        break;
+                    case FixityType.PostCircumflex:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                for (int j = 0; j < operandsCount; j++)
+                {
+                    var operand = random.Next(-1024, 1024).ToString();
+
+
+                }
+            }
+        }
+
+        public IEnumerable<Equation> GetAlgebraEquations(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                yield return GetAlgebraEquation();
+            }
         }
 
         private Equation ConstructEquation7()
