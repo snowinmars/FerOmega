@@ -7,8 +7,8 @@ namespace FerOmega.Entities
     {
         Unknown = 1,
         Algebra = 2,
-        BooleanAlgebra = 3,
-        Inequality = 4,
-        Equality = 5,
+        BooleanAlgebra = 4,
+        Inequality = 8,
+        Equality = 16,
     }
 }

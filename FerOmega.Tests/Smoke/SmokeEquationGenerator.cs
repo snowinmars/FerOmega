@@ -57,7 +57,84 @@ namespace FerOmega.Tests
                 ConstructEquation5(),
                 ConstructEquation6(),
                 ConstructEquation7(),
+                ConstructEquation8(),
             };
+        }
+
+        private Equation ConstructEquation8()
+        {
+            var equation = new Equation
+            {
+                Id = 8,
+                InfixForm = " (( [341] * [46] ) + ( [40] + ( + ( - [528] ) ) ) ) + [546]",
+                RevertedPolishForm = "[341] [46] * [40] [528] - + + + [546] +",
+                ShortTreeForm = @"
+{
+	""OperatorType"": 19,
+	""Value"": null,
+	""Children"": [
+		{
+			""OperatorType"": 1,
+			""Value"": 546,
+			""Children"": []
+		},
+		{
+			""OperatorType"": 19,
+			""Value"": null,
+			""Children"": [
+				{
+					""OperatorType"": 22,
+					""Value"": null,
+					""Children"": [
+						{
+							""OperatorType"": 1,
+							""Value"": 341,
+							""Children"": []
+						},
+						{
+							""OperatorType"": 1,
+							""Value"": 46,
+							""Children"": []
+						},
+					]
+				},
+
+				{
+					""OperatorType"": 19,
+					""Value"": null,
+					""Children"": [
+						{
+							""OperatorType"": 1,
+							""Value"": 40,
+							""Children"": []
+						},
+						{
+							""OperatorType"": 18,
+							""Value"": null,
+							""Children"": [
+								{
+									""OperatorType"": 20,
+									""Value"": null,
+									""Children"": [
+										{
+											""OperatorType"": 1,
+											""Value"": 528,
+											""Children"": []
+										},
+									]
+								},
+							]
+						},
+					]
+				},
+			]
+		},
+	]
+}
+",
+            };
+         
+            return equation.DeSpacify();
         }
 
         private Equation ConstructEquation7()

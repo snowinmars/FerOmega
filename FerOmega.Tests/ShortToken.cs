@@ -89,38 +89,54 @@ namespace FerOmega.Tests
             return token;
         }
 
-        private string Me()
+        private string Me(bool wrapWithBrackets = true)
         {
             if (this.OperatorType == OperatorType.Literal)
             {
+                if (this.Value.StartsWith("-"))
+                {
+                    return $"({this.Value})";
+                }
+
                 return this.Value;
             }
 
-            var @operator = (Operator)this.ConvertSelf();
-
             var sb = new StringBuilder();
 
-            sb.Append(" ( ");
+            if (wrapWithBrackets)
+            {
+                sb.Append(" ( ");
+            }
 
+            var @operator = (Operator)this.ConvertSelf();
+            sb.Append(ToOperator(@operator));
+
+            if (wrapWithBrackets)
+            {
+                sb.Append(" ) ");
+            }
+
+            return sb.ToString();
+        }
+
+        private string ToOperator(Operator @operator)
+        {
             switch (@operator.Arity)
             {
                 case ArityType.Unary when @operator.Fixity == FixityType.Prefix:
-                {
-                    sb.Append($"{@operator.MainDenotation} {this.Children[0].Me()}");
-                    break;
-                }
+                    {
+                        return $"{@operator.MainDenotation} {this.Children[0].Me()}";
+                    }
 
                 case ArityType.Unary when @operator.Fixity == FixityType.Postfix:
-                {
-                    sb.Append($"{this.Children[0].Me()} {@operator.MainDenotation}");
-                    break;
-                }
+                    {
+                        return $"{this.Children[0].Me()} {@operator.MainDenotation}";
+                    }
 
                 case ArityType.Binary when @operator.Fixity == FixityType.Infix:
-                {
-                    sb.Append($"{this.Children[0].Me()} {@operator.MainDenotation} {this.Children[1].Me()}");
-                    break;
-                }
+                    {
+                        return $"{this.Children[0].Me()} {@operator.MainDenotation} {this.Children[1].Me()}";
+                    }
 
                 case ArityType.Nulary:
                 case ArityType.Ternary:
@@ -131,17 +147,13 @@ namespace FerOmega.Tests
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            sb.Append(" ) ");
-
-            return sb.ToString();
         }
 
         public string ToPlainEquation()
         {
             var sb = new StringBuilder();
 
-            sb.Append(this.Me());
+            sb.Append(this.Me(false));
 
             return sb.ToString();
         }

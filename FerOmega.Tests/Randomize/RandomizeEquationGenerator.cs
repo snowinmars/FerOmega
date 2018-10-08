@@ -24,7 +24,7 @@ namespace FerOmega.Tests
         {
             if (@operator.OperatorType == OperatorType.Literal)
             {
-                return new ShortToken(random.Next(-1024, 1024));
+                return ConstruclLiteral();
             }
 
             var result = new ShortToken(@operator.OperatorType);
@@ -34,7 +34,7 @@ namespace FerOmega.Tests
                 case ArityType.Unary when @operator.Fixity == FixityType.Prefix
                                           || @operator.Fixity == FixityType.Postfix:
                 {
-                    var operand = new ShortToken(random.Next(-1024, 1024));
+                    var operand = ConstruclLiteral();
 
                     result.Children.Add(operand);
 
@@ -43,8 +43,8 @@ namespace FerOmega.Tests
 
                 case ArityType.Binary when @operator.Fixity == FixityType.Infix:
                 {
-                    var left = new ShortToken(random.Next(-1024, 1024));
-                    var right = new ShortToken(random.Next(-1024, 1024));
+                    var left = ConstruclLiteral();
+                    var right = ConstruclLiteral();
 
                     result.Children.Add(left);
                     result.Children.Add(right);
@@ -63,6 +63,11 @@ namespace FerOmega.Tests
             }
 
             return result;
+        }
+
+        private static ShortToken ConstruclLiteral()
+        {
+            return new ShortToken(random.Next(0, 1024));
         }
 
         public ShortToken GetAlgebraEquation(GrammarSectionType grammarSectionType)

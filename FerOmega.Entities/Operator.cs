@@ -63,7 +63,9 @@ namespace FerOmega.Entities
                 case ArityType.Nulary:
                 case ArityType.Ternary:
                 case ArityType.Kvatery:
+                    break;
                 case ArityType.Multiarity:
+                    arityExample = $"{MainDenotation} ...";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -62,6 +62,21 @@ namespace FerOmega.Services
             return IsOpenBracket(operatorType) || IsCloseBracket(operatorType);
         }
 
+        public bool IsOpenBracket(string denotation)
+        {
+            return Operators.Where(x => openBrackets.Contains(x.OperatorType)).SelectMany(x => x.Denotations).Contains(denotation);
+        }
+
+        public bool IsCloseBracket(string denotation)
+        {
+            return Operators.Where(x => closeBrackets.Contains(x.OperatorType)).SelectMany(x => x.Denotations).Contains(denotation);
+        }
+
+        public bool IsBracket(string denotation)
+        {
+            return IsOpenBracket(denotation) || IsCloseBracket(denotation);
+        }
+
         public bool IsOpenBracket(AbstractToken @operator)
         {
             return IsOpenBracket(@operator.OperatorType);
@@ -94,8 +109,12 @@ namespace FerOmega.Services
 
         public bool IsOperand(string input)
         {
-            return input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal)
-                   && input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
+            var isEscaped = input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal)
+                             && input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
+
+            var isInOperatorsDenotations = OperatorDenotations.Contains(input);
+
+            return isEscaped || !isInOperatorsDenotations;
         }
 
         public bool IsOperator(string input)
