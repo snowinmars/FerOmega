@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 using FerOmega.Abstractions;
@@ -10,11 +12,11 @@ using Newtonsoft.Json;
 
 namespace FerOmega.Tests
 {
-    internal class EquationGenerator : IEquationGenerator
+    internal class SmokeEquationGenerator : ISmokeEquationGenerator
     {
         internal IGrammarService grammarService;
 
-        public EquationGenerator()
+        public SmokeEquationGenerator()
         {
             grammarService = new GrammarService();
         }
@@ -33,14 +35,15 @@ namespace FerOmega.Tests
 
             public Equation DeSpacify()
             {
-                InfixForm = EquationGenerator.DeSpacify(InfixForm);
-                RevertedPolishForm = EquationGenerator.DeSpacify(RevertedPolishForm);
-                ShortTreeForm = EquationGenerator.DeSpacify(ShortTreeForm);
+                InfixForm = SmokeEquationGenerator.DeSpacify(InfixForm);
+                RevertedPolishForm = SmokeEquationGenerator.DeSpacify(RevertedPolishForm);
+                ShortTreeForm = SmokeEquationGenerator.DeSpacify(ShortTreeForm);
 
                 return this;
             }
         }
 
+        // TODO: [DT] 
         public static string DeSpacify(string input)
         {
             return Regex.Replace(input, "\\s", "");

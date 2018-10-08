@@ -20,6 +20,8 @@ namespace FerOmega.Abstractions
 
         Operator Get(OperatorType operatorType);
 
+        Operator[] GetOperatorsForSection(GrammarSectionType grammarSectionType);
+
         bool IsBracket(AbstractToken @operator);
 
         bool IsBracket(OperatorType operatorType);

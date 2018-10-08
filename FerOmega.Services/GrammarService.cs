@@ -82,6 +82,11 @@ namespace FerOmega.Services
             return Operators.First(x => x.OperatorType == operatorType).DeepClone();
         }
 
+        public Operator[] GetOperatorsForSection(GrammarSectionType grammarSectionType)
+        {
+            return Operators.Where(x => x.GrammarSectionType.HasFlag(grammarSectionType)).ToArray();
+        }
+
         public bool IsBracket(AbstractToken @operator)
         {
             return IsOpenBracket(@operator) || IsCloseBracket(@operator);
@@ -152,59 +157,59 @@ namespace FerOmega.Services
             var priority = 1;
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.Factorial, FixityType.Postfix, "!"),
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Not, FixityType.Prefix, "!", "not"),
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryPlus, FixityType.Prefix, "+"),
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryMinus, FixityType.Prefix, "-"),
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Invert, FixityType.Prefix, "~"));
+                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.Factorial, FixityType.Postfix, GrammarSectionType.Algebra, "!"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Not, FixityType.Prefix, GrammarSectionType.BooleanAlgebra, "!", "not"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryPlus, FixityType.Prefix, GrammarSectionType.Algebra, "+"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryMinus, FixityType.Prefix, GrammarSectionType.Algebra, "-"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Invert, FixityType.Prefix, GrammarSectionType.BooleanAlgebra, "~"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Multiple, FixityType.Infix, "*"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Divide, FixityType.Infix, "/"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Reminder, FixityType.Infix, "%"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Multiple, FixityType.Infix, GrammarSectionType.Algebra, "*"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Divide, FixityType.Infix, GrammarSectionType.Algebra, "/"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Reminder, FixityType.Infix, GrammarSectionType.Algebra, "%"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Plus, FixityType.Infix, "+"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Minus, FixityType.Infix, "-"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Plus, FixityType.Infix, GrammarSectionType.Algebra, "+"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Minus, FixityType.Infix, GrammarSectionType.Algebra, "-"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.GreaterThan, FixityType.Infix, ">", "gt"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.LesserThan, FixityType.Infix, "<", "lt"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.GreaterOrEqualsThan, FixityType.Infix, ">=", "gte"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.LesserOrEqualsThan, FixityType.Infix, "<=", "lte"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.GreaterThan, FixityType.Infix, GrammarSectionType.Inequality, ">", "gt"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.LesserThan, FixityType.Infix, GrammarSectionType.Inequality, "<", "lt"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.GreaterOrEqualsThan, FixityType.Infix, GrammarSectionType.Inequality, ">=", "gte"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.LesserOrEqualsThan, FixityType.Infix, GrammarSectionType.Inequality, "<=", "lte"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Equals, FixityType.Infix, "==", "eq"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.NotEquals, FixityType.Infix, "!=", "<>", "neq"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Equals, FixityType.Infix, GrammarSectionType.Equality, "==", "eq"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.NotEquals, FixityType.Infix, GrammarSectionType.Equality, "!=", "<>", "neq"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.InRange, FixityType.Infix, "in"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Contains, FixityType.Infix, "con"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.StartsWith, FixityType.Infix, "stw"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.EndsWith, FixityType.Infix, "edw"),
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Empty, FixityType.Prefix, "emp"),
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.NotEmpty, FixityType.Prefix, "nep"));
+                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.InRange, FixityType.Infix, GrammarSectionType.Unknown, "in"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Contains, FixityType.Infix, GrammarSectionType.Unknown, "con"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.StartsWith, FixityType.Infix, GrammarSectionType.Unknown, "stw"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.EndsWith, FixityType.Infix, GrammarSectionType.Unknown, "edw"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Empty, FixityType.Prefix, GrammarSectionType.Unknown, "emp"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.NotEmpty, FixityType.Prefix, GrammarSectionType.Unknown, "nep"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.And, FixityType.Infix, "&", "&&", "and"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.And, FixityType.Infix, GrammarSectionType.BooleanAlgebra, "&", "&&", "and"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Xor, FixityType.Infix, "^"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Xor, FixityType.Infix, GrammarSectionType.BooleanAlgebra, "^"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Or, FixityType.Infix, "|", "||", "or"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Or, FixityType.Infix, GrammarSectionType.BooleanAlgebra, "|", "||", "or"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.OpenRoundBracket, FixityType.Circumflex, "("),
-                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.CloseRoundBracket, FixityType.Circumflex, ")"));
+                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.OpenRoundBracket, FixityType.Circumflex, GrammarSectionType.Unknown, "("),
+                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.CloseRoundBracket, FixityType.Circumflex, GrammarSectionType.Unknown, ")"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.OpenCurlyBracket, FixityType.Circumflex, "{"),
-                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.CloseCurlyBracket, FixityType.Circumflex, "}"));
+                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.OpenCurlyBracket, FixityType.Circumflex, GrammarSectionType.Unknown, "{"),
+                new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.CloseCurlyBracket, FixityType.Circumflex, GrammarSectionType.Unknown, "}"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.OpenSquareBracket, FixityType.Circumflex, "["),
-                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.CloseSquareBracket, FixityType.Circumflex, "]"));
+                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.OpenSquareBracket, FixityType.Circumflex, GrammarSectionType.Unknown, "["),
+                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.CloseSquareBracket, FixityType.Circumflex, GrammarSectionType.Unknown, "]"));
         }
     }
 }

@@ -44,6 +44,7 @@
     <Compile Include="AbstractToken.cs" />
     <Compile Include="ArityType.cs" />
     <Compile Include="AssociativityType.cs" />
+    <Compile Include="GrammarSectionType.cs" />
     <Compile Include="Operand.cs" />
     <Compile Include="Operator.cs" />
     <Compile Include="OperatorType.cs" />

@@ -4,13 +4,16 @@ namespace FerOmega.Entities
 {
     public class Operator : AbstractToken
     {
-        public Operator(ArityType arity, AssociativityType associativity, OperatorType operatorType, FixityType fixityType, params string[] denotations) : base(operatorType, -1)
+        public Operator(ArityType arity, AssociativityType associativity, OperatorType operatorType, FixityType fixityType, GrammarSectionType grammarSectionType, params string[] denotations) : base(operatorType, -1)
         {
             Arity = arity;
             Associativity = associativity;
             Denotations = denotations;
             Fixity = fixityType;
+            GrammarSectionType = grammarSectionType;
         }
+
+        public GrammarSectionType GrammarSectionType { get; set; }
 
         public ArityType Arity { get; set; }
 
@@ -24,7 +27,7 @@ namespace FerOmega.Entities
 
         public Operator DeepClone()
         {
-            return new Operator(Arity, Associativity, OperatorType, Fixity, Denotations)
+            return new Operator(Arity, Associativity, OperatorType, Fixity, GrammarSectionType, Denotations)
             {
                 Priority = Priority,
             };
