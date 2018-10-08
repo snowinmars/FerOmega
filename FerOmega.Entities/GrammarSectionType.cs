@@ -6,9 +6,9 @@ namespace FerOmega.Entities
     public enum GrammarSectionType
     {
         Unknown = 1,
-        Algebra = 1,
-        BooleanAlgebra = 2,
-        Inequality = 3,
-        Equality = 4,
+        Algebra = 2,
+        BooleanAlgebra = 3,
+        Inequality = 4,
+        Equality = 5,
     }
 }

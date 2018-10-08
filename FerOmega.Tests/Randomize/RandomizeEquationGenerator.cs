@@ -76,17 +76,26 @@ namespace FerOmega.Tests
             {
                 var @operator = operators[random.Next(0, operators.Length - 1)];
 
-                var shortToken = ConstructToken(@operator);
+                var newToken = ConstructToken(@operator);
 
                 if (result == null)
                 {
-                    result = shortToken;
+                    result = newToken;
                 }
                 else
                 {
                     var anyLocus = GetRandomLocus(result);
-
-                    anyLocus.Children.Add(shortToken);
+                    if (anyLocus.Children.Count == 0)
+                    {
+                        anyLocus.Children = newToken.Children;
+                        anyLocus.OperatorType = newToken.OperatorType;
+                        anyLocus.Value = newToken.Value;
+                    }
+                    else
+                    {
+                        var position = random.Next(0, anyLocus.Children.Count);
+                        anyLocus.Children[position] = newToken;
+                    }
                 }
             }
 
@@ -102,13 +111,23 @@ namespace FerOmega.Tests
 
         private IEnumerable<ShortToken> GetLocuses(ShortToken token)
         {
-            foreach (var child in token.Children.Where(x => x.OperatorType == OperatorType.Literal))
+            if (!token.Children.Any())
             {
-                yield return child;
+                yield return token;
+            }
 
-                foreach (var shortToken in GetLocuses(child))
+            foreach (var child in token.Children)
+            {
+                if (child.OperatorType == OperatorType.Literal)
                 {
-                    yield return shortToken;
+                    yield return child;
+                }
+                else
+                {
+                    foreach (var shortToken in GetLocuses(child))
+                    {
+                        yield return shortToken;
+                    }
                 }
             }
         }

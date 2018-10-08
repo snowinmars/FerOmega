@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using FerOmega.Abstractions;
 using FerOmega.Entities;
@@ -13,7 +14,7 @@ namespace FerOmega.Tests
 {
     internal class ShortToken : IEquatable<ShortToken>
     {
-        internal IGrammarService GrammarService;
+        private IGrammarService GrammarService;
 
         public IList<ShortToken> Children { get; set; }
 
@@ -72,7 +73,7 @@ namespace FerOmega.Tests
             return root;
         }
 
-        public AbstractToken ConvertSelf()
+            public AbstractToken ConvertSelf()
         {
             AbstractToken token;
 
@@ -86,6 +87,63 @@ namespace FerOmega.Tests
             }
 
             return token;
+        }
+
+        private string Me()
+        {
+            if (this.OperatorType == OperatorType.Literal)
+            {
+                return this.Value;
+            }
+
+            var @operator = (Operator)this.ConvertSelf();
+
+            var sb = new StringBuilder();
+
+            sb.Append(" ( ");
+
+            switch (@operator.Arity)
+            {
+                case ArityType.Unary when @operator.Fixity == FixityType.Prefix:
+                {
+                    sb.Append($"{@operator.MainDenotation} {this.Children[0].Me()}");
+                    break;
+                }
+
+                case ArityType.Unary when @operator.Fixity == FixityType.Postfix:
+                {
+                    sb.Append($"{this.Children[0].Me()} {@operator.MainDenotation}");
+                    break;
+                }
+
+                case ArityType.Binary when @operator.Fixity == FixityType.Infix:
+                {
+                    sb.Append($"{this.Children[0].Me()} {@operator.MainDenotation} {this.Children[1].Me()}");
+                    break;
+                }
+
+                case ArityType.Nulary:
+                case ArityType.Ternary:
+                case ArityType.Kvatery:
+                case ArityType.Multiarity:
+                    throw new NotSupportedException();
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            sb.Append(" ) ");
+
+            return sb.ToString();
+        }
+
+        public string ToPlainEquation()
+        {
+            var sb = new StringBuilder();
+
+            sb.Append(this.Me());
+
+            return sb.ToString();
         }
 
         public override string ToString()
