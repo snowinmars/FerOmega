@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 
 using FerOmega.Abstractions;
 using FerOmega.Entities;
 using FerOmega.Entities.RedBlack;
 using FerOmega.Services;
-
-using Newtonsoft.Json;
 
 using NUnit.Framework;
 
@@ -42,14 +38,14 @@ namespace FerOmega.Tests
                 var treeShortTokens = ShortToken.FromTree(treeResult);
 
                 Assert.AreEqual(
-                    expected: equation.RevertedPolishForm, 
+                    expected: equation.RevertedPolishForm,
                     actual: RevertedPolishEquationToString(revertedPolishResult),
                     message: $"Reverted polish: {equation.Id}");
 
                 var shortToken = ShortToken.FromTree(equation.ShortTreeFormAsTree);
 
                 Assert.AreEqual(
-                    expected: shortToken, 
+                    expected: shortToken,
                     actual: treeShortTokens,
                     message: $"Tree: {equation.Id}");
             }
@@ -74,6 +70,6 @@ namespace FerOmega.Tests
             }
 
             return SmokeEquationGenerator.DeSpacify(sb.ToString());
-        } 
+        }
     }
 }

@@ -114,7 +114,7 @@ namespace FerOmega.Tests
 
         public override bool Equals(object obj)
         {
-            return obj is ShortToken shortToken && this.Equals(shortToken);
+            return obj is ShortToken shortToken && Equals(shortToken);
         }
 
         public override int GetHashCode()
@@ -150,14 +150,14 @@ namespace FerOmega.Tests
                 return false;
             }
 
-            if (Children.Any() 
+            if (Children.Any()
                 && Children.Any(child => !other.Children.Any(otherChild => otherChild.Equals(child))))
             {
                 return false;
             }
 
-            return this.OperatorType == other.OperatorType
-                   && this.Value == other.Value;
+            return OperatorType == other.OperatorType
+                   && Value == other.Value;
         }
     }
 }

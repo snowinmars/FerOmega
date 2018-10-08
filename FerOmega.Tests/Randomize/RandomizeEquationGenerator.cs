@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using FerOmega.Abstractions;
 using FerOmega.Entities;
@@ -35,24 +33,24 @@ namespace FerOmega.Tests
             {
                 case ArityType.Unary when @operator.Fixity == FixityType.Prefix
                                           || @operator.Fixity == FixityType.Postfix:
-                    {
-                        var operand = new ShortToken(random.Next(-1024, 1024));
+                {
+                    var operand = new ShortToken(random.Next(-1024, 1024));
 
-                        result.Children.Add(operand);
+                    result.Children.Add(operand);
 
-                        break;
-                    }
+                    break;
+                }
 
                 case ArityType.Binary when @operator.Fixity == FixityType.Infix:
-                    {
-                        var left = new ShortToken(random.Next(-1024, 1024));
-                        var right = new ShortToken(random.Next(-1024, 1024));
+                {
+                    var left = new ShortToken(random.Next(-1024, 1024));
+                    var right = new ShortToken(random.Next(-1024, 1024));
 
-                        result.Children.Add(left);
-                        result.Children.Add(right);
+                    result.Children.Add(left);
+                    result.Children.Add(right);
 
-                        break;
-                    }
+                    break;
+                }
 
                 case ArityType.Nulary:
                 case ArityType.Ternary:
@@ -122,6 +120,5 @@ namespace FerOmega.Tests
                 yield return GetAlgebraEquation(grammarSectionType);
             }
         }
-
     }
 }
