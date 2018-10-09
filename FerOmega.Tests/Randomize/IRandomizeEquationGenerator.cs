@@ -6,8 +6,10 @@ namespace FerOmega.Tests
 {
     internal interface IRandomizeEquationGenerator
     {
-        ShortToken GetAlgebraEquation(GrammarSectionType grammarSectionType);
+        IEnumerable<ShortToken> GetAlgebraEquations(long count, int minOperatorsCount = 5, int maxOperatorsCount = 7);
 
-        IEnumerable<ShortToken> GetAlgebraEquations(int count, GrammarSectionType grammarSectionType);
+        IEnumerable<ShortToken> GetBooleanAlgebraEquations(long count, int minOperatorsCount = 5, int maxOperatorsCount = 7);
+
+        IEnumerable<ShortToken> GetEquations(long count, GrammarSectionType grammarSectionType);
     }
 }

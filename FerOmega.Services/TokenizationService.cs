@@ -34,7 +34,7 @@ namespace FerOmega.Services
             // f.e.,
             //      input: a>5  &&  b+7  ==2
             //      regex: >|   &+| \+|  =+
-            var operatorRegex = string.Join("|", GrammarService.OperatorDenotations.Select(EscapeOperatorDenomination).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)));
+            var operatorRegex = string.Join("|", GrammarService.OperatorDenotations.OrderByDescending(x => x.Length).Select(EscapeOperatorDenomination).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)));
 
             // if regex pattern is in the global scope, the delimiters will be included to the Matches collection
             return $"({operatorRegex})";
@@ -58,6 +58,9 @@ namespace FerOmega.Services
 
                 case "*":
                     return @"\*";
+
+                case "^":
+                    return @"\^";
 
                 case "/":
                     return @"\/";

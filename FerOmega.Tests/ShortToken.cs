@@ -73,7 +73,12 @@ namespace FerOmega.Tests
             return root;
         }
 
-            public AbstractToken ConvertSelf()
+        public static ShortToken FromOperand(Operand operand)
+        {
+            return new ShortToken(OperatorType.Literal, operand.Value);
+        }
+
+        public AbstractToken ConvertSelf()
         {
             AbstractToken token;
 

@@ -68,6 +68,10 @@
       <Project>{21433AE3-3102-49E8-9B53-49204656A165}</Project>
       <Name>FerOmega.Abstractions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FerOmega.Common\FerOmega.Common.csproj">
+      <Project>{646622DC-1DDF-41B1-98DB-64F584D3ADA8}</Project>
+      <Name>FerOmega.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FerOmega.Entities\FerOmega.Entities.csproj">
       <Project>{8CFF0AFD-AE88-48E1-B4A1-2D8394F0B96A}</Project>
       <Name>FerOmega.Entities</Name>

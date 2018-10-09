@@ -90,14 +90,14 @@ namespace FerOmega.Entities.RedBlack
             return node;
         }
 
-        public bool IsLocus()
+        public bool IsLeaf()
         {
             return children.Count == 0;
         }
 
         public Node<T> Find(Func<Node<T>, bool> filter)
         {
-            if (IsLocus())
+            if (IsLeaf())
             {
                 return null;
             }

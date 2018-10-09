@@ -99,7 +99,17 @@ namespace FerOmega.Services
 
         public Operator[] GetOperatorsForSection(GrammarSectionType grammarSectionType)
         {
-            return Operators.Where(x => x.GrammarSectionType.HasFlag(grammarSectionType)).ToArray();
+            var result = new List<Operator>(32);
+
+            foreach (var enumValue in Enum.GetValues(typeof(GrammarSectionType)).Cast<GrammarSectionType>())
+            {
+                if (grammarSectionType.HasFlag(enumValue))
+                {
+                    result.AddRange(Operators.Where(x => x.GrammarSectionType.HasFlag(enumValue)));
+                }
+            }
+
+            return result.ToArray();
         }
 
         public bool IsBracket(AbstractToken @operator)
@@ -199,7 +209,7 @@ namespace FerOmega.Services
 
             priority = AddOperators(priority,
                 new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Equals, FixityType.Infix, GrammarSectionType.Equality, "==", "eq"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.NotEquals, FixityType.Infix, GrammarSectionType.Equality, "!=", "<>", "neq"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.NotEquals, FixityType.Infix, GrammarSectionType.Inequality, "!=", "<>", "neq"));
 
             priority = AddOperators(priority,
                 new Operator(ArityType.Multiarity, AssociativityType.Left, OperatorType.InRange, FixityType.Infix, GrammarSectionType.Unknown, "in"),
