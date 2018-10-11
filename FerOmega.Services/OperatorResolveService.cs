@@ -63,7 +63,7 @@ namespace FerOmega.Services
 
         private bool IsInfixBinary(OperatorToken token, Operator[] possibleOperators)
         {
-            if (!possibleOperators.Any(x => x.Arity == ArityType.Binary && x.Fixity == FixityType.Infix))
+            if (!possibleOperators.Any(x => x.Fixity == FixityType.Infix && x.Arity == ArityType.Binary))
             {
                 return false;
             }

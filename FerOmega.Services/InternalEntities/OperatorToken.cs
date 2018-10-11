@@ -2,7 +2,7 @@
 {
     internal class OperatorToken
     {
-        internal const string NonExistingOperator = "";
+        internal const string NonExistingOperator = "NonExistingOperator";
 
         public string Current { get; set; }
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using FerOmega.Abstractions;
 using FerOmega.Entities;
@@ -43,7 +42,6 @@ namespace FerOmega.Services
                 {
                     var possibleOperators = GrammarService.GetPossibleOperators(token.Current);
 
-                    // length != 1 means we have overloads
                     var @operator = possibleOperators.Length == 1 ? possibleOperators[0] : OperatorResolveService.Resolve(token, possibleOperators);
 
                     if (GrammarService.IsOpenBracket(@operator))
@@ -68,7 +66,7 @@ namespace FerOmega.Services
                                 break;
                             }
 
-                            NewMethod(trees, abstractToken);
+                            MergeTreesByOperator(trees, abstractToken);
                         }
 
                         continue;
@@ -80,7 +78,7 @@ namespace FerOmega.Services
                     {
                         case ArityType.Unary when @operator.Fixity == FixityType.Postfix:
                         {
-                            NewMethod(trees, @operator);
+                            MergeTreesByOperator(trees, @operator);
                             break;
                         }
 
@@ -112,7 +110,7 @@ namespace FerOmega.Services
 
                                     while (popedOperator.Priority <= @operator.Priority)
                                     {
-                                        NewMethod(trees, popedOperator);
+                                        MergeTreesByOperator(trees, popedOperator);
 
                                         if (stack.Count == 0)
                                         {
@@ -138,7 +136,7 @@ namespace FerOmega.Services
 
                                     if (popedOperator.Priority <= @operator.Priority && stack.Count > 0)
                                     {
-                                        NewMethod(trees, stack.Pop());
+                                        MergeTreesByOperator(trees, stack.Pop());
                                     }
 
                                     stack.Push(@operator);
@@ -168,7 +166,7 @@ namespace FerOmega.Services
 
             while (stack.Count > 0)
             {
-                NewMethod(trees, stack.Pop());
+                MergeTreesByOperator(trees, stack.Pop());
             }
 
             if (trees.Count != 1)
@@ -179,7 +177,7 @@ namespace FerOmega.Services
             return trees[0];
         }
 
-        private void NewMethod(List<Tree<AbstractToken>> trees, Operator @operator)
+        private void MergeTreesByOperator(List<Tree<AbstractToken>> trees, Operator @operator)
         {
             var operatorTree = new Tree<AbstractToken>(@operator);
 
@@ -188,8 +186,10 @@ namespace FerOmega.Services
                 case ArityType.Unary:
                 {
                     var operandTree = trees[trees.Count - 1];
+
                     trees.RemoveAt(trees.Count - 1);
                     operatorTree.AppendToRoot(operandTree);
+
                     trees.Add(operatorTree);
                     break;
                 }
@@ -202,6 +202,8 @@ namespace FerOmega.Services
                     var rightOperandTree = trees[trees.Count - 1];
                     trees.RemoveAt(trees.Count - 1);
 
+                    // normally I append left operand; then - right operand
+                    // this is the only case by now where I have to append right operand before left due to they exists in stack in reversed order
                     operatorTree.AppendToRoot(rightOperandTree);
                     operatorTree.AppendToRoot(leftOperandTree);
 

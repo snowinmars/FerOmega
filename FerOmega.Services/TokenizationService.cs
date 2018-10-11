@@ -34,7 +34,14 @@ namespace FerOmega.Services
             // f.e.,
             //      input: a>5  &&  b+7  ==2
             //      regex: >|   &+| \+|  =+
-            var operatorRegex = string.Join("|", GrammarService.OperatorDenotations.OrderByDescending(x => x.Length).Select(EscapeOperatorDenomination).Distinct().Where(x => !string.IsNullOrWhiteSpace(x)));
+            var operators = GrammarService
+                .OperatorDenotations
+                .OrderByDescending(x => x.Length) // see the difference between '(!=|!|=)' and '(!|=|!=)' regexes?
+                .Select(EscapeOperatorDenomination) // due to I have to escape some symbols
+                .Distinct() // due to I can have overloaded operators
+                .Where(x => !string.IsNullOrWhiteSpace(x)); // due to I want to ignore some operators
+
+            var operatorRegex = string.Join("|", operators);
 
             // if regex pattern is in the global scope, the delimiters will be included to the Matches collection
             return $"({operatorRegex})";

@@ -9,6 +9,20 @@ namespace FerOmega.Services
 {
     public class GrammarService : IGrammarService
     {
+        private readonly OperatorType[] closeBrackets =
+        {
+            OperatorType.CloseCurlyBracket,
+            OperatorType.CloseRoundBracket,
+            OperatorType.CloseSquareBracket,
+        };
+
+        private readonly OperatorType[] openBrackets =
+        {
+            OperatorType.OpenCurlyBracket,
+            OperatorType.OpenRoundBracket,
+            OperatorType.OpenSquareBracket,
+        };
+
         public string[] BracketsDenotations { get; }
 
         public Operator CloseEscapeOperator { get; }
@@ -33,60 +47,6 @@ namespace FerOmega.Services
             CheckOperators();
         }
 
-        private readonly OperatorType[] openBrackets =
-        {
-            OperatorType.OpenCurlyBracket,
-            OperatorType.OpenRoundBracket,
-            OperatorType.OpenSquareBracket,
-        };
-
-        private readonly OperatorType[] closeBrackets =
-        {
-            OperatorType.CloseCurlyBracket,
-            OperatorType.CloseRoundBracket,
-            OperatorType.CloseSquareBracket,
-        };
-
-        public bool IsOpenBracket(OperatorType operatorType)
-        {
-            return openBrackets.Contains(operatorType);
-        }
-
-        public bool IsCloseBracket(OperatorType operatorType)
-        {
-            return closeBrackets.Contains(operatorType);
-        }
-
-        public bool IsBracket(OperatorType operatorType)
-        {
-            return IsOpenBracket(operatorType) || IsCloseBracket(operatorType);
-        }
-
-        public bool IsOpenBracket(string denotation)
-        {
-            return Operators.Where(x => openBrackets.Contains(x.OperatorType)).SelectMany(x => x.Denotations).Contains(denotation);
-        }
-
-        public bool IsCloseBracket(string denotation)
-        {
-            return Operators.Where(x => closeBrackets.Contains(x.OperatorType)).SelectMany(x => x.Denotations).Contains(denotation);
-        }
-
-        public bool IsBracket(string denotation)
-        {
-            return IsOpenBracket(denotation) || IsCloseBracket(denotation);
-        }
-
-        public bool IsOpenBracket(AbstractToken @operator)
-        {
-            return IsOpenBracket(@operator.OperatorType);
-        }
-
-        public bool IsCloseBracket(AbstractToken @operator)
-        {
-            return IsCloseBracket(@operator.OperatorType);
-        }
-
         public Operator Get(OperatorType operatorType)
         {
             if (!Enum.IsDefined(typeof(OperatorType), operatorType))
@@ -99,7 +59,12 @@ namespace FerOmega.Services
 
         public Operator[] GetOperatorsForSection(GrammarSectionType grammarSectionType)
         {
-            var result = new List<Operator>(32);
+            if (!Enum.IsDefined(typeof(GrammarSectionType), grammarSectionType))
+            {
+                throw new ArgumentOutOfRangeException(nameof(grammarSectionType), grammarSectionType, $"Enum {nameof(GrammarSectionType)} is out of range");
+            }
+
+            var result = new List<Operator>(16);
 
             foreach (var enumValue in Enum.GetValues(typeof(GrammarSectionType)).Cast<GrammarSectionType>())
             {
@@ -112,15 +77,60 @@ namespace FerOmega.Services
             return result.ToArray();
         }
 
+        public Operator[] GetPossibleOperators(string denotation)
+        {
+            return Operators.Where(x => x.Denotations.Contains(denotation)).ToArray();
+        }
+
+        public bool IsBracket(OperatorType operatorType)
+        {
+            return IsOpenBracket(operatorType) || IsCloseBracket(operatorType);
+        }
+
+        public bool IsBracket(string denotation)
+        {
+            return IsOpenBracket(denotation) || IsCloseBracket(denotation);
+        }
+
         public bool IsBracket(AbstractToken @operator)
         {
             return IsOpenBracket(@operator) || IsCloseBracket(@operator);
         }
 
+        public bool IsCloseBracket(OperatorType operatorType)
+        {
+            return closeBrackets.Contains(operatorType);
+        }
+
+        public bool IsCloseBracket(string denotation)
+        {
+            return Operators.Where(x => closeBrackets.Contains(x.OperatorType)).SelectMany(x => x.Denotations).Contains(denotation);
+        }
+
+        public bool IsCloseBracket(AbstractToken @operator)
+        {
+            return IsCloseBracket(@operator.OperatorType);
+        }
+
+        public bool IsOpenBracket(OperatorType operatorType)
+        {
+            return openBrackets.Contains(operatorType);
+        }
+
+        public bool IsOpenBracket(string denotation)
+        {
+            return Operators.Where(x => openBrackets.Contains(x.OperatorType)).SelectMany(x => x.Denotations).Contains(denotation);
+        }
+
+        public bool IsOpenBracket(AbstractToken @operator)
+        {
+            return IsOpenBracket(@operator.OperatorType);
+        }
+
         public bool IsOperand(string input)
         {
             var isEscaped = input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal)
-                             && input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
+                            && input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
 
             var isInOperatorsDenotations = OperatorDenotations.Contains(input);
 
@@ -130,6 +140,21 @@ namespace FerOmega.Services
         public bool IsOperator(string input)
         {
             return !IsOperand(input) && OperatorDenotations.Contains(input);
+        }
+
+        public bool IsUniqueByArity(string denotation, ArityType arity)
+        {
+            return Operators.Count(x => x.Denotations.Contains(denotation) && x.Arity == arity) == 1;
+        }
+
+        public bool IsUniqueByDenotation(string denotation)
+        {
+            return GetPossibleOperators(denotation).Length == 1;
+        }
+
+        public bool IsUniqueByFixity(string denotation, FixityType fixity)
+        {
+            return Operators.Count(x => x.Denotations.Contains(denotation) && x.Fixity == fixity) == 1;
         }
 
         private int AddOperators(int priority, params Operator[] operators)
@@ -158,26 +183,6 @@ namespace FerOmega.Services
             {
                 throw new InvalidOperationException();
             }
-        }
-
-        public bool IsUniqueByArity(string denotation, ArityType arity)
-        {
-            return Operators.Count(x => x.Denotations.Contains(denotation) && x.Arity == arity) == 1;
-        }
-
-        public bool IsUniqueByFixity(string denotation, FixityType fixity)
-        {
-            return Operators.Count(x => x.Denotations.Contains(denotation) && x.Fixity == fixity) == 1;
-        }
-
-        public bool IsUniqueByDenotation(string denotation)
-        {
-            return GetPossibleOperators(denotation).Length == 1;
-        }
-
-        public Operator[] GetPossibleOperators(string denotation)
-        {
-            return Operators.Where(x => x.Denotations.Contains(denotation)).ToArray();
         }
 
         private void SetOperators()
