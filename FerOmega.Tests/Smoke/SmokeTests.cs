@@ -12,10 +12,10 @@ namespace FerOmega.Tests
 {
     public class SmokeTests
     {
-        private readonly ITokenizationService tokenizationService;
-        private readonly ISmokeEquationGenerator smokeEquationGenerator;
-        private readonly IShuntingYardService<Tree<AbstractToken>> treeShuntingYardService;
         private readonly IShuntingYardService<Queue<AbstractToken>> abstractShuntingYardService;
+        private readonly ISmokeEquationGenerator smokeEquationGenerator;
+        private readonly ITokenizationService tokenizationService;
+        private readonly IShuntingYardService<Tree<AbstractToken>> treeShuntingYardService;
 
         public SmokeTests()
         {

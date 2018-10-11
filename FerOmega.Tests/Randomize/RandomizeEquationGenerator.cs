@@ -52,10 +52,10 @@ namespace FerOmega.Tests
                     .Where(x => x.Arity == ArityType.Binary)
                     .ToArray();
 
-                if (grammarSectionType.HasFlag(GrammarSectionType.Equality)
-                    || grammarSectionType.HasFlag(GrammarSectionType.Inequality))
+                if (grammarSectionType.HasFlag(GrammarSectionType.Equality) ||
+                    grammarSectionType.HasFlag(GrammarSectionType.Inequality))
                 {
-                    foreach (var token in NewMethod(count, equalityOperators))
+                    foreach (var token in GetEquationsThatWillBeBoundedByOperators(count, equalityOperators))
                     {
                         yield return token;
                     }
@@ -80,7 +80,7 @@ namespace FerOmega.Tests
 
                 case GrammarSectionType.ArithmeticAlgebra:
                 {
-                    var value = Constants.Random.Next(0, 1024);
+                    var value = Constants.Random.Next(1024);
 
                     string literalValue = FormatLiteralValue(value);
 
@@ -114,6 +114,39 @@ namespace FerOmega.Tests
             return shouldEscape ? $"[{value}]" : $"{value}";
         }
 
+        private IEnumerable<ShortToken> BindEquationsByOperator(IEnumerator<ShortToken> leftAlgebraEquations, Operator @operator, IEnumerator<ShortToken> rightAlgebraEquations)
+        {
+            var leftAlgebraEquation = leftAlgebraEquations.Current;
+            var rightAlgebraEquation = rightAlgebraEquations.Current;
+
+            switch (@operator.Arity)
+            {
+                case ArityType.Nulary:
+                case ArityType.Unary:
+                    throw new NotSupportedException();
+
+                case ArityType.Binary:
+                {
+                    var token = new ShortToken(@operator.OperatorType);
+
+                    token.Children.Add(leftAlgebraEquation);
+                    token.Children.Add(rightAlgebraEquation);
+
+                    yield return token;
+
+                    break;
+                }
+
+                case ArityType.Ternary:
+                case ArityType.Kvatery:
+                case ArityType.Multiarity:
+                    throw new NotSupportedException();
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private ShortToken ConstructToken(Operator @operator, GrammarSectionType algebra)
         {
             if (@operator.OperatorType == OperatorType.Literal)
@@ -125,8 +158,8 @@ namespace FerOmega.Tests
 
             switch (@operator.Arity)
             {
-                case ArityType.Unary when @operator.Fixity == FixityType.Prefix
-                                          || @operator.Fixity == FixityType.Postfix:
+                case ArityType.Unary when @operator.Fixity == FixityType.Prefix ||
+                                          @operator.Fixity == FixityType.Postfix:
                 {
                     var operand = ConstructLiteral(algebra);
 
@@ -167,7 +200,7 @@ namespace FerOmega.Tests
 
             for (int i = 0; i < operatorsCount; i++)
             {
-                var @operator = allowedOperators[Constants.Random.Next(0, allowedOperators.Length - 1)];
+                var @operator = allowedOperators.GetRandomElement(Constants.Random);
 
                 var newToken = ConstructToken(@operator, grammarSectionType);
 
@@ -187,13 +220,38 @@ namespace FerOmega.Tests
                     }
                     else
                     {
-                        var position = Constants.Random.Next(0, anyLeaf.Children.Count);
+                        var position = Constants.Random.Next(anyLeaf.Children.Count);
                         anyLeaf.Children[position] = newToken;
                     }
                 }
             }
 
             return result;
+        }
+
+        private IEnumerable<ShortToken> GetEquationsThatWillBeBoundedByOperators(long count, Operator[] operators)
+        {
+            using (var leftAlgebraEquations = GetArithmeticAlgebraEquations(count).GetEnumerator())
+            {
+                using (var rightAlgebraEquations = GetArithmeticAlgebraEquations(count).GetEnumerator())
+                {
+                    for (int j = 0; j < count; j++)
+                    {
+                        if (!leftAlgebraEquations.MoveNext() ||
+                            !rightAlgebraEquations.MoveNext())
+                        {
+                            break;
+                        }
+
+                        var @operator = operators.GetRandomElement();
+
+                        foreach (var equation in BindEquationsByOperator(leftAlgebraEquations, @operator, rightAlgebraEquations))
+                        {
+                            yield return equation;
+                        }
+                    }
+                }
+            }
         }
 
         private IEnumerable<ShortToken> GetLeaves(ShortToken token)
@@ -223,115 +281,8 @@ namespace FerOmega.Tests
         {
             var leaves = GetLeaves(token).ToArray();
 
-            return leaves[Constants.Random.Next(0, leaves.Length - 1)];
-        }
-
-        ShortToken MergeEquation(IEnumerable<ShortToken> inputTokens, Operator[] allowedOperators)
-        {
-            var tokens = new Queue<ShortToken>(inputTokens);
-
-            while (tokens.Count > 1)
-            {
-                Operator @operator;
-                if (tokens.Count == 1)
-                {
-                    @operator = allowedOperators
-                        .Where(x => x.Arity == ArityType.Unary)
-                        .ElementAt(Constants.Random.Next(0, allowedOperators.Length - 1));
-                }
-                else
-                {
-                    @operator = allowedOperators[Constants.Random.Next(0, allowedOperators.Length - 1)];
-                }
-
-                switch (@operator.Arity)
-                {
-                    case ArityType.Unary:
-                    {
-                        var token = new ShortToken(@operator.OperatorType);
-
-                        var operand = tokens.Dequeue();
-                        token.Children.Add(operand);
-
-                        tokens.Enqueue(token);
-                        break;
-                    }
-
-                    case ArityType.Binary:
-                    {
-                        var token = new ShortToken(@operator.OperatorType);
-
-                        var operand = tokens.Dequeue();
-                        token.Children.Add(operand);
-
-                        operand = tokens.Dequeue();
-                        token.Children.Add(operand);
-
-                        tokens.Enqueue(token);
-                        break;
-                    }
-
-                    case ArityType.Nulary:
-                    case ArityType.Ternary:
-                    case ArityType.Kvatery:
-                    case ArityType.Multiarity:
-                        throw new NotSupportedException();
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-
-            return tokens.Dequeue();
-        }
-
-        private IEnumerable<ShortToken> NewMethod(long count, Operator[] equalityOperators)
-        {
-            using (var leftAlgebraEquations = GetArithmeticAlgebraEquations(count).GetEnumerator())
-            {
-                using (var rightAlgebraEquations = GetArithmeticAlgebraEquations(count).GetEnumerator())
-                {
-                    for (int j = 0; j < count; j++)
-                    {
-                        if (!leftAlgebraEquations.MoveNext() || !rightAlgebraEquations.MoveNext())
-                        {
-                            break;
-                        }
-
-                        var leftAlgebraEquation = leftAlgebraEquations.Current;
-                        var rightAlgebraEquation = rightAlgebraEquations.Current;
-
-                        var @operator = equalityOperators[Constants.Random.Next(0, equalityOperators.Length - 1)];
-
-                        switch (@operator.Arity)
-                        {
-                            case ArityType.Nulary:
-                            case ArityType.Unary:
-                                throw new NotSupportedException();
-
-                            case ArityType.Binary:
-                            {
-                                var token = new ShortToken(@operator.OperatorType);
-
-                                token.Children.Add(leftAlgebraEquation);
-                                token.Children.Add(rightAlgebraEquation);
-
-                                yield return token;
-
-                                break;
-                            }
-
-                            case ArityType.Ternary:
-                            case ArityType.Kvatery:
-                            case ArityType.Multiarity:
-                                throw new NotSupportedException();
-
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    }
-                }
-            }
+            // TODO: [DT] do we really have to read all leaves first?
+            return leaves[Constants.Random.Next(leaves.Length - 1)];
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using FerOmega.Abstractions;
+using FerOmega.Common;
 using FerOmega.Entities;
 using FerOmega.Entities.RedBlack;
 using FerOmega.Services;
@@ -14,9 +15,12 @@ namespace FerOmega.Tests
 {
     internal class ShortToken : IEquatable<ShortToken>
     {
-        private IGrammarService GrammarService;
+        // TODO: [DT] REMOVE
+        private readonly IGrammarService grammarService;
 
         public IList<ShortToken> Children { get; set; }
+
+        public bool IsEscaped => Value != null && (Value.StartsWith("[", StringComparison.Ordinal) && Value.EndsWith("]", StringComparison.Ordinal));
 
         public OperatorType OperatorType { get; set; }
 
@@ -37,7 +41,7 @@ namespace FerOmega.Tests
             Value = value;
 
             Children = new List<ShortToken>(4);
-            GrammarService = new GrammarService();
+            grammarService = new GrammarService();
         }
 
         public static ShortToken FromBody(AbstractToken token)
@@ -66,6 +70,11 @@ namespace FerOmega.Tests
             return body;
         }
 
+        public static ShortToken FromOperand(Operand operand)
+        {
+            return new ShortToken(OperatorType.Literal, operand.Value);
+        }
+
         public static ShortToken FromTree(Tree<AbstractToken> tree)
         {
             var root = FromNode(tree.Root);
@@ -73,12 +82,7 @@ namespace FerOmega.Tests
             return root;
         }
 
-        public static ShortToken FromOperand(Operand operand)
-        {
-            return new ShortToken(OperatorType.Literal, operand.Value);
-        }
-
-        public AbstractToken ConvertSelf()
+        public AbstractToken ToAbstractToken()
         {
             AbstractToken token;
 
@@ -88,69 +92,104 @@ namespace FerOmega.Tests
             }
             else
             {
-                token = GrammarService.Get(OperatorType);
+                token = grammarService.Get(OperatorType);
             }
 
             return token;
         }
 
-        private string Me(bool wrapWithBrackets = true)
+        public void DeEscape()
         {
-            if (this.OperatorType == OperatorType.Literal)
+            if (IsEscaped)
             {
-                if (this.Value.StartsWith("-"))
-                {
-                    return $"({this.Value})";
-                }
-
-                return this.Value;
+                Value = Value.Substring(1, Value.Length - 2);
             }
-
-            var sb = new StringBuilder();
-
-            if (wrapWithBrackets)
-            {
-                sb.Append(" ( ");
-            }
-
-            var @operator = (Operator)this.ConvertSelf();
-            sb.Append(ToOperator(@operator));
-
-            if (wrapWithBrackets)
-            {
-                sb.Append(" ) ");
-            }
-
-            return sb.ToString();
         }
 
-        private string ToOperator(Operator @operator)
+        #region equals
+        public static bool operator !=(ShortToken left, ShortToken right)
         {
-            switch (@operator.Arity)
+            return !Equals(left, right);
+        }
+
+        public static bool operator ==(ShortToken left, ShortToken right)
+        {
+            return Equals(left, right);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ShortToken shortToken && Equals(shortToken);
+        }
+
+        public bool Equals(ShortToken other)
+        {
+            if (this == null && other == null)
             {
-                case ArityType.Unary when @operator.Fixity == FixityType.Prefix:
-                    {
-                        return $"{@operator.MainDenotation} {this.Children[0].Me()}";
-                    }
+                return true;
+            }
 
-                case ArityType.Unary when @operator.Fixity == FixityType.Postfix:
-                    {
-                        return $"{this.Children[0].Me()} {@operator.MainDenotation}";
-                    }
+            if (this == null || other == null)
+            {
+                return false;
+            }
 
-                case ArityType.Binary when @operator.Fixity == FixityType.Infix:
-                    {
-                        return $"{this.Children[0].Me()} {@operator.MainDenotation} {this.Children[1].Me()}";
-                    }
+            var wasThisEscaped = IsEscaped;
+            var wasOtherEscaped = other.IsEscaped;
 
-                case ArityType.Nulary:
-                case ArityType.Ternary:
-                case ArityType.Kvatery:
-                case ArityType.Multiarity:
-                    throw new NotSupportedException();
+            DeEscape();
+            other.DeEscape();
 
-                default:
-                    throw new ArgumentOutOfRangeException();
+            if (!Children.OrderBy(x => x.OperatorType).SequenceEqual(other.Children.OrderBy(x => x.OperatorType)))
+            {
+                return false;
+            }
+
+            bool areEquals = OperatorType == other.OperatorType
+                             && Value == other.Value;
+
+            if (wasThisEscaped)
+            {
+                Escape();
+            }
+
+            if (wasOtherEscaped)
+            {
+                other.Escape();
+            }
+
+            return areEquals;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = 0;
+                hashCode = (hashCode * 397) ^ (int)OperatorType;
+                hashCode = (hashCode * 397) ^ (Value != null ? Value.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
+        #endregion equals
+
+        public void Escape()
+        {
+            if (!IsEscaped)
+            {
+                Value = $"[{Value}]";
+            }
+        }
+
+        public void ToggleEscape()
+        {
+            if (IsEscaped)
+            {
+                DeEscape();
+            }
+            else
+            {
+                Escape();
             }
         }
 
@@ -158,7 +197,7 @@ namespace FerOmega.Tests
         {
             var sb = new StringBuilder();
 
-            sb.Append(this.Me(false));
+            sb.Append(ToPlainEquation(false));
 
             return sb.ToString();
         }
@@ -175,7 +214,7 @@ namespace FerOmega.Tests
 
         public Tree<AbstractToken> ToTree()
         {
-            var thisToken = ConvertSelf();
+            var thisToken = ToAbstractToken();
             var tree = new Tree<AbstractToken>(thisToken);
 
             foreach (var child in Children)
@@ -187,99 +226,65 @@ namespace FerOmega.Tests
             return tree;
         }
 
-        public bool IsEscaped => this.Value != null && (this.Value.StartsWith("[", StringComparison.Ordinal) && this.Value.EndsWith("]", StringComparison.Ordinal));
-
-        public void Escape()
+        private string ToPlainEquation(bool wrapWithBrackets)
         {
-            if (!IsEscaped)
+            if (OperatorType == OperatorType.Literal)
             {
-                this.Value = $"[{this.Value}]";
+                if (Value.StartsWith("-", StringComparison.Ordinal))
+                {
+                    return $"({Value})";
+                }
+
+                return Value;
             }
+
+            var sb = new StringBuilder();
+            var shouldEscape = Constants.Random.NextBool();
+
+            if (wrapWithBrackets || shouldEscape)
+            {
+                sb.Append(" ( ");
+            }
+
+            var @operator = (Operator)ToAbstractToken();
+            sb.Append(ToPlainEquation(@operator));
+
+            if (wrapWithBrackets || shouldEscape)
+            {
+                sb.Append(" ) ");
+            }
+
+            return sb.ToString();
         }
 
-        public void DeEscape()
+        private string ToPlainEquation(Operator @operator)
         {
-            if (IsEscaped)
+            switch (@operator.Arity)
             {
-                this.Value = this.Value.Substring(1, this.Value.Length - 2);
+                case ArityType.Unary when @operator.Fixity == FixityType.Prefix:
+                {
+                    return $"{@operator.MainDenotation} {Children[0].ToPlainEquation(true)}";
+                }
+
+                case ArityType.Unary when @operator.Fixity == FixityType.Postfix:
+                {
+                    return $"{Children[0].ToPlainEquation(true)} {@operator.MainDenotation}";
+                }
+
+                case ArityType.Binary when @operator.Fixity == FixityType.Infix:
+                {
+                    return $"{Children[0].ToPlainEquation(true)} {@operator.MainDenotation} {Children[1].ToPlainEquation(true)}";
+                }
+
+                case ArityType.Nulary:
+                case ArityType.Ternary:
+                case ArityType.Kvatery:
+                case ArityType.Multiarity:
+                    throw new NotSupportedException();
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-        }
-
-        public void ToggleEscape()
-        {
-            if (IsEscaped)
-            {
-                DeEscape();
-            }
-            else
-            {
-                Escape();
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is ShortToken shortToken && Equals(shortToken);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = 0;
-                hashCode = (hashCode * 397) ^ (int)OperatorType;
-                hashCode = (hashCode * 397) ^ (Value != null ? Value.GetHashCode() : 0);
-                return hashCode;
-            }
-        }
-
-        public static bool operator ==(ShortToken left, ShortToken right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(ShortToken left, ShortToken right)
-        {
-            return !Equals(left, right);
-        }
-
-        public bool Equals(ShortToken other)
-        {
-            if (this == null && other == null)
-            {
-                return true;
-            }
-
-            if (this == null || other == null)
-            {
-                return false;
-            }
-
-            var wasThisEscaped = this.IsEscaped;
-            var wasOtherEscaped = other.IsEscaped;
-
-            this.DeEscape();
-            other.DeEscape();
-
-            if (!Children.OrderBy(x => x.OperatorType).SequenceEqual(other.Children.OrderBy(x => x.OperatorType)))
-            {
-                return false;
-            }
-
-            bool areEquals = OperatorType == other.OperatorType
-                   && Value == other.Value;
-
-            if (wasThisEscaped)
-            {
-                this.Escape();
-            }
-
-            if (wasOtherEscaped)
-            {
-                other.Escape();
-            }
-
-            return areEquals;
         }
     }
 }

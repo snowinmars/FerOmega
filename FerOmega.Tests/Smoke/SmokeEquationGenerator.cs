@@ -11,13 +11,6 @@ namespace FerOmega.Tests
 {
     internal class SmokeEquationGenerator : ISmokeEquationGenerator
     {
-        internal IGrammarService grammarService;
-
-        public SmokeEquationGenerator()
-        {
-            grammarService = new GrammarService();
-        }
-
         public class Equation
         {
             public int Id { get; set; }
@@ -38,6 +31,13 @@ namespace FerOmega.Tests
 
                 return this;
             }
+        }
+
+        internal readonly IGrammarService GrammarService;
+
+        public SmokeEquationGenerator()
+        {
+            GrammarService = new GrammarService();
         }
 
         // TODO: [DT] 
@@ -62,167 +62,16 @@ namespace FerOmega.Tests
             };
         }
 
-        private Equation ConstructEquation8()
+        private Equation ConstructEquation0()
         {
             var equation = new Equation
             {
-                Id = 8,
-                InfixForm = " (( [341] * [46] ) + ( [40] + ( + ( - [528] ) ) ) ) + [546]",
-                RevertedPolishForm = "[341] [46] * [40] [528] - + + + [546] +",
+                Id = 1,
+                InfixForm = "[5] - [3]",
+                RevertedPolishForm = "[5] [3] -",
                 ShortTreeForm = @"
 {
-	""OperatorType"": 19,
-	""Value"": null,
-	""Children"": [
-		{
-			""OperatorType"": 19,
-			""Value"": null,
-			""Children"": [
-				{
-					""OperatorType"": 22,
-					""Value"": null,
-					""Children"": [
-						{
-							""OperatorType"": 1,
-							""Value"": 341,
-							""Children"": []
-						},
-						{
-							""OperatorType"": 1,
-							""Value"": 46,
-							""Children"": []
-						},
-					]
-				},
-
-				{
-					""OperatorType"": 19,
-					""Value"": null,
-					""Children"": [
-						{
-							""OperatorType"": 1,
-							""Value"": 40,
-							""Children"": []
-						},
-						{
-							""OperatorType"": 18,
-							""Value"": null,
-							""Children"": [
-								{
-									""OperatorType"": 20,
-									""Value"": null,
-									""Children"": [
-										{
-											""OperatorType"": 1,
-											""Value"": 528,
-											""Children"": []
-										},
-									]
-								},
-							]
-						},
-					]
-				},
-			]
-		},
-		{
-			""OperatorType"": 1,
-			""Value"": 546,
-			""Children"": []
-		}
-	]
-}
-",
-            };
-         
-            return equation.DeSpacify();
-        }
-
-        private Equation ConstructEquation7()
-        {
-            var equation = new Equation
-            {
-                Id = 7,
-                InfixForm = "[4] + ( [3] + [1] + [4] * ( [2] + [3] ) )",
-                RevertedPolishForm = "[4]  [3]  [1]  +  [4]  [2]  [3]  +  *  +  + ",
-                ShortTreeForm = @"
-{
-  ""OperatorType"": 19,
-  ""Value"": null,
-  ""Children"": [
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[4]"",
-      ""Children"": []
-    },
-    {
-      ""OperatorType"": 19,
-      ""Value"": null,
-      ""Children"": [
-        {
-          ""OperatorType"": 19,
-          ""Value"": null,
-          ""Children"": [
-            {
-              ""OperatorType"": 1,
-              ""Value"": ""[3]"",
-              ""Children"": []
-            },            
-            {
-              ""OperatorType"": 1,
-              ""Value"": ""[1]"",
-              ""Children"": []
-            }
-          ]
-        },
-        {
-          ""OperatorType"": 22,
-          ""Value"": null,
-          ""Children"": [
-            {
-              ""OperatorType"": 1,
-              ""Value"": ""[4]"",
-              ""Children"": []
-            },
-            {
-              ""OperatorType"": 19,
-              ""Value"": null,
-              ""Children"": [
-                {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[2]"",
-                  ""Children"": []
-                },
-                {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[3]"",
-                  ""Children"": []
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-
-",
-            };
-
-            return equation.DeSpacify();
-        }
-
-        private Equation ConstructEquation6()
-        {
-            var equation = new Equation
-            {
-                Id = 6,
-                InfixForm = "[5] + ( [7] - [2] * [3] ) * ( [6] - [4] ) / [2]",
-                RevertedPolishForm = "[5]  [7]  [2]  [3]  *  -  [6]  [4]  -  *  [2]  /  + ",
-                ShortTreeForm = @"
-{
-  ""OperatorType"": 19,
+  ""OperatorType"": 21,
   ""Value"": null,
   ""Children"": [
     {
@@ -231,61 +80,176 @@ namespace FerOmega.Tests
       ""Children"": []
     },
     {
-      ""OperatorType"": 24,
+      ""OperatorType"": 1,
+      ""Value"": ""[3]"",
+      ""Children"": []
+    }
+  ]
+}
+",
+            };
+
+            return equation.DeSpacify();
+        }
+
+        private Equation ConstructEquation1()
+        {
+            var equation = new Equation
+            {
+                Id = 1,
+                InfixForm = "[5]! + [3]",
+                RevertedPolishForm = "[5] ! [3] +",
+                ShortTreeForm = @"
+{
+  ""OperatorType"": 19,
+  ""Value"": null,
+  ""Children"": [
+     {
+      ""OperatorType"": 32,
       ""Value"": null,
       ""Children"": [
         {
-          ""OperatorType"": 22,
+          ""OperatorType"": 1,
+          ""Value"": ""[5]"",
+          ""Children"": []
+        }
+      ]
+    },
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[3]"",
+      ""Children"": []
+    }
+  ]
+}
+",
+            };
+
+            return equation.DeSpacify();
+        }
+
+        private Equation ConstructEquation2()
+        {
+            var equation = new Equation
+            {
+                Id = 2,
+                InfixForm = "[7] - [3] + [6]",
+                RevertedPolishForm = "[7] [3] - [6] +",
+                ShortTreeForm = @"
+{
+  ""OperatorType"": 19,
+  ""Value"": null,
+  ""Children"": [
+    {
+      ""OperatorType"": 21,
+      ""Value"": null,
+      ""Children"": [
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[7]"",
+          ""Children"": []
+        },
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[3]"",
+          ""Children"": []
+        }
+      ]
+    },
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[6]"",
+      ""Children"": []
+    }
+  ]
+}
+",
+            };
+
+            return equation.DeSpacify();
+        }
+
+        private Equation ConstructEquation3()
+        {
+            var equation = new Equation
+            {
+                Id = 3,
+                InfixForm = "[6] / [2] * [8] / [3]",
+                RevertedPolishForm = "[6]  [2]  /  [8]  *  [3]  / ",
+                ShortTreeForm = @"
+{
+  ""OperatorType"": 24,
+  ""Value"": null,
+  ""Children"": [
+    {
+      ""OperatorType"": 22,
+      ""Value"": null,
+      ""Children"": [
+        {
+          ""OperatorType"": 24,
           ""Value"": null,
           ""Children"": [
             {
-              ""OperatorType"": 21,
-              ""Value"": null,
-              ""Children"": [
-                {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[7]"",
-                  ""Children"": []
-                },
-                {
-                  ""OperatorType"": 22,
-                  ""Value"": null,
-                  ""Children"": [
-                    {
-                      ""OperatorType"": 1,
-                      ""Value"": ""[2]"",
-                      ""Children"": []
-                    },
-                    {
-                      ""OperatorType"": 1,
-                      ""Value"": ""[3]"",
-                      ""Children"": []
-                    }
-                  ]
-                }
-              ]
+              ""OperatorType"": 1,
+              ""Value"": ""[6]"",
+              ""Children"": []
             },
             {
-              ""OperatorType"": 21,
-              ""Value"": null,
-              ""Children"": [
-                {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[6]"",
-                  ""Children"": []
-                },
-                {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[4]"",
-                  ""Children"": []
-                }
-              ]
+              ""OperatorType"": 1,
+              ""Value"": ""[2]"",
+              ""Children"": []
             }
           ]
         },
         {
           ""OperatorType"": 1,
-          ""Value"": ""[2]"",
+          ""Value"": ""[8]"",
+          ""Children"": []
+        }
+      ]
+    },
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[3]"",
+      ""Children"": []
+    }
+  ]
+}
+",
+            };
+
+            return equation.DeSpacify();
+        }
+
+        private Equation ConstructEquation4()
+        {
+            var equation = new Equation
+            {
+                Id = 4,
+                InfixForm = "[2] + [3] * [4]",
+                RevertedPolishForm = "[2]  [3]  [4]  *  + ",
+                ShortTreeForm = @"
+{
+  ""OperatorType"": 19,
+  ""Value"": null,
+  ""Children"": [
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[2]"",
+      ""Children"": []
+    },
+    {
+      ""OperatorType"": 22,
+      ""Value"": null,
+      ""Children"": [
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[3]"",
+          ""Children"": []
+        },
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[4]"",
           ""Children"": []
         }
       ]
@@ -383,186 +347,16 @@ namespace FerOmega.Tests
             return equation.DeSpacify();
         }
 
-        private Equation ConstructEquation4()
+        private Equation ConstructEquation6()
         {
             var equation = new Equation
             {
-                Id = 4,
-                InfixForm = "[2] + [3] * [4]",
-                RevertedPolishForm = "[2]  [3]  [4]  *  + ",
+                Id = 6,
+                InfixForm = "[5] + ( [7] - [2] * [3] ) * ( [6] - [4] ) / [2]",
+                RevertedPolishForm = "[5]  [7]  [2]  [3]  *  -  [6]  [4]  -  *  [2]  /  + ",
                 ShortTreeForm = @"
 {
   ""OperatorType"": 19,
-  ""Value"": null,
-  ""Children"": [
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[2]"",
-      ""Children"": []
-    },
-    {
-      ""OperatorType"": 22,
-      ""Value"": null,
-      ""Children"": [
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[3]"",
-          ""Children"": []
-        },
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[4]"",
-          ""Children"": []
-        }
-      ]
-    }
-  ]
-}
-",
-            };
-
-            return equation.DeSpacify();
-        }
-
-        private Equation ConstructEquation3()
-        {
-            var equation = new Equation
-            {
-                Id = 3,
-                InfixForm = "[6] / [2] * [8] / [3]",
-                RevertedPolishForm = "[6]  [2]  /  [8]  *  [3]  / ",
-                ShortTreeForm = @"
-{
-  ""OperatorType"": 24,
-  ""Value"": null,
-  ""Children"": [
-    {
-      ""OperatorType"": 22,
-      ""Value"": null,
-      ""Children"": [
-        {
-          ""OperatorType"": 24,
-          ""Value"": null,
-          ""Children"": [
-            {
-              ""OperatorType"": 1,
-              ""Value"": ""[6]"",
-              ""Children"": []
-            },
-            {
-              ""OperatorType"": 1,
-              ""Value"": ""[2]"",
-              ""Children"": []
-            }
-          ]
-        },
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[8]"",
-          ""Children"": []
-        }
-      ]
-    },
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[3]"",
-      ""Children"": []
-    }
-  ]
-}
-",
-            };
-
-            return equation.DeSpacify();
-        }
-
-        private Equation ConstructEquation2()
-        {
-            var equation = new Equation
-            {
-                Id = 2,
-                InfixForm = "[7] - [3] + [6]",
-                RevertedPolishForm = "[7] [3] - [6] +",
-                ShortTreeForm = @"
-{
-  ""OperatorType"": 19,
-  ""Value"": null,
-  ""Children"": [
-    {
-      ""OperatorType"": 21,
-      ""Value"": null,
-      ""Children"": [
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[7]"",
-          ""Children"": []
-        },
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[3]"",
-          ""Children"": []
-        }
-      ]
-    },
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[6]"",
-      ""Children"": []
-    }
-  ]
-}
-",
-            };
-
-            return equation.DeSpacify();
-        }
-
-        private Equation ConstructEquation1()
-        {
-            var equation = new Equation
-            {
-                Id = 1,
-                InfixForm = "[5]! + [3]",
-                RevertedPolishForm = "[5] ! [3] +",
-                ShortTreeForm = @"
-{
-  ""OperatorType"": 19,
-  ""Value"": null,
-  ""Children"": [
-     {
-      ""OperatorType"": 32,
-      ""Value"": null,
-      ""Children"": [
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[5]"",
-          ""Children"": []
-        }
-      ]
-    },
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[3]"",
-      ""Children"": []
-    }
-  ]
-}
-",
-            };
-
-            return equation.DeSpacify();
-        }
-
-        private Equation ConstructEquation0()
-        {
-            var equation = new Equation
-            {
-                Id = 1,
-                InfixForm = "[5] - [3]",
-                RevertedPolishForm = "[5] [3] -",
-                ShortTreeForm = @"
-{
-  ""OperatorType"": 21,
   ""Value"": null,
   ""Children"": [
     {
@@ -571,11 +365,217 @@ namespace FerOmega.Tests
       ""Children"": []
     },
     {
-      ""OperatorType"": 1,
-      ""Value"": ""[3]"",
-      ""Children"": []
+      ""OperatorType"": 24,
+      ""Value"": null,
+      ""Children"": [
+        {
+          ""OperatorType"": 22,
+          ""Value"": null,
+          ""Children"": [
+            {
+              ""OperatorType"": 21,
+              ""Value"": null,
+              ""Children"": [
+                {
+                  ""OperatorType"": 1,
+                  ""Value"": ""[7]"",
+                  ""Children"": []
+                },
+                {
+                  ""OperatorType"": 22,
+                  ""Value"": null,
+                  ""Children"": [
+                    {
+                      ""OperatorType"": 1,
+                      ""Value"": ""[2]"",
+                      ""Children"": []
+                    },
+                    {
+                      ""OperatorType"": 1,
+                      ""Value"": ""[3]"",
+                      ""Children"": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              ""OperatorType"": 21,
+              ""Value"": null,
+              ""Children"": [
+                {
+                  ""OperatorType"": 1,
+                  ""Value"": ""[6]"",
+                  ""Children"": []
+                },
+                {
+                  ""OperatorType"": 1,
+                  ""Value"": ""[4]"",
+                  ""Children"": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[2]"",
+          ""Children"": []
+        }
+      ]
     }
   ]
+}
+",
+            };
+
+            return equation.DeSpacify();
+        }
+
+        private Equation ConstructEquation7()
+        {
+            var equation = new Equation
+            {
+                Id = 7,
+                InfixForm = "[4] + ( [3] + [1] + [4] * ( [2] + [3] ) )",
+                RevertedPolishForm = "[4]  [3]  [1]  +  [4]  [2]  [3]  +  *  +  + ",
+                ShortTreeForm = @"
+{
+  ""OperatorType"": 19,
+  ""Value"": null,
+  ""Children"": [
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[4]"",
+      ""Children"": []
+    },
+    {
+      ""OperatorType"": 19,
+      ""Value"": null,
+      ""Children"": [
+        {
+          ""OperatorType"": 19,
+          ""Value"": null,
+          ""Children"": [
+            {
+              ""OperatorType"": 1,
+              ""Value"": ""[3]"",
+              ""Children"": []
+            },            
+            {
+              ""OperatorType"": 1,
+              ""Value"": ""[1]"",
+              ""Children"": []
+            }
+          ]
+        },
+        {
+          ""OperatorType"": 22,
+          ""Value"": null,
+          ""Children"": [
+            {
+              ""OperatorType"": 1,
+              ""Value"": ""[4]"",
+              ""Children"": []
+            },
+            {
+              ""OperatorType"": 19,
+              ""Value"": null,
+              ""Children"": [
+                {
+                  ""OperatorType"": 1,
+                  ""Value"": ""[2]"",
+                  ""Children"": []
+                },
+                {
+                  ""OperatorType"": 1,
+                  ""Value"": ""[3]"",
+                  ""Children"": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+",
+            };
+
+            return equation.DeSpacify();
+        }
+
+        private Equation ConstructEquation8()
+        {
+            var equation = new Equation
+            {
+                Id = 8,
+                InfixForm = " (( [341] * [46] ) + ( [40] + ( + ( - [528] ) ) ) ) + [546]",
+                RevertedPolishForm = "[341] [46] * [40] [528] - + + + [546] +",
+                ShortTreeForm = @"
+{
+	""OperatorType"": 19,
+	""Value"": null,
+	""Children"": [
+		{
+			""OperatorType"": 19,
+			""Value"": null,
+			""Children"": [
+				{
+					""OperatorType"": 22,
+					""Value"": null,
+					""Children"": [
+						{
+							""OperatorType"": 1,
+							""Value"": 341,
+							""Children"": []
+						},
+						{
+							""OperatorType"": 1,
+							""Value"": 46,
+							""Children"": []
+						},
+					]
+				},
+
+				{
+					""OperatorType"": 19,
+					""Value"": null,
+					""Children"": [
+						{
+							""OperatorType"": 1,
+							""Value"": 40,
+							""Children"": []
+						},
+						{
+							""OperatorType"": 18,
+							""Value"": null,
+							""Children"": [
+								{
+									""OperatorType"": 20,
+									""Value"": null,
+									""Children"": [
+										{
+											""OperatorType"": 1,
+											""Value"": 528,
+											""Children"": []
+										},
+									]
+								},
+							]
+						},
+					]
+				},
+			]
+		},
+		{
+			""OperatorType"": 1,
+			""Value"": 546,
+			""Children"": []
+		}
+	]
 }
 ",
             };

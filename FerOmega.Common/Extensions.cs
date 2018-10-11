@@ -16,9 +16,14 @@ namespace FerOmega.Common
         /// <param name="source">Source collection</param>
         /// <param name="random">Random generator</param>
         /// <exception cref="ArgumentNullException">If any parameter is null</exception>
-        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random)
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random random = null)
         {
-            if (source == null || random == null)
+            if (random == null)
+            {
+                random = Constants.Random;
+            }
+
+            if (source == null)
             {
                 throw new ArgumentNullException();
             }
@@ -35,7 +40,7 @@ namespace FerOmega.Common
             yield return elements[0];
         }
 
-        private static string[] letters;
+        private static readonly string[] letters;
 
         static Extensions()
         {
@@ -88,6 +93,16 @@ namespace FerOmega.Common
         public static bool NextBool(this Random random)
         {
             return random.Next() % 2 == 0;
+        }
+
+        public static T GetRandomElement<T>(this IList<T> collection, Random random = null)
+        {
+            if (random == null)
+            {
+                random = Constants.Random;
+            }
+
+            return collection[random.Next(0, collection.Count - 1)];
         }
     }
 }
