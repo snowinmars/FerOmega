@@ -16,21 +16,27 @@ namespace FerOmega.Abstractions
 
         IList<Operator> Operators { get; }
 
-        Operator[] GetPossibleOperators(string denotation);
-
         Operator Get(OperatorType operatorType);
 
         Operator[] GetOperatorsForSection(GrammarSectionType grammarSectionType);
+
+        Operator[] GetPossibleOperators(string denotation);
 
         bool IsBracket(AbstractToken @operator);
 
         bool IsBracket(OperatorType operatorType);
 
+        bool IsBracket(string denotation);
+
         bool IsCloseBracket(AbstractToken @operator);
 
         bool IsCloseBracket(OperatorType operatorType);
 
+        bool IsCloseBracket(string denotation);
+
         bool IsOpenBracket(AbstractToken @operator);
+
+        bool IsOpenBracket(string denotation);
 
         bool IsOpenBracket(OperatorType operatorType);
 
@@ -40,8 +46,8 @@ namespace FerOmega.Abstractions
 
         bool IsUniqueByArity(string denotation, ArityType arity);
 
-        bool IsUniqueByFixity(string denotation, FixityType fixity);
-
         bool IsUniqueByDenotation(string denotation);
+
+        bool IsUniqueByFixity(string denotation, FixityType fixity);
     }
 }
