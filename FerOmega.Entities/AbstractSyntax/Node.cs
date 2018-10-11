@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FerOmega.Entities.RedBlack
+namespace FerOmega.Entities.AbstractSyntax
 {
-    public static class NodeExtentions
-    {
-        public static Node<T> ToNode<T>(this T body)
-        {
-            return new Node<T>(body);
-        }
-    }
-
     public class Node<T>
     {
+        private readonly IList<Node<T>> children;
+
+        public T Body { get; set; }
+
+        public IEnumerable<Node<T>> Children => children;
+
+        public Guid Id { get; private set; }
+
+        public Node<T> Parent { get; private set; }
+
         public Node() : this(default(T))
         {
         }
@@ -26,16 +28,6 @@ namespace FerOmega.Entities.RedBlack
 
             children = new List<Node<T>>();
         }
-
-        public Guid Id { get; private set; }
-
-        public T Body { get; set; }
-
-        private readonly IList<Node<T>> children;
-
-        public IEnumerable<Node<T>> Children => children;
-
-        public Node<T> Parent { get; set; }
 
         public Node<T> Append(T body)
         {
@@ -64,11 +56,6 @@ namespace FerOmega.Entities.RedBlack
             return this;
         }
 
-        public override string ToString()
-        {
-            return $"{{ {Body} -> {children.Count} }}";
-        }
-
         public Node<T> DeepClone(bool useOldId = false)
         {
             var node = new Node<T>
@@ -88,11 +75,6 @@ namespace FerOmega.Entities.RedBlack
             }
 
             return node;
-        }
-
-        public bool IsLeaf()
-        {
-            return children.Count == 0;
         }
 
         public Node<T> Find(Func<Node<T>, bool> filter)
@@ -130,6 +112,16 @@ namespace FerOmega.Entities.RedBlack
         public Node<T> Find(Guid nodeId)
         {
             return Find(x => x.Id == nodeId);
+        }
+
+        public bool IsLeaf()
+        {
+            return children.Count == 0;
+        }
+
+        public override string ToString()
+        {
+            return $"{{ {Body} -> {children.Count} }}";
         }
     }
 }

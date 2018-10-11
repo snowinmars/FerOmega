@@ -1,12 +1,17 @@
-﻿namespace FerOmega.Entities
+﻿using System;
+
+namespace FerOmega.Entities
 {
     public class Operand : AbstractToken
     {
+        public string Value { get; set; }
+
         public Operand(int value) : this(value.ToString(), false)
         {
         }
 
-        public Operand(string value) : this(value, value.StartsWith("[") && value.EndsWith("]"))
+        // TODO: [DT] 
+        public Operand(string value) : this(value, value.StartsWith("[", StringComparison.Ordinal) && value.EndsWith("]", StringComparison.Ordinal))
         {
         }
 
@@ -14,8 +19,6 @@
         {
             Value = isEscaped ? value : $"[{value}]";
         }
-
-        public string Value { get; set; }
 
         public override string ToString()
         {

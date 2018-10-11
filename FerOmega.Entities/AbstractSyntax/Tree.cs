@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 
-namespace FerOmega.Entities.RedBlack
+namespace FerOmega.Entities.AbstractSyntax
 {
     public class Tree<T>
     {
-        public Node<T> Root { get; set; }
-
         public Guid Id { get; private set; }
+
+        public Node<T> Root { get; }
 
         public Tree() : this(new Node<T>())
         {
@@ -33,22 +33,12 @@ namespace FerOmega.Entities.RedBlack
             }
         }
 
-        public bool HasRoot()
+        public static Tree<T> Join(Tree<T> leftTree, T dataForRootNode, Tree<T> rightTree)
         {
-            return Root != null;
+            return Join(leftTree, new Node<T>(dataForRootNode), rightTree);
         }
 
-        public bool HasChildren()
-        {
-            return Root.Children.Any();
-        }
-
-        public static Tree<T> Form(Tree<T> leftTree, T dataForRootNode, Tree<T> rightTree)
-        {
-            return Form(leftTree, new Node<T>(dataForRootNode), rightTree);
-        }
-
-        public static Tree<T> Form(Tree<T> leftTree, Node<T> root, Tree<T> rightTree)
+        public static Tree<T> Join(Tree<T> leftTree, Node<T> root, Tree<T> rightTree)
         {
             if (leftTree == null || rightTree == null)
             {
@@ -85,6 +75,19 @@ namespace FerOmega.Entities.RedBlack
             return tree.Root;
         }
 
+        public Tree<T> DeepClone(bool useOldId = false)
+        {
+            var treeRoot = Root.DeepClone();
+            var tree = new Tree<T>(treeRoot);
+
+            if (useOldId)
+            {
+                tree.Id = Id;
+            }
+
+            return tree;
+        }
+
         public Node<T> Find(Func<Node<T>, bool> filter)
         {
             return Root.Find(filter);
@@ -100,17 +103,14 @@ namespace FerOmega.Entities.RedBlack
             return Root.Find(nodeId);
         }
 
-        public Tree<T> DeepClone(bool useOldId = false)
+        public bool HasChildren()
         {
-            var treeRoot = Root.DeepClone();
-            var tree = new Tree<T>(treeRoot);
+            return Root.Children.Any();
+        }
 
-            if (useOldId)
-            {
-                tree.Id = Id;
-            }
-
-            return tree;
+        public bool HasRoot()
+        {
+            return Root != null;
         }
     }
 }

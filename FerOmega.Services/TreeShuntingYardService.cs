@@ -4,7 +4,7 @@ using System.Linq;
 
 using FerOmega.Abstractions;
 using FerOmega.Entities;
-using FerOmega.Entities.RedBlack;
+using FerOmega.Entities.AbstractSyntax;
 
 namespace FerOmega.Services
 {

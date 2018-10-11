@@ -4,17 +4,6 @@ namespace FerOmega.Entities
 {
     public class Operator : AbstractToken
     {
-        public Operator(ArityType arity, AssociativityType associativity, OperatorType operatorType, FixityType fixityType, GrammarSectionType grammarSectionType, params string[] denotations) : base(operatorType, -1)
-        {
-            Arity = arity;
-            Associativity = associativity;
-            Denotations = denotations;
-            Fixity = fixityType;
-            GrammarSectionType = grammarSectionType;
-        }
-
-        public GrammarSectionType GrammarSectionType { get; set; }
-
         public ArityType Arity { get; set; }
 
         public AssociativityType Associativity { get; set; }
@@ -23,7 +12,19 @@ namespace FerOmega.Entities
 
         public FixityType Fixity { get; set; }
 
+        public GrammarSectionType GrammarSectionType { get; set; }
+
         public string MainDenotation => Denotations[0];
+
+        // TODO: [DT] 
+        public Operator(ArityType arity, AssociativityType associativity, OperatorType operatorType, FixityType fixityType, GrammarSectionType grammarSectionType, params string[] denotations) : base(operatorType, -1)
+        {
+            Arity = arity;
+            Associativity = associativity;
+            Denotations = denotations;
+            Fixity = fixityType;
+            GrammarSectionType = grammarSectionType;
+        }
 
         public Operator DeepClone()
         {
@@ -71,7 +72,7 @@ namespace FerOmega.Entities
                     throw new ArgumentOutOfRangeException();
             }
 
-            return $"{arityExample} ({Associativity}, Priority: {Priority})";
+            return $"{OperatorType}, f.e. {arityExample}";
         }
     }
 }

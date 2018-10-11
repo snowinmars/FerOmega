@@ -6,7 +6,7 @@ using System.Text;
 using FerOmega.Abstractions;
 using FerOmega.Common;
 using FerOmega.Entities;
-using FerOmega.Entities.RedBlack;
+using FerOmega.Entities.AbstractSyntax;
 using FerOmega.Services;
 
 using Newtonsoft.Json;
