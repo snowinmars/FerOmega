@@ -187,6 +187,36 @@ namespace FerOmega.Tests
             return tree;
         }
 
+        public bool IsEscaped => this.Value != null && (this.Value.StartsWith("[", StringComparison.Ordinal) && this.Value.EndsWith("]", StringComparison.Ordinal));
+
+        public void Escape()
+        {
+            if (!IsEscaped)
+            {
+                this.Value = $"[{this.Value}]";
+            }
+        }
+
+        public void DeEscape()
+        {
+            if (IsEscaped)
+            {
+                this.Value = this.Value.Substring(1, this.Value.Length - 2);
+            }
+        }
+
+        public void ToggleEscape()
+        {
+            if (IsEscaped)
+            {
+                DeEscape();
+            }
+            else
+            {
+                Escape();
+            }
+        }
+
         public override bool Equals(object obj)
         {
             return obj is ShortToken shortToken && Equals(shortToken);
@@ -225,14 +255,31 @@ namespace FerOmega.Tests
                 return false;
             }
 
-            if (Children.Any()
-                && Children.Any(child => !other.Children.Any(otherChild => otherChild.Equals(child))))
+            var wasThisEscaped = this.IsEscaped;
+            var wasOtherEscaped = other.IsEscaped;
+
+            this.DeEscape();
+            other.DeEscape();
+
+            if (!Children.OrderBy(x => x.OperatorType).SequenceEqual(other.Children.OrderBy(x => x.OperatorType)))
             {
                 return false;
             }
 
-            return OperatorType == other.OperatorType
+            bool areEquals = OperatorType == other.OperatorType
                    && Value == other.Value;
+
+            if (wasThisEscaped)
+            {
+                this.Escape();
+            }
+
+            if (wasOtherEscaped)
+            {
+                other.Escape();
+            }
+
+            return areEquals;
         }
     }
 }

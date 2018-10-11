@@ -202,8 +202,8 @@ namespace FerOmega.Services
                     var rightOperandTree = trees[trees.Count - 1];
                     trees.RemoveAt(trees.Count - 1);
 
-                    operatorTree.AppendToRoot(leftOperandTree);
                     operatorTree.AppendToRoot(rightOperandTree);
+                    operatorTree.AppendToRoot(leftOperandTree);
 
                     trees.Add(operatorTree);
                     break;

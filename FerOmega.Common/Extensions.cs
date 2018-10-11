@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SandS.Algorithm.Library.GeneratorNamespace;
+
 namespace FerOmega.Common
 {
     public static class Extensions
@@ -31,6 +33,61 @@ namespace FerOmega.Common
             }
 
             yield return elements[0];
+        }
+
+        private static string[] letters;
+
+        static Extensions()
+        {
+            letters = new[] {
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "f",
+                "g",
+                "h",
+                "i",
+                "j",
+                "k",
+                "l",
+                "m",
+                "n",
+                "o",
+                "p",
+                "q",
+                "r",
+                "s",
+                "t",
+                "u",
+                "v",
+                "w",
+                "x",
+                "y",
+                "z",
+            };
+        }
+
+        private static int lastAlphabetLetter;
+
+        public static string NextAlphabetSymbol(this Random random)
+        {
+            if (lastAlphabetLetter >= letters.Length || lastAlphabetLetter < 0)
+            {
+                lastAlphabetLetter = 0;
+            }
+
+            var symbol = letters[lastAlphabetLetter];
+
+            lastAlphabetLetter++;
+
+            return symbol;
+        }
+
+        public static bool NextBool(this Random random)
+        {
+            return random.Next() % 2 == 0;
         }
     }
 }

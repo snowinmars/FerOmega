@@ -186,20 +186,20 @@ namespace FerOmega.Services
             var priority = 1;
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.Factorial, FixityType.Postfix, GrammarSectionType.Algebra, "!"),
+                new Operator(ArityType.Unary, AssociativityType.Left, OperatorType.Factorial, FixityType.Postfix, GrammarSectionType.ArithmeticAlgebra, "!"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Not, FixityType.Prefix, GrammarSectionType.BooleanAlgebra, "!", "not"),
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryPlus, FixityType.Prefix, GrammarSectionType.Algebra, "+"),
-                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryMinus, FixityType.Prefix, GrammarSectionType.Algebra, "-"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryPlus, FixityType.Prefix, GrammarSectionType.ArithmeticAlgebra, "+"),
+                new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.UnaryMinus, FixityType.Prefix, GrammarSectionType.ArithmeticAlgebra, "-"),
                 new Operator(ArityType.Unary, AssociativityType.Right, OperatorType.Invert, FixityType.Prefix, GrammarSectionType.BooleanAlgebra, "~"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Multiple, FixityType.Infix, GrammarSectionType.Algebra, "*"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Divide, FixityType.Infix, GrammarSectionType.Algebra, "/"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Reminder, FixityType.Infix, GrammarSectionType.Algebra, "%"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Multiple, FixityType.Infix, GrammarSectionType.ArithmeticAlgebra, "*"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Divide, FixityType.Infix, GrammarSectionType.ArithmeticAlgebra, "/"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Reminder, FixityType.Infix, GrammarSectionType.ArithmeticAlgebra, "%"));
 
             priority = AddOperators(priority,
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Plus, FixityType.Infix, GrammarSectionType.Algebra, "+"),
-                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Minus, FixityType.Infix, GrammarSectionType.Algebra, "-"));
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Plus, FixityType.Infix, GrammarSectionType.ArithmeticAlgebra, "+"),
+                new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.Minus, FixityType.Infix, GrammarSectionType.ArithmeticAlgebra, "-"));
 
             priority = AddOperators(priority,
                 new Operator(ArityType.Binary, AssociativityType.Left, OperatorType.GreaterThan, FixityType.Infix, GrammarSectionType.Inequality, ">", "gt"),

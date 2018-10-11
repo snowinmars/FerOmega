@@ -31,6 +31,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SandS.Algorithm.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SandS.Algorithm.Common.2.0.1.02\lib\SandS.Algorithm.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SandS.Algorithm.Extensions.StringBuilderExtension, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SandS.Algorithm.Extensions.StringBuilderExtension.2.0.1.01\lib\SandS.Algorithm.Extensions.StringBuilderExtension.dll</HintPath>
+    </Reference>
+    <Reference Include="SandS.Algorithm.Library.Generator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SandS.Algorithm.Library.Generator.2.0.2\lib\SandS.Algorithm.Library.Generator.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +53,9 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

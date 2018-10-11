@@ -50,6 +50,7 @@ namespace FerOmega.Tests
         {
             return new[]
             {
+                ConstructEquation0(),
                 ConstructEquation1(),
                 ConstructEquation2(),
                 ConstructEquation3(),
@@ -73,11 +74,6 @@ namespace FerOmega.Tests
 	""OperatorType"": 19,
 	""Value"": null,
 	""Children"": [
-		{
-			""OperatorType"": 1,
-			""Value"": 546,
-			""Children"": []
-		},
 		{
 			""OperatorType"": 19,
 			""Value"": null,
@@ -129,6 +125,11 @@ namespace FerOmega.Tests
 				},
 			]
 		},
+		{
+			""OperatorType"": 1,
+			""Value"": 546,
+			""Children"": []
+		}
 	]
 }
 ",
@@ -150,58 +151,58 @@ namespace FerOmega.Tests
   ""Value"": null,
   ""Children"": [
     {
+      ""OperatorType"": 1,
+      ""Value"": ""[4]"",
+      ""Children"": []
+    },
+    {
       ""OperatorType"": 19,
       ""Value"": null,
       ""Children"": [
-        {
-          ""OperatorType"": 22,
-          ""Value"": null,
-          ""Children"": [
-            {
-              ""OperatorType"": 19,
-              ""Value"": null,
-              ""Children"": [
-                {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[3]"",
-                  ""Children"": []
-                },
-                {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[2]"",
-                  ""Children"": []
-                }
-              ]
-            },
-            {
-              ""OperatorType"": 1,
-              ""Value"": ""[4]"",
-              ""Children"": []
-            }
-          ]
-        },
         {
           ""OperatorType"": 19,
           ""Value"": null,
           ""Children"": [
             {
               ""OperatorType"": 1,
+              ""Value"": ""[3]"",
+              ""Children"": []
+            },            
+            {
+              ""OperatorType"": 1,
               ""Value"": ""[1]"",
+              ""Children"": []
+            }
+          ]
+        },
+        {
+          ""OperatorType"": 22,
+          ""Value"": null,
+          ""Children"": [
+            {
+              ""OperatorType"": 1,
+              ""Value"": ""[4]"",
               ""Children"": []
             },
             {
-              ""OperatorType"": 1,
-              ""Value"": ""[3]"",
-              ""Children"": []
+              ""OperatorType"": 19,
+              ""Value"": null,
+              ""Children"": [
+                {
+                  ""OperatorType"": 1,
+                  ""Value"": ""[2]"",
+                  ""Children"": []
+                },
+                {
+                  ""OperatorType"": 1,
+                  ""Value"": ""[3]"",
+                  ""Children"": []
+                }
+              ]
             }
           ]
         }
       ]
-    },
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[4]"",
-      ""Children"": []
     }
   ]
 }
@@ -225,14 +226,14 @@ namespace FerOmega.Tests
   ""Value"": null,
   ""Children"": [
     {
+      ""OperatorType"": 1,
+      ""Value"": ""[5]"",
+      ""Children"": []
+    },
+    {
       ""OperatorType"": 24,
       ""Value"": null,
       ""Children"": [
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[2]"",
-          ""Children"": []
-        },
         {
           ""OperatorType"": 22,
           ""Value"": null,
@@ -243,13 +244,24 @@ namespace FerOmega.Tests
               ""Children"": [
                 {
                   ""OperatorType"": 1,
-                  ""Value"": ""[4]"",
+                  ""Value"": ""[7]"",
                   ""Children"": []
                 },
                 {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[6]"",
-                  ""Children"": []
+                  ""OperatorType"": 22,
+                  ""Value"": null,
+                  ""Children"": [
+                    {
+                      ""OperatorType"": 1,
+                      ""Value"": ""[2]"",
+                      ""Children"": []
+                    },
+                    {
+                      ""OperatorType"": 1,
+                      ""Value"": ""[3]"",
+                      ""Children"": []
+                    }
+                  ]
                 }
               ]
             },
@@ -258,36 +270,25 @@ namespace FerOmega.Tests
               ""Value"": null,
               ""Children"": [
                 {
-                  ""OperatorType"": 22,
-                  ""Value"": null,
-                  ""Children"": [
-                    {
-                      ""OperatorType"": 1,
-                      ""Value"": ""[3]"",
-                      ""Children"": []
-                    },
-                    {
-                      ""OperatorType"": 1,
-                      ""Value"": ""[2]"",
-                      ""Children"": []
-                    }
-                  ]
+                  ""OperatorType"": 1,
+                  ""Value"": ""[6]"",
+                  ""Children"": []
                 },
                 {
                   ""OperatorType"": 1,
-                  ""Value"": ""[7]"",
+                  ""Value"": ""[4]"",
                   ""Children"": []
                 }
               ]
             }
           ]
+        },
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[2]"",
+          ""Children"": []
         }
       ]
-    },
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[5]"",
-      ""Children"": []
     }
   ]
 }
@@ -310,67 +311,67 @@ namespace FerOmega.Tests
   ""Value"": null,
   ""Children"": [
     {
-      ""OperatorType"": 24,
-      ""Value"": null,
-      ""Children"": [
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[7]"",
-          ""Children"": []
-        },
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[4]"",
-          ""Children"": []
-        }
-      ]
-    },
-    {
       ""OperatorType"": 21,
       ""Value"": null,
       ""Children"": [
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[2]"",
-          ""Children"": []
-        },
         {
           ""OperatorType"": 21,
           ""Value"": null,
           ""Children"": [
             {
+              ""OperatorType"": 1,
+              ""Value"": ""[17]"",
+              ""Children"": []
+            },
+            {
               ""OperatorType"": 24,
               ""Value"": null,
               ""Children"": [
-                {
-                  ""OperatorType"": 1,
-                  ""Value"": ""[3]"",
-                  ""Children"": []
-                },
                 {
                   ""OperatorType"": 22,
                   ""Value"": null,
                   ""Children"": [
                     {
                       ""OperatorType"": 1,
-                      ""Value"": ""[6]"",
+                      ""Value"": ""[5]"",
                       ""Children"": []
                     },
                     {
                       ""OperatorType"": 1,
-                      ""Value"": ""[5]"",
+                      ""Value"": ""[6]"",
                       ""Children"": []
                     }
                   ]
+                },
+                {
+                  ""OperatorType"": 1,
+                  ""Value"": ""[3]"",
+                  ""Children"": []
                 }
               ]
-            },
-            {
-              ""OperatorType"": 1,
-              ""Value"": ""[17]"",
-              ""Children"": []
             }
           ]
+        },
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[2]"",
+          ""Children"": []
+        }
+      ]
+    },
+    {
+      ""OperatorType"": 24,
+      ""Value"": null,
+      ""Children"": [
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[4]"",
+          ""Children"": []
+        },
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[7]"",
+          ""Children"": []
         }
       ]
     }
@@ -387,33 +388,33 @@ namespace FerOmega.Tests
             var equation = new Equation
             {
                 Id = 4,
-                InfixForm = "[2] + [2] * [2]",
-                RevertedPolishForm = "[2]  [2]  [2]  *  + ",
+                InfixForm = "[2] + [3] * [4]",
+                RevertedPolishForm = "[2]  [3]  [4]  *  + ",
                 ShortTreeForm = @"
 {
   ""OperatorType"": 19,
   ""Value"": null,
   ""Children"": [
     {
+      ""OperatorType"": 1,
+      ""Value"": ""[2]"",
+      ""Children"": []
+    },
+    {
       ""OperatorType"": 22,
       ""Value"": null,
       ""Children"": [
         {
           ""OperatorType"": 1,
-          ""Value"": ""[2]"",
+          ""Value"": ""[3]"",
           ""Children"": []
         },
         {
           ""OperatorType"": 1,
-          ""Value"": ""[2]"",
+          ""Value"": ""[4]"",
           ""Children"": []
         }
       ]
-    },
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[2]"",
-      ""Children"": []
     }
   ]
 }
@@ -436,36 +437,36 @@ namespace FerOmega.Tests
   ""Value"": null,
   ""Children"": [
     {
-      ""OperatorType"": 1,
-      ""Value"": ""[3]"",
-      ""Children"": []
-    },
-    {
       ""OperatorType"": 22,
       ""Value"": null,
       ""Children"": [
-        {
-          ""OperatorType"": 1,
-          ""Value"": ""[8]"",
-          ""Children"": []
-        },
         {
           ""OperatorType"": 24,
           ""Value"": null,
           ""Children"": [
             {
               ""OperatorType"": 1,
-              ""Value"": ""[2]"",
+              ""Value"": ""[6]"",
               ""Children"": []
             },
             {
               ""OperatorType"": 1,
-              ""Value"": ""[6]"",
+              ""Value"": ""[2]"",
               ""Children"": []
             }
           ]
+        },
+        {
+          ""OperatorType"": 1,
+          ""Value"": ""[8]"",
+          ""Children"": []
         }
       ]
+    },
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[3]"",
+      ""Children"": []
     }
   ]
 }
@@ -488,25 +489,25 @@ namespace FerOmega.Tests
   ""Value"": null,
   ""Children"": [
     {
-      ""OperatorType"": 1,
-      ""Value"": ""[6]"",
-      ""Children"": []
-    },
-    {
       ""OperatorType"": 21,
       ""Value"": null,
       ""Children"": [
         {
           ""OperatorType"": 1,
-          ""Value"": ""[3]"",
+          ""Value"": ""[7]"",
           ""Children"": []
         },
         {
           ""OperatorType"": 1,
-          ""Value"": ""[7]"",
+          ""Value"": ""[3]"",
           ""Children"": []
         }
       ]
+    },
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[6]"",
+      ""Children"": []
     }
   ]
 }
@@ -528,12 +529,7 @@ namespace FerOmega.Tests
   ""OperatorType"": 19,
   ""Value"": null,
   ""Children"": [
-    {
-      ""OperatorType"": 1,
-      ""Value"": ""[3]"",
-      ""Children"": []
-    },
-    {
+     {
       ""OperatorType"": 32,
       ""Value"": null,
       ""Children"": [
@@ -543,6 +539,41 @@ namespace FerOmega.Tests
           ""Children"": []
         }
       ]
+    },
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[3]"",
+      ""Children"": []
+    }
+  ]
+}
+",
+            };
+
+            return equation.DeSpacify();
+        }
+
+        private Equation ConstructEquation0()
+        {
+            var equation = new Equation
+            {
+                Id = 1,
+                InfixForm = "[5] - [3]",
+                RevertedPolishForm = "[5] [3] -",
+                ShortTreeForm = @"
+{
+  ""OperatorType"": 21,
+  ""Value"": null,
+  ""Children"": [
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[5]"",
+      ""Children"": []
+    },
+    {
+      ""OperatorType"": 1,
+      ""Value"": ""[3]"",
+      ""Children"": []
     }
   ]
 }

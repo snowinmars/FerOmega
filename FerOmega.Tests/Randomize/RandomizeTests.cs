@@ -33,7 +33,7 @@ namespace FerOmega.Tests
         {
             var count = (int)Math.Pow(2, 10);
 
-            var grammarSectionType = GrammarSectionType.Algebra | GrammarSectionType.BooleanAlgebra | GrammarSectionType.Equality | GrammarSectionType.Inequality;
+            var grammarSectionType = GrammarSectionType.ArithmeticAlgebra | GrammarSectionType.BooleanAlgebra | GrammarSectionType.Equality | GrammarSectionType.Inequality;
             var equations = randomizeEquationGenerator.GetEquations(count, grammarSectionType);
 
             long avg = 0;
