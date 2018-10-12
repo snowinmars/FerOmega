@@ -4,6 +4,7 @@ using System.Linq;
 
 using FerOmega.Abstractions;
 using FerOmega.Entities;
+using FerOmega.Common;
 
 namespace FerOmega.Services
 {
@@ -59,7 +60,7 @@ namespace FerOmega.Services
 
         public Operator[] GetOperatorsForSection(GrammarSectionType grammarSectionType)
         {
-            if (!Enum.IsDefined(typeof(GrammarSectionType), grammarSectionType))
+            if (!grammarSectionType.ToInt().IsDefined<GrammarSectionType>())
             {
                 throw new ArgumentOutOfRangeException(nameof(grammarSectionType), grammarSectionType, $"Enum {nameof(GrammarSectionType)} is out of range");
             }

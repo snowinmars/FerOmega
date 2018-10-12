@@ -95,5 +95,45 @@ namespace FerOmega.Common
 
             yield return elements[0];
         }
+
+        public static int ToInt<T>(this T value)
+        {
+            return Convert.ToInt32(value);
+        }
+
+        public static T ToEnum<T>(this int value)
+        {
+            return (T)Enum.ToObject(typeof(T), value);
+        }
+
+        public static bool IsDefined<T>(this int enumValue)
+        {
+            var isDefined = Enum.IsDefined(typeof(T), enumValue);
+
+            if (isDefined)
+            {
+                return true;
+            }
+
+            for (int i = 0; i < 32; i++)
+            {
+                var bit = enumValue << i;
+
+                if ((enumValue & bit) == 0)
+                {
+                    continue;
+                }
+
+                isDefined = Enum.IsDefined(typeof(T), enumValue & bit);
+
+                if (!isDefined)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
     }
 }
