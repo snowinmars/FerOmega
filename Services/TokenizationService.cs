@@ -28,6 +28,7 @@ namespace FerOmega.Services
 
             var tokens = Regex.Split(equation, OperatorRegex, RegexOptions)
                               .Where(x => !string.IsNullOrWhiteSpace(x))
+                              .Select(x => x.Trim())
                               .ToArray();
 
             return tokens;
