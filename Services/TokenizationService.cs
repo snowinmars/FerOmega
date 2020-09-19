@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
-using Abstractions;
+using FerOmega.Abstractions;
 
-namespace Services
+namespace FerOmega.Services
 {
     public class TokenizationService : ITokenizationService
     {
@@ -17,6 +17,10 @@ namespace Services
 
         private string OperatorRegex { get; }
 
+        /// <summary>
+        /// Split string into array of tokens
+        /// Each token could be an operator or an operand
+        /// </summary>
         public string[] Tokenizate(string equation)
         {
             const RegexOptions RegexOptions =

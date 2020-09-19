@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Entities
+namespace FerOmega.Entities
 {
     public class Operator : AbstractToken
     {

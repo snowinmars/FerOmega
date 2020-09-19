@@ -1,4 +1,4 @@
-﻿namespace Services.InternalEntities
+﻿namespace FerOmega.Services.InternalEntities
 {
     internal class OperatorToken
     {

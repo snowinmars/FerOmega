@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Abstractions;
-using Common;
-using Entities;
-using Entities.AbstractSyntax;
+using FerOmega.Abstractions;
+using FerOmega.Common;
+using FerOmega.Entities;
+using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Services;
 using Newtonsoft.Json;
-using Services;
 
-namespace Tests
+namespace FerOmega.Tests
 {
     internal class ShortToken : IEquatable<ShortToken>
     {

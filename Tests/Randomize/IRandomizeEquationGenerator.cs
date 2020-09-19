@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Entities;
+using FerOmega.Entities;
 
-namespace Tests.Randomize
+namespace FerOmega.Tests.Randomize
 {
     internal interface IRandomizeEquationGenerator
     {

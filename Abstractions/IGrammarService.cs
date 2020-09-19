@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Entities;
+using FerOmega.Entities;
 
-namespace Abstractions
+namespace FerOmega.Abstractions
 {
     public interface IGrammarService
     {

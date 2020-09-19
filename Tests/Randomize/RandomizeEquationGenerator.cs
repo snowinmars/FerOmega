@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Abstractions;
-using Common;
-using Entities;
-using Services;
+using FerOmega.Abstractions;
+using FerOmega.Common;
+using FerOmega.Entities;
+using FerOmega.Services;
 
-namespace Tests.Randomize
+namespace FerOmega.Tests.Randomize
 {
     internal class RandomizeEquationGenerator : IRandomizeEquationGenerator
     {

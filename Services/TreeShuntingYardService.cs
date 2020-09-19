@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Abstractions;
-using Entities;
-using Entities.AbstractSyntax;
-using Services.InternalEntities;
+using FerOmega.Abstractions;
+using FerOmega.Entities;
+using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Services.InternalEntities;
 
-namespace Services
+namespace FerOmega.Services
 {
     public class TreeShuntingYardService : IShuntingYardService<Tree<AbstractToken>>
     {
@@ -19,6 +19,9 @@ namespace Services
 
         private OperatorResolveService OperatorResolveService { get; }
 
+        /// <summary>
+        /// Build abstract syntax tree from tokenized string
+        /// </summary>
         public Tree<AbstractToken> Parse(string[] tokens)
         {
             var stack = new Stack<Operator>(tokens.Length);

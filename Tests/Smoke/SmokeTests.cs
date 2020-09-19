@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-using Abstractions;
-using Entities;
-using Entities.AbstractSyntax;
+using FerOmega.Abstractions;
+using FerOmega.Entities;
+using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Services;
 using NUnit.Framework;
-using Services;
 
-namespace Tests.Smoke
+namespace FerOmega.Tests.Smoke
 {
     public class SmokeTests
     {

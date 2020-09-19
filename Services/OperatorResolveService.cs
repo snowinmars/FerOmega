@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Entities;
-using Services.InternalEntities;
+using FerOmega.Entities;
+using FerOmega.Services.InternalEntities;
 
-namespace Services
+namespace FerOmega.Services
 {
     internal class OperatorResolveService : IOperatorResolveService
     {

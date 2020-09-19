@@ -1,4 +1,4 @@
-﻿namespace Entities
+﻿namespace FerOmega.Entities
 {
     public enum OperatorType
     {

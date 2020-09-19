@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Common
+namespace FerOmega.Common
 {
     public static class Extensions
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Entities.AbstractSyntax
+namespace FerOmega.Entities.AbstractSyntax
 {
     public class Node<T>
     {

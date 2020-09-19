@@ -1,11 +1,11 @@
 ﻿using System;
-using Abstractions;
-using Entities;
-using Entities.AbstractSyntax;
+using FerOmega.Abstractions;
+using FerOmega.Entities;
+using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Services;
 using NUnit.Framework;
-using Services;
 
-namespace Tests.Randomize
+namespace FerOmega.Tests.Randomize
 {
     public class RandomizeTests
     {
@@ -23,6 +23,13 @@ namespace Tests.Randomize
         private readonly IShuntingYardService<Tree<AbstractToken>> treeShuntingYardService;
 
         [Test]
+
+        // it doesn't test anything but...
+        // build equation with random blocks
+        // convert it into plain equation
+        // convert plain equation into tree
+        // rebuild equation back from tree
+        // assert that the result is the same
         public void RandomTest()
         {
             var count = (long)Math.Pow(2, 10);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Entities
+namespace FerOmega.Entities
 {
     [Flags]
     public enum GrammarSectionType

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Abstractions;
-using Entities;
-using Services.InternalEntities;
+using FerOmega.Abstractions;
+using FerOmega.Entities;
+using FerOmega.Services.InternalEntities;
 
-namespace Services
+namespace FerOmega.Services
 {
     public class AbstractShuntingYardService : IShuntingYardService<Queue<AbstractToken>>
     {
@@ -18,6 +18,9 @@ namespace Services
 
         private OperatorResolveService OperatorResolveService { get; }
 
+        /// <summary>
+        /// Build reverse Polish queue from tokenized string
+        /// </summary>
         public Queue<AbstractToken> Parse(string[] tokens)
         {
             var stack = new Stack<AbstractToken>(tokens.Length);

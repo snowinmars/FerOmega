@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Entities.AbstractSyntax
+namespace FerOmega.Entities.AbstractSyntax
 {
     public class Tree<T>
     {

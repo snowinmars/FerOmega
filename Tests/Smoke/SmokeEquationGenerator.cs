@@ -1,11 +1,11 @@
 ﻿using System.Text.RegularExpressions;
-using Abstractions;
-using Entities;
-using Entities.AbstractSyntax;
+using FerOmega.Abstractions;
+using FerOmega.Entities;
+using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Services;
 using Newtonsoft.Json;
-using Services;
 
-namespace Tests.Smoke
+namespace FerOmega.Tests.Smoke
 {
     internal class SmokeEquationGenerator : ISmokeEquationGenerator
     {

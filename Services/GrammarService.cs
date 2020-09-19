@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Abstractions;
-using Common;
-using Entities;
-using Services.InternalEntities;
+using FerOmega.Abstractions;
+using FerOmega.Entities;
+using FerOmega.Services.InternalEntities;
 
-namespace Services
+namespace FerOmega.Services
 {
     public class GrammarService : IGrammarService
     {
