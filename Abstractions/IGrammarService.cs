@@ -7,10 +7,6 @@ namespace FerOmega.Abstractions
     {
         string[] BracketsDenotations { get; }
 
-        Operator CloseEscapeOperator { get; }
-
-        Operator OpenEscapeOperator { get; }
-
         string[] OperatorDenotations { get; }
 
         IList<Operator> Operators { get; }

@@ -14,9 +14,6 @@ namespace FerOmega.Services
             Operators = new List<Operator>();
             SetOperators();
 
-            OpenEscapeOperator = Get(OperatorType.OpenSquareBracket);
-            CloseEscapeOperator = Get(OperatorType.CloseSquareBracket);
-
             OperatorDenotations = Operators.SelectMany(x => x.Denotations).ToArray();
             BracketsDenotations = Operators.Where(IsBracket).SelectMany(x => x.Denotations).ToArray();
 
@@ -24,10 +21,6 @@ namespace FerOmega.Services
         }
 
         public string[] BracketsDenotations { get; }
-
-        public Operator CloseEscapeOperator { get; }
-
-        public Operator OpenEscapeOperator { get; }
 
         public string[] OperatorDenotations { get; }
 
@@ -126,12 +119,12 @@ namespace FerOmega.Services
 
         public bool IsOperand(string input)
         {
-            var isEscaped = input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal) &&
-                            input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
+            // var isEscaped = input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal) &&
+            //                 input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
 
             var isInOperatorsDenotations = OperatorDenotations.Contains(input);
 
-            return isEscaped || !isInOperatorsDenotations;
+            return !isInOperatorsDenotations;
         }
 
         public bool IsOperator(string input)

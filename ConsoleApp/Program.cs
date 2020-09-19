@@ -10,7 +10,7 @@ namespace FerOmega.ConsoleApp
             var tokenizeService = new TokenizationService();
             var treeShuntingYardService = new TreeShuntingYardService();
             
-            var equation = "[2] + [1]";
+            var equation = "2 + 1 == 3";
 
             var tokens = tokenizeService.Tokenizate(equation);
             var tree = treeShuntingYardService.Parse(tokens);
