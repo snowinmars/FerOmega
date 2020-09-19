@@ -1,0 +1,4 @@
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- The common.targets below will be executed once per project build -->
+    <Import Project="$(SolutionDir)_configuration\build\dotnet\common.targets" />
+</Project>

@@ -1,0 +1,37 @@
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- The properties below will be included into every project -->
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <LangVersion>8</LangVersion>
+        <TargetLatestRuntimePatch>false</TargetLatestRuntimePatch>
+        <PublishWithAspNetCoreTargetManifest>true</PublishWithAspNetCoreTargetManifest>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <NuGetPackageFolders>$(SolutionDir)packages</NuGetPackageFolders>
+        <NuGetPackageRoot>$(SolutionDir)packages</NuGetPackageRoot>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <PlatformTarget>x64</PlatformTarget>
+        <OutputPath>..\_output</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Version>$(AssemblyVersion)</Version>
+        <Authors>snowinmars TODO</Authors>
+        <Company>snowinmars TODO</Company>
+        <Product>Book-Service-$(Watermark)</Product>
+        <AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
+        <FileVersion>$(AssemblyVersion)</FileVersion>
+        <NeutralLanguage>en</NeutralLanguage>
+        <Description>$(Watermark)</Description>
+        <Copyright>GNU/GPL 3.0</Copyright>
+        <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.html</PackageLicenseUrl>
+        <PackageProjectUrl>https://www.gnu.org</PackageProjectUrl>
+        <PackageIconUrl>TODO: [DT]</PackageIconUrl>
+        <RepositoryUrl>https://ya.ru/TODO:[DT]</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>TODO: [DT]</PackageTags>
+        <PackageReleaseNotes>TODO: [DT]</PackageReleaseNotes>
+    </PropertyGroup>
+</Project>
