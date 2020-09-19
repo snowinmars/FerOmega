@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{9B4A3DD3-BC48-4286-9096-65A8213306EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{22578863-7228-4330-8317-4C8F67592520}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,5 +47,9 @@ Global
 		{9B4A3DD3-BC48-4286-9096-65A8213306EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B4A3DD3-BC48-4286-9096-65A8213306EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B4A3DD3-BC48-4286-9096-65A8213306EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22578863-7228-4330-8317-4C8F67592520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22578863-7228-4330-8317-4C8F67592520}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22578863-7228-4330-8317-4C8F67592520}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22578863-7228-4330-8317-4C8F67592520}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
