@@ -283,6 +283,7 @@ namespace FerOmega.Services
                                                  OperatorType.Equals,
                                                  FixityType.Infix,
                                                  GrammarSectionType.Equality,
+                                                 "=",
                                                  "==",
                                                  "eq"),
                                     new Operator(ArityType.Binary,
