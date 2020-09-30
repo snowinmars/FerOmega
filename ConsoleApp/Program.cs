@@ -8,7 +8,7 @@ namespace FerOmega.ConsoleApp
         static void Main()
         {
             var tokenizeService = new TokenizationService();
-            var treeShuntingYardService = new TreeShuntingYardService();
+            var treeShuntingYardService = new AstShuntingYardService();
             
             var equation = "2 + 1 == 3";
 

@@ -14,8 +14,8 @@ namespace FerOmega.Tests.Smoke
         {
             tokenizationService = new TokenizationService();
             smokeEquationGenerator = new SmokeEquationGenerator();
-            treeShuntingYardService = new TreeShuntingYardService();
-            abstractShuntingYardService = new AbstractShuntingYardService();
+            astShuntingYardService = new AstShuntingYardService();
+            polishShuntingYardService = new PolishShuntingYardService();
         }
 
         private static string RevertedPolishEquationToString(Queue<AbstractToken> abstractResult)
@@ -39,13 +39,13 @@ namespace FerOmega.Tests.Smoke
             return SmokeEquationGenerator.DeSpacify(sb.ToString());
         }
 
-        private readonly IShuntingYardService<Queue<AbstractToken>> abstractShuntingYardService;
+        private readonly PolishShuntingYardService polishShuntingYardService;
 
         private readonly ISmokeEquationGenerator smokeEquationGenerator;
 
         private readonly ITokenizationService tokenizationService;
 
-        private readonly IShuntingYardService<Tree<AbstractToken>> treeShuntingYardService;
+        private readonly AstShuntingYardService astShuntingYardService;
 
         [Test]
         public void SmokeTest()
@@ -55,8 +55,8 @@ namespace FerOmega.Tests.Smoke
             foreach (var equation in equations)
             {
                 var tokens = tokenizationService.Tokenizate(equation.InfixForm);
-                var revertedPolishResult = abstractShuntingYardService.Parse(tokens);
-                var treeResult = treeShuntingYardService.Parse(tokens);
+                var revertedPolishResult = polishShuntingYardService.Parse(tokens);
+                var treeResult = astShuntingYardService.Parse(tokens);
 
                 var treeShortTokens = ShortToken.FromTree(treeResult);
 

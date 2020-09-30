@@ -2,30 +2,29 @@
 using System.Collections.Generic;
 using FerOmega.Abstractions;
 using FerOmega.Entities;
-using FerOmega.Entities.AbstractSyntax;
 using FerOmega.Services.InternalEntities;
 
 namespace FerOmega.Services
 {
-    public class TreeShuntingYardService : IShuntingYardService<Tree<AbstractToken>>
+    public class PolishShuntingYardService
     {
-        public TreeShuntingYardService()
+        public PolishShuntingYardService()
         {
             GrammarService = new GrammarService();
             OperatorResolveService = new OperatorResolveService();
         }
 
-        private GrammarService GrammarService { get; }
+        private IGrammarService GrammarService { get; }
 
-        private OperatorResolveService OperatorResolveService { get; }
+        private IOperatorResolveService OperatorResolveService { get; }
 
         /// <summary>
-        /// Build abstract syntax tree from tokenized string
+        /// Build reverse Polish queue from tokenized string
         /// </summary>
-        public Tree<AbstractToken> Parse(string[] tokens)
+        public Queue<AbstractToken> Parse(string[] tokens)
         {
-            var stack = new Stack<Operator>(tokens.Length);
-            var trees = new List<Tree<AbstractToken>>();
+            var stack = new Stack<AbstractToken>(tokens.Length);
+            var queue = new Queue<AbstractToken>(tokens.Length);
 
             for (var i = 0; i < tokens.Length; i++)
             {
@@ -35,9 +34,7 @@ namespace FerOmega.Services
                 {
                     var operand = new Operand(token.Current);
 
-                    var tree = new Tree<AbstractToken>(operand);
-
-                    trees.Add(tree);
+                    queue.Enqueue(operand);
 
                     continue;
                 }
@@ -46,9 +43,11 @@ namespace FerOmega.Services
                 {
                     var possibleOperators = GrammarService.GetPossibleOperators(token.Current);
 
-                    var @operator = possibleOperators.Length == 1
-                                        ? possibleOperators[0]
-                                        : OperatorResolveService.Resolve(token, possibleOperators);
+                    var hasOverloads = possibleOperators.Length != 1;
+
+                    var @operator = hasOverloads
+                                        ? OperatorResolveService.Resolve(token, possibleOperators)
+                                        : possibleOperators[0];
 
                     if (GrammarService.IsOpenBracket(@operator))
                     {
@@ -73,7 +72,7 @@ namespace FerOmega.Services
                                 break;
                             }
 
-                            MergeTreesByOperator(trees, abstractToken);
+                            queue.Enqueue(abstractToken);
                         }
 
                         continue;
@@ -84,22 +83,16 @@ namespace FerOmega.Services
                     switch (@operator.Arity)
                     {
                     case ArityType.Unary when @operator.Fixity == FixityType.Postfix:
-                    {
-                        MergeTreesByOperator(trees, @operator);
+                        queue.Enqueue(@operator);
 
                         break;
-                    }
 
                     case ArityType.Unary when @operator.Fixity == FixityType.Prefix:
-                    {
-                        // TODO: [DT] 
                         stack.Push(@operator);
 
                         break;
-                    }
 
                     case ArityType.Binary:
-                    {
                         if (stack.Count == 0)
                         {
                             stack.Push(@operator);
@@ -121,7 +114,7 @@ namespace FerOmega.Services
 
                             while (popedOperator.Priority <= @operator.Priority)
                             {
-                                MergeTreesByOperator(trees, popedOperator);
+                                queue.Enqueue(popedOperator);
 
                                 if (stack.Count == 0)
                                 {
@@ -149,96 +142,39 @@ namespace FerOmega.Services
                             if (popedOperator.Priority <= @operator.Priority &&
                                 stack.Count > 0)
                             {
-                                MergeTreesByOperator(trees, stack.Pop());
+                                popedOperator = stack.Pop();
+                                queue.Enqueue(popedOperator);
                             }
 
                             stack.Push(@operator);
 
                             break;
                         }
+                        
+                        default:
+                            throw new ArgumentOutOfRangeException();
                         }
 
                         break;
-                    }
 
                     case ArityType.Nulary:
                     case ArityType.Ternary:
                     case ArityType.Kvatery:
                     case ArityType.Multiarity:
-                    {
                         throw new NotSupportedException();
-                    }
 
                     default:
-                    {
                         throw new ArgumentOutOfRangeException();
-                    }
                     }
                 }
             }
 
             while (stack.Count > 0)
             {
-                MergeTreesByOperator(trees, stack.Pop());
+                queue.Enqueue(stack.Pop());
             }
 
-            if (trees.Count != 1)
-            {
-                throw new InvalidOperationException();
-            }
-
-            return trees[0];
-        }
-
-        private void MergeTreesByOperator(List<Tree<AbstractToken>> trees, Operator @operator)
-        {
-            var operatorTree = new Tree<AbstractToken>(@operator);
-
-            switch (@operator.Arity)
-            {
-            case ArityType.Unary:
-            {
-                var operandTree = trees[trees.Count - 1];
-
-                trees.RemoveAt(trees.Count - 1);
-                operatorTree.AppendToRoot(operandTree);
-
-                trees.Add(operatorTree);
-
-                break;
-            }
-
-            case ArityType.Binary:
-            {
-                var leftOperandTree = trees[trees.Count - 1];
-                trees.RemoveAt(trees.Count - 1);
-
-                var rightOperandTree = trees[trees.Count - 1];
-                trees.RemoveAt(trees.Count - 1);
-
-                // normally I append left operand; then - right operand
-                // this is the only case by now where I have to append right operand before left due to they exists in stack in reversed order
-                operatorTree.AppendToRoot(rightOperandTree);
-                operatorTree.AppendToRoot(leftOperandTree);
-
-                trees.Add(operatorTree);
-
-                break;
-            }
-
-            case ArityType.Nulary:
-            case ArityType.Ternary:
-            case ArityType.Kvatery:
-            case ArityType.Multiarity:
-            {
-                throw new NotSupportedException();
-            }
-
-            default:
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            }
+            return queue;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace FerOmega.Tests.Randomize
         public RandomizeTests()
         {
             randomizeEquationGenerator = new RandomizeEquationGenerator();
-            treeShuntingYardService = new TreeShuntingYardService();
+            astShuntingYardService = new AstShuntingYardService();
             tokenizationService = new TokenizationService();
         }
 
@@ -20,7 +20,7 @@ namespace FerOmega.Tests.Randomize
 
         private readonly ITokenizationService tokenizationService;
 
-        private readonly IShuntingYardService<Tree<AbstractToken>> treeShuntingYardService;
+        private readonly AstShuntingYardService astShuntingYardService;
 
         [Test]
 
@@ -47,7 +47,7 @@ namespace FerOmega.Tests.Randomize
                 var plainEquation = equation.ToPlainEquation();
                 var tokens = tokenizationService.Tokenizate(plainEquation);
 
-                var actualTree = treeShuntingYardService.Parse(tokens);
+                var actualTree = astShuntingYardService.Parse(tokens);
                 var actualToken = ShortToken.FromTree(actualTree);
 
                 Assert.AreEqual(equation,
