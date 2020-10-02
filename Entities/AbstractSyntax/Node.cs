@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace FerOmega.Entities.AbstractSyntax
+namespace Entities.AbstractSyntax
 {
     public class Node<T>
     {
@@ -25,8 +24,6 @@ namespace FerOmega.Entities.AbstractSyntax
         public IEnumerable<Node<T>> Children => children;
 
         public Guid Id { get; private set; }
-
-        public Node<T> Parent { get; private set; }
 
         private readonly IList<Node<T>> children;
 

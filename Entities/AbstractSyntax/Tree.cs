@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FerOmega.Entities.AbstractSyntax
+namespace Entities.AbstractSyntax
 {
     public class Tree<T>
     {

@@ -2,14 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <AssemblyName>FerOmega.Entities</AssemblyName>
-        <RootNamespace>FerOmega.Entities</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Include="..\_configuration\build\dotnet\CommonAssemblyAttributes.cs">
-        <Link>AssemblyInfo\CommonAssemblyAttributes.cs</Link>
-      </Compile>
-    </ItemGroup>
 
 </Project>

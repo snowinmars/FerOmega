@@ -4,10 +4,6 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
 
         <IsPackable>false</IsPackable>
-
-        <AssemblyName>FerOmega.Tests</AssemblyName>
-
-        <RootNamespace>FerOmega.Tests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,15 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Abstractions\Abstractions.csproj" />
       <ProjectReference Include="..\Providers\Providers.csproj" />
       <ProjectReference Include="..\Services\Services.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Include="..\_configuration\build\dotnet\CommonAssemblyAttributes.cs">
-        <Link>AssemblyInfo\CommonAssemblyAttributes.cs</Link>
-      </Compile>
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-namespace FerOmega.Entities.AbstractSyntax
+namespace Entities.AbstractSyntax
 {
     public enum NodeColor
     {

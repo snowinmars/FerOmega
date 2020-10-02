@@ -1,48 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
-using FerOmega.Entities;
-using FerOmega.Entities.AbstractSyntax;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using Entities.AbstractSyntax;
+using Entities.InternalSyntax;
+using Entities.InternalSyntax.Enums;
+using Providers.Abstractions;
+using Services;
+using Services.Abstractions;
 
 namespace Providers
 {
-    public class SqlProvider
+    public class SqlProvider : ISqlProvider
     {
-        private IDictionary<OperatorType, string> map = new Dictionary<OperatorType, string>
+        private readonly IGrammarService<SqlGrammarConfig> grammarService;
+
+        public SqlProvider(IGrammarService<SqlGrammarConfig> grammarService)
         {
-            { OperatorType.Equals, "=" },
-            { OperatorType.NotEquals, "!=" },
-            { OperatorType.Not, "!" },
-            { OperatorType.GreaterThan, ">" },
-            { OperatorType.LesserThan, "<" },
-            { OperatorType.GreaterOrEqualsThan, ">=" },
-            { OperatorType.LesserOrEqualsThan, "<=" },
-            // { OperatorType.InRange, "" },
-            { OperatorType.And, "and" },
-            { OperatorType.Or, "or" },
-            // { OperatorType.Xor, "" },
-            // { OperatorType.Contains, "" },
-            // { OperatorType.StartsWith, "" },
-            // { OperatorType.EndsWith, "" },
-            // { OperatorType.Empty, "" },
-            // { OperatorType.NotEmpty, "" },
-            { OperatorType.UnaryPlus, "+" },
-            { OperatorType.Plus, "+" },
-            { OperatorType.UnaryMinus, "-" },
-            { OperatorType.Minus, "-" },
-            { OperatorType.Multiple, "*" },
-            { OperatorType.Reminder, "%" },
-            { OperatorType.Divide, "/" },
-            // { OperatorType.Invert, "" },
-            // { OperatorType.OpenRoundBracket, "" },
-            // { OperatorType.CloseRoundBracket, "" },
-            // { OperatorType.OpenCurlyBracket, "" },
-            // { OperatorType.CloseCurlyBracket, "" },
-            // { OperatorType.OpenSquareBracket, "" },
-            // { OperatorType.CloseSquareBracket, "" },
-            // { OperatorType.Factorial, "" },
-        };
+            this.grammarService = grammarService;
+        }
         
         public string Convert(Tree<AbstractToken> tree)
         {
@@ -62,39 +38,40 @@ namespace Providers
 
                 default:
                 {
-                    var @operator = (Operator)n.Body;
+                    var internalOperator = (Operator)n.Body;
 
-                    if (!map.TryGetValue(@operator.OperatorType, out var value))
+                    var sqlOperator = grammarService.Operators.FirstOrDefault(x => x.OperatorType == internalOperator.OperatorType);
+                    
+                    if (sqlOperator == default)
                     {
                         throw new ArgumentOutOfRangeException();
                     }
 
-
                     string result;
 
-                    switch (@operator.Arity)
+                    switch (internalOperator.Arity)
                     {
-                    case ArityType.Unary:
+                    case Arity.Unary:
                     {
                         var operand = stack.Pop();
 
-                        result = @operator.Fixity switch
+                        result = internalOperator.Fixity switch
                         {
-                            FixityType.Prefix => $"{value}{operand}",
-                            FixityType.Postfix => $"{operand}{value}",
+                            Fixity.Prefix => $"{sqlOperator.MainDenotation} {operand}",
+                            Fixity.Postfix => $"{operand} {sqlOperator.MainDenotation}",
                             _ => throw new ArgumentOutOfRangeException(),
                         };
 
                         break;
                     }
-                    case ArityType.Binary:
+                    case Arity.Binary:
                     {
                         var leftOperand = stack.Pop();
                         var rightOperand = stack.Pop();
 
-                        result = @operator.Fixity switch
+                        result = internalOperator.Fixity switch
                         {
-                            FixityType.Infix => $"{leftOperand}{value}{rightOperand}",
+                            Fixity.Infix => $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}",
                             _ => throw new ArgumentOutOfRangeException(),
                         };
 
@@ -116,14 +93,6 @@ namespace Providers
             }
 
             return stack.Pop();
-        }
-    }
-
-    internal static class Ext
-    {
-        public static StringBuilder AppendSql(this StringBuilder sb, string sql)
-        {
-            return sb.Append($" {sql} ");
         }
     }
 }
