@@ -13,7 +13,10 @@ namespace FerOmega.Services
         {
             Operators = CheckOperators(grammarConfig.ConfigOperators());
             OperatorDenotations = Operators.SelectMany(x => x.Denotations).ToArray();
+            OperatorsRegex = grammarConfig.GetOperatorsAsRegex(Operators.SelectMany(x => x.Denotations));
         }
+
+        public string OperatorsRegex { get; }
 
         public Operator[] Operators { get; }
 

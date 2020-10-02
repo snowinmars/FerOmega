@@ -8,6 +8,8 @@ namespace FerOmega.Services.Abstractions
     {
         Operator[] Operators { get; }
 
+        string OperatorsRegex { get; }
+
         string[] OperatorDenotations { get; }
 
         Operator OpenEscapeOperator { get; }

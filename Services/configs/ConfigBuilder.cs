@@ -6,10 +6,6 @@ namespace FerOmega.Services.configs
 {
     internal class ConfigBuilder
     {
-        private int priority;
-
-        private readonly IList<Operator> operators;
-        
         private ConfigBuilder()
         {
             priority = 1;
@@ -20,6 +16,10 @@ namespace FerOmega.Services.configs
         {
             return new ConfigBuilder();
         }
+
+        private readonly IList<Operator> operators;
+
+        private int priority;
 
         public ConfigBuilder AddOperatorGroup(params Operator[] operators)
         {
