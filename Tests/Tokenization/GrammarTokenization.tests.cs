@@ -159,13 +159,13 @@ namespace FerOmega.Tests.Tokenization
                                               new[]
                                               {
                                                   "a", "in", "(", "b", ")",
-                                              }).SetName(nameof(OperatorType.InRange) + "length1");
+                                              }).SetName(nameof(OperatorType.InRange) + "Length1");
 
                 yield return new TestCaseData("a in (b, c)",
                                               new[]
                                               {
                                                   "a", "in", "(", "b", ",", "c", ")",
-                                              }).SetName(nameof(OperatorType.InRange) + "length2");
+                                              }).SetName(nameof(OperatorType.InRange) + "Length2");
 
                 yield return new TestCaseData("a contains b",
                                               new[]
@@ -184,6 +184,16 @@ namespace FerOmega.Tests.Tokenization
                                               {
                                                   "a", "endsWith", "b",
                                               }).SetName(nameof(OperatorType.EndsWith));
+                yield return new TestCaseData("a,b",
+                                              new []
+                                              {
+                                                  "a", ",", "b",
+                                              }).SetName(nameof(OperatorType.Enumerator));
+                yield return new TestCaseData("a;",
+                                              new []
+                                              {
+                                                  "a", ";",
+                                              }).SetName(nameof(OperatorType.Terminator));
             }
         }
 

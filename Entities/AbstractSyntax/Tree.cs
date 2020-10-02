@@ -6,6 +6,8 @@ namespace FerOmega.Entities.AbstractSyntax
 {
     public class Tree<T>
     {
+        public Tree(): this(default(T)) { }
+
         public Tree(T body)
             : this(new Node<T>(body)) { }
 
@@ -20,6 +22,8 @@ namespace FerOmega.Entities.AbstractSyntax
 
         public Node<T> Root { get; }
 
+        public bool IsEmpty => Root == default || ReferenceEquals(Root.Body, default);
+        
         public Node<T> AppendToRoot(Tree<T> tree)
         {
             Root.Append(tree.Root);

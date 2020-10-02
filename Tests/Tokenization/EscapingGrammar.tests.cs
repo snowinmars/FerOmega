@@ -86,19 +86,19 @@ namespace FerOmega.Tests.Tokenization
                                               new[]
                                               {
                                                   "[=]", "=", "[=]",
-                                              }).SetName(nameof(OperatorType.Equals) + "length1");
+                                              }).SetName(nameof(OperatorType.Equals) + "Length1");
 
                 yield return new TestCaseData("[==]==[=]",
                                               new[]
                                               {
                                                   "[==]", "==", "[=]",
-                                              }).SetName(nameof(OperatorType.Equals) + "length2");
+                                              }).SetName(nameof(OperatorType.Equals) + "Length2");
 
                 yield return new TestCaseData("[===]===[=]",
                                               new[]
                                               {
                                                   "[===]", "===", "[=]",
-                                              }).SetName(nameof(OperatorType.Equals) + "length3");
+                                              }).SetName(nameof(OperatorType.Equals) + "Length3");
 
                 yield return new TestCaseData("[!=]!=[!!=]",
                                               new[]

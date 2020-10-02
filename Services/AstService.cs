@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FerOmega.Entities.AbstractSyntax;
 using FerOmega.Entities.InternalSyntax;
 using FerOmega.Entities.InternalSyntax.Enums;
@@ -26,6 +27,12 @@ namespace FerOmega.Services
         /// </summary>
         public Tree<AbstractToken> Convert(string[] tokens)
         {
+            if (tokens == default ||
+                !tokens.Any())
+            {
+                return new Tree<AbstractToken>();
+            }
+            
             var stack = new Stack<Operator>(tokens.Length);
             var trees = new List<Tree<AbstractToken>>();
 

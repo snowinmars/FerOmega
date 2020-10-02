@@ -243,6 +243,16 @@ namespace FerOmega.Services.configs
                                                                OperatorType.CloseEscapeOperator,
                                                                Fixity.Circumflex,
                                                                "]"))
+                                .AddOperatorGroup(new Operator(Arity.Nulary,
+                                                               Associativity.Ambivalent,
+                                                               OperatorType.Enumerator,
+                                                               Fixity.Infix,
+                                                               ","),
+                                                  new Operator(Arity.Nulary,
+                                                               Associativity.Ambivalent,
+                                                               OperatorType.Terminator,
+                                                               Fixity.Postfix,
+                                                               ";"))
                                 .Build();
         }
 

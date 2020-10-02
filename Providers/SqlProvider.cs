@@ -21,6 +21,11 @@ namespace FerOmega.Providers
 
         public string Convert(Tree<AbstractToken> tree)
         {
+            if (tree.IsEmpty)
+            {
+                return "";
+            }
+            
             var stack = new Stack<string>();
 
             tree.DeepFirst(default,
