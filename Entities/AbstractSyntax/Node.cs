@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Entities.AbstractSyntax
+namespace FerOmega.Entities.AbstractSyntax
 {
     public class Node<T>
     {
@@ -13,17 +13,17 @@ namespace Entities.AbstractSyntax
             Id = Guid.NewGuid();
             children = new List<Node<T>>();
             Color = NodeColor.White;
-            
+
             Body = body;
         }
 
         public NodeColor Color { get; set; }
-        
+
         public T Body { get; set; }
 
         public IEnumerable<Node<T>> Children => children;
 
-        public Guid Id { get; private set; }
+        public Guid Id { get; }
 
         private readonly IList<Node<T>> children;
 

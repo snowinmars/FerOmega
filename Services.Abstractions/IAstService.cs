@@ -1,7 +1,7 @@
-using Entities.AbstractSyntax;
-using Entities.InternalSyntax;
+using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Entities.InternalSyntax;
 
-namespace Services.Abstractions
+namespace FerOmega.Services.Abstractions
 {
     public interface IAstService
     {

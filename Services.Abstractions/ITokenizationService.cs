@@ -1,4 +1,4 @@
-namespace Services.Abstractions
+namespace FerOmega.Services.Abstractions
 {
     public interface ITokenizationService
     {

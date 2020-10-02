@@ -1,13 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using Entities.InternalSyntax;
-using Entities.InternalSyntax.Enums;
-using Services.Abstractions;
+using FerOmega.Entities.InternalSyntax;
+using FerOmega.Entities.InternalSyntax.Enums;
+using FerOmega.Services.Abstractions;
 
-namespace Services
+namespace FerOmega.Services
 {
-    public class GrammarService<T> : IGrammarService<T>
+    internal class GrammarService<T> : IGrammarService<T>
         where T : IGrammarConfig
     {
         public GrammarService(T grammarConfig)
@@ -17,16 +16,23 @@ namespace Services
         }
 
         public Operator[] Operators { get; }
-        
+
         public string[] OperatorDenotations { get; }
-        
+
         public Operator OpenPriorityBracket => Operators.First(x => x.OperatorType == OperatorType.OpenPriorityBracket);
-        public Operator ClosePriorityBracket => Operators.First(x => x.OperatorType == OperatorType.ClosePriorityBracket);
+
+        public Operator ClosePriorityBracket =>
+            Operators.First(x => x.OperatorType == OperatorType.ClosePriorityBracket);
 
         public Operator OpenEscapeOperator => Operators.First(x => x.OperatorType == OperatorType.OpenEscapeOperator);
-        
+
         public Operator CloseEscapeOperator => Operators.First(x => x.OperatorType == OperatorType.CloseEscapeOperator);
-        
+
+        public Operator[] GetPossibleOperators(string denotation)
+        {
+            return Operators.Where(x => x.Denotations.Contains(denotation)).ToArray();
+        }
+
         public bool IsOperand(string input)
         {
             var isEscaped = input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal) &&
@@ -52,16 +58,11 @@ namespace Services
             return GetPossibleOperators(denotation).Length == 1;
         }
 
-        public Operator[] GetPossibleOperators(string denotation)
-        {
-            return Operators.Where(x => x.Denotations.Contains(denotation)).ToArray();
-        }
-        
         public bool IsUniqueByFixity(string denotation, Fixity fixity)
         {
             return Operators.Count(x => x.Denotations.Contains(denotation) && x.Fixity == fixity) == 1;
         }
-        
+
         private Operator[] CheckOperators(Operator[] operators)
         {
             var isOperatorTypePrimaryKey = operators.Select(x => x.OperatorType).Distinct().Count() == operators.Length;

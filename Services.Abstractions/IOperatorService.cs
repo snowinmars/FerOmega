@@ -1,6 +1,6 @@
-using Entities.InternalSyntax;
+using FerOmega.Entities.InternalSyntax;
 
-namespace Services.Abstractions
+namespace FerOmega.Services.Abstractions
 {
     public interface IOperatorService
     {

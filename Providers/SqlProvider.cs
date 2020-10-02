@@ -1,91 +1,93 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using Entities.AbstractSyntax;
-using Entities.InternalSyntax;
-using Entities.InternalSyntax.Enums;
-using Providers.Abstractions;
-using Services;
-using Services.Abstractions;
+using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Entities.InternalSyntax;
+using FerOmega.Entities.InternalSyntax.Enums;
+using FerOmega.Providers.Abstractions;
+using FerOmega.Services.Abstractions;
+using FerOmega.Services.configs;
 
-namespace Providers
+namespace FerOmega.Providers
 {
-    public class SqlProvider : ISqlProvider
+    internal class SqlProvider : ISqlProvider
     {
-        private readonly IGrammarService<SqlGrammarConfig> grammarService;
-
         public SqlProvider(IGrammarService<SqlGrammarConfig> grammarService)
         {
             this.grammarService = grammarService;
         }
-        
+
+        private readonly IGrammarService<SqlGrammarConfig> grammarService;
+
         public string Convert(Tree<AbstractToken> tree)
         {
             var stack = new Stack<string>();
-            
-            tree.DeepFirst(default, (n) =>
-            {
-                switch (n.Body.OperatorType)
-                {
-                case OperatorType.Literal:
-                {
-                    var operand = (Operand)n.Body;
-                    stack.Push(operand.Value);
 
-                    break;
-                }
+            tree.DeepFirst(default,
+                           (n) =>
+                           {
+                               switch (n.Body.OperatorType)
+                               {
+                               case OperatorType.Literal:
+                               {
+                                   var operand = (Operand)n.Body;
+                                   stack.Push(operand.Value);
 
-                default:
-                {
-                    var internalOperator = (Operator)n.Body;
+                                   break;
+                               }
 
-                    var sqlOperator = grammarService.Operators.FirstOrDefault(x => x.OperatorType == internalOperator.OperatorType);
-                    
-                    if (sqlOperator == default)
-                    {
-                        throw new ArgumentOutOfRangeException();
-                    }
+                               default:
+                               {
+                                   var internalOperator = (Operator)n.Body;
 
-                    string result;
+                                   var sqlOperator =
+                                       grammarService.Operators.FirstOrDefault(x => x.OperatorType ==
+                                                                                   internalOperator.OperatorType);
 
-                    switch (internalOperator.Arity)
-                    {
-                    case Arity.Unary:
-                    {
-                        var operand = stack.Pop();
+                                   if (sqlOperator == default)
+                                   {
+                                       throw new ArgumentOutOfRangeException();
+                                   }
 
-                        result = internalOperator.Fixity switch
-                        {
-                            Fixity.Prefix => $"{sqlOperator.MainDenotation} {operand}",
-                            Fixity.Postfix => $"{operand} {sqlOperator.MainDenotation}",
-                            _ => throw new ArgumentOutOfRangeException(),
-                        };
+                                   string result;
 
-                        break;
-                    }
-                    case Arity.Binary:
-                    {
-                        var leftOperand = stack.Pop();
-                        var rightOperand = stack.Pop();
+                                   switch (internalOperator.Arity)
+                                   {
+                                   case Arity.Unary:
+                                   {
+                                       var operand = stack.Pop();
 
-                        result = internalOperator.Fixity switch
-                        {
-                            Fixity.Infix => $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}",
-                            _ => throw new ArgumentOutOfRangeException(),
-                        };
+                                       result = internalOperator.Fixity switch
+                                       {
+                                           Fixity.Prefix => $"{sqlOperator.MainDenotation} {operand}",
+                                           Fixity.Postfix => $"{operand} {sqlOperator.MainDenotation}",
+                                           _ => throw new ArgumentOutOfRangeException(),
+                                       };
 
-                        break;
-                    }
-                    default: throw new ArgumentOutOfRangeException();
-                    }
+                                       break;
+                                   }
+                                   case Arity.Binary:
+                                   {
+                                       var leftOperand = stack.Pop();
+                                       var rightOperand = stack.Pop();
 
-                    stack.Push(result);
+                                       result = internalOperator.Fixity switch
+                                       {
+                                           Fixity.Infix => $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}",
+                                           _ => throw new ArgumentOutOfRangeException(),
+                                       };
 
-                    break;
-                }
-                }
-            });
+                                       break;
+                                   }
+                                   default: throw new ArgumentOutOfRangeException();
+                                   }
+
+                                   stack.Push(result);
+
+                                   break;
+                               }
+                               }
+                           });
 
             if (stack.Count != 1)
             {

@@ -1,19 +1,20 @@
 using System;
 using System.Linq;
-using Entities.InternalSyntax;
-using Entities.InternalSyntax.Enums;
-using Services.Abstractions;
+using FerOmega.Entities.InternalSyntax;
+using FerOmega.Entities.InternalSyntax.Enums;
+using FerOmega.Services.Abstractions;
+using FerOmega.Services.configs;
 
-namespace Services
+namespace FerOmega.Services
 {
-    public class OperatorService : IOperatorService
+    internal class OperatorService : IOperatorService
     {
-        private readonly IGrammarService<InternalGrammarConfig> grammarService;
-
         public OperatorService(IGrammarService<InternalGrammarConfig> grammarService)
         {
             this.grammarService = grammarService;
         }
+
+        private readonly IGrammarService<InternalGrammarConfig> grammarService;
 
         public Operator Resolve(StringToken token, Operator[] possibleOperators)
         {
@@ -21,7 +22,7 @@ namespace Services
             {
                 return possibleOperators[0];
             }
-            
+
             var isUnaryPrefix = IsUnaryPrefix(token, possibleOperators);
 
             if (isUnaryPrefix)
@@ -75,7 +76,7 @@ namespace Services
 
             throw new InvalidOperationException("Can't resolve fixity");
         }
-        
+
         private bool IsInfixBinary(StringToken token, Operator[] possibleOperators)
         {
             if (!possibleOperators.Any(x => x.Fixity == Fixity.Infix && x.Arity == Arity.Binary))
@@ -85,7 +86,7 @@ namespace Services
 
             var isPrecededByBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
             var isFollowedByBracket = grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
-            
+
             // like 5 + 2
             //        ^
             var isInfixBinaryCase1 = grammarService.IsOperand(token.Previous) && grammarService.IsOperand(token.Next);
@@ -118,14 +119,14 @@ namespace Services
                    isInfixBinaryCase4 ||
                    isInfixBinaryCase5;
         }
-        
+
         private bool IsUnaryPostfix(StringToken token, Operator[] possibleOperators)
         {
             if (!possibleOperators.Any(x => x.Arity == Arity.Unary && x.Fixity == Fixity.Postfix))
             {
                 return false;
             }
-            
+
             var isPrecededByBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
             var isFollowedByBracket = grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
 
@@ -147,7 +148,7 @@ namespace Services
             var isPostfixCase4 = isPrecededByBracket &&
                                  grammarService.IsOperator(token.Current) &&
                                  isFollowedByBracket;
-            
+
             // like (2 + 3)! + 2
             //             ^
             var isPostfixCase5 = isPrecededByBracket &&
@@ -159,14 +160,14 @@ namespace Services
             var isPostfixCase6 = isPrecededByBracket &&
                                  token.Next == StringToken.NonExistingOperator;
 
-            return isPostfixCase1 || 
+            return isPostfixCase1 ||
                    isPostfixCase2 ||
-                   isPostfixCase3 || 
+                   isPostfixCase3 ||
                    isPostfixCase4 ||
                    isPostfixCase5 ||
                    isPostfixCase6;
         }
-        
+
         private bool IsUnaryPrefix(StringToken token, Operator[] possibleOperators)
         {
             if (!possibleOperators.Any(x => x.Arity == Arity.Unary && x.Fixity == Fixity.Prefix))
@@ -176,7 +177,7 @@ namespace Services
 
             var isPrecededByBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
             var isFollowedByBracket = grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
-            
+
             // like -1 - 2
             //      ^
             var isPrefixCase1 = grammarService.IsOperand(token.Next) &&

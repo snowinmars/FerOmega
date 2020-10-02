@@ -1,4 +1,4 @@
-namespace Entities.InternalSyntax.Enums
+namespace FerOmega.Entities.InternalSyntax.Enums
 {
     public enum OperatorType
     {
@@ -9,7 +9,7 @@ namespace Entities.InternalSyntax.Enums
         Equals,
 
         /// a != 2
-        NotEquals ,
+        NotEquals,
 
         /// a &gt; 2
         GreaterThan,
@@ -21,80 +21,80 @@ namespace Entities.InternalSyntax.Enums
         GreaterOrEqualsThan,
 
         /// a &gt;= 2
-        LesserOrEqualsThan ,
+        LesserOrEqualsThan,
 
         /// !a
         Not,
 
         /// a and b
-        And ,
-        
+        And,
+
         /// 10 & 11 = 10
-        BitwiseAnd ,
+        BitwiseAnd,
 
         /// a or b
-        Or ,
+        Or,
 
         ///  10 | 11 = 11
         BitwiseOr,
-        
+
         /// a xor b
-        Xor ,
+        Xor,
 
         /// a in ( 2, 3 )
-        InRange ,
+        InRange,
 
         /// a.contains(2)
-        Contains ,
+        Contains,
 
         /// a.startsWith(2)
-        StartsWith ,
+        StartsWith,
 
         /// a.endsWith(2)
-        EndsWith ,
-        
+        EndsWith,
+
         /// +2 
         UnaryPlus,
 
         /// 3 + 2
-        Plus ,
+        Plus,
 
         /// -2 
-        UnaryMinus ,
+        UnaryMinus,
 
         /// 3 - 2
-        Minus ,
+        Minus,
 
         /// 3! = 1 * 2 * 3 = 6 
-        Factorial ,
-        
+        Factorial,
+
         /// 2 * 3
-        Multiple ,
+        Multiple,
 
         /// 5 % 2 = 1
-        Reminder ,
+        Reminder,
 
         /// 5 / 2 = 2
-        Divide ,
+        Divide,
 
         /// ~3 = ~11 = 00
-        Invert ,
+        Invert,
 
         /// ( ...
-        OpenPriorityBracket ,
+        OpenPriorityBracket,
 
         /// ... )
-        ClosePriorityBracket ,
-        
+        ClosePriorityBracket,
+
         /// [ ...
         OpenEscapeOperator,
-        
+
         /// ... ]
         CloseEscapeOperator,
 
         /// ,
         Enumerator,
-        
+
         /// ;
         Terminator,
     }

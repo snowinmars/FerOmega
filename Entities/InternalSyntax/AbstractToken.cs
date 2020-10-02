@@ -1,6 +1,6 @@
-using Entities.InternalSyntax.Enums;
+using FerOmega.Entities.InternalSyntax.Enums;
 
-namespace Entities.InternalSyntax
+namespace FerOmega.Entities.InternalSyntax
 {
     public abstract class AbstractToken
     {

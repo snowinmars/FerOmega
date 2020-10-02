@@ -1,8 +1,7 @@
-﻿using System;
-using Entities.AbstractSyntax;
-using Entities.InternalSyntax;
+﻿using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Entities.InternalSyntax;
 
-namespace Providers.Abstractions
+namespace FerOmega.Providers.Abstractions
 {
     public interface ISqlProvider
     {

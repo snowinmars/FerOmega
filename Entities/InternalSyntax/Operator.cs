@@ -1,7 +1,7 @@
 using System;
-using Entities.InternalSyntax.Enums;
+using FerOmega.Entities.InternalSyntax.Enums;
 
-namespace Entities.InternalSyntax
+namespace FerOmega.Entities.InternalSyntax
 {
     public class Operator : AbstractToken
     {
@@ -11,6 +11,7 @@ namespace Entities.InternalSyntax
             Fixity fixity,
             params string[] denotations)
             : base(operatorType, -1)
+
         // priority will be calculated in runtime based on operators declaration in config files
         // otherwise it will be hard to maintain priority
         {
@@ -29,12 +30,14 @@ namespace Entities.InternalSyntax
         public Fixity Fixity { get; }
 
         public string MainDenotation => Denotations[0];
-        
+
         public override string ToString()
         {
-            string ThrowOor(string paramName, object actualValue, string message) =>
+            string ThrowOor(string paramName, object actualValue, string message)
+            {
                 throw new ArgumentOutOfRangeException(paramName, actualValue, message);
-            
+            }
+
             var arityExample = Arity switch
             {
                 Arity.Unary => Fixity switch

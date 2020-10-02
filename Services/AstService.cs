@@ -1,24 +1,25 @@
 using System;
 using System.Collections.Generic;
-using Entities.AbstractSyntax;
-using Entities.InternalSyntax;
-using Entities.InternalSyntax.Enums;
-using Services.Abstractions;
+using FerOmega.Entities.AbstractSyntax;
+using FerOmega.Entities.InternalSyntax;
+using FerOmega.Entities.InternalSyntax.Enums;
+using FerOmega.Services.Abstractions;
+using FerOmega.Services.configs;
 
-namespace Services
+namespace FerOmega.Services
 {
-    public class AstService : IAstService
+    internal class AstService : IAstService
     {
-        private readonly IGrammarService<InternalGrammarConfig> grammarService;
-
-        private readonly IOperatorService operatorService;
-
         public AstService(IGrammarService<InternalGrammarConfig> grammarService, IOperatorService operatorService)
         {
             this.grammarService = grammarService;
             this.operatorService = operatorService;
         }
-        
+
+        private readonly IGrammarService<InternalGrammarConfig> grammarService;
+
+        private readonly IOperatorService operatorService;
+
         /// <summary>
         /// Build abstract syntax tree from tokenized string
         /// using extended shunting yard algorithm
@@ -50,7 +51,7 @@ namespace Services
                     var @operator = operatorService.Resolve(token, possibleOperators);
 
                     // two ifs check brackets
-                    
+
                     if (@operator == grammarService.OpenPriorityBracket)
                     {
                         stack.Push(@operator);
@@ -156,7 +157,7 @@ namespace Services
 
                             break;
                         }
-                        
+
                         default:
                             throw new ArgumentOutOfRangeException();
                         }

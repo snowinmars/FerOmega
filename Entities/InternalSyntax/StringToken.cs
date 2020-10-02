@@ -1,4 +1,4 @@
-namespace Entities.InternalSyntax
+namespace FerOmega.Entities.InternalSyntax
 {
     public class StringToken
     {

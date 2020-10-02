@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Entities.AbstractSyntax
+namespace FerOmega.Entities.AbstractSyntax
 {
     public class Tree<T>
     {
@@ -16,10 +16,9 @@ namespace Entities.AbstractSyntax
             Id = Guid.NewGuid();
         }
 
-        public Guid Id { get; private set; }
+        public Guid Id { get; }
 
         public Node<T> Root { get; }
-
 
         public Node<T> AppendToRoot(Tree<T> tree)
         {
@@ -31,7 +30,7 @@ namespace Entities.AbstractSyntax
         public void BreadthFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave = null)
         {
             var queue = new Queue<Node<T>>();
-            
+
             queue.Enqueue(Root);
 
             while (queue.Count > 0)
@@ -39,31 +38,31 @@ namespace Entities.AbstractSyntax
                 var node = queue.Dequeue();
 
                 onEnter?.Invoke(node);
-                
+
                 node.Color = NodeColor.Black;
 
                 foreach (var child in node.Children
-                                          .Where(x => x.Color == NodeColor.White && 
+                                          .Where(x => x.Color == NodeColor.White &&
                                                       !queue.Contains(x)))
                 {
                     child.Color = NodeColor.Grey;
                     queue.Enqueue(child);
                 }
-                
+
                 onLeave?.Invoke(node);
             }
         }
-        
-        public void DeepFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave= null)
+
+        public void DeepFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave = null)
         {
             var stack = new Stack<Node<T>>();
-            
+
             stack.Push(Root);
 
             while (stack.Count > 0)
             {
                 var node = stack.Peek();
-                
+
                 switch (node.Color)
                 {
                 case NodeColor.White:
@@ -89,7 +88,7 @@ namespace Entities.AbstractSyntax
 
                     break;
                 }
-                
+
                 default:
                     throw new ArgumentOutOfRangeException();
                 }

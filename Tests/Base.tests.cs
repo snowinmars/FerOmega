@@ -1,18 +1,19 @@
+using FerOmega.Providers;
+using FerOmega.Providers.Abstractions;
+using FerOmega.Services;
+using FerOmega.Services.Abstractions;
+using FerOmega.Services.configs;
 using NUnit.Framework;
-using Providers;
-using Providers.Abstractions;
-using Services;
-using Services.Abstractions;
 
-namespace Tests
+namespace FerOmega.Tests
 {
     internal abstract class BaseTest
     {
-        protected ITokenizationService TokenizationService;
-
         protected IAstService AstService;
 
         protected ISqlProvider SqlProvider;
+
+        protected ITokenizationService TokenizationService;
 
         [OneTimeSetUp]
         public void Init()

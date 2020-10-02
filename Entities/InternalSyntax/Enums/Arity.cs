@@ -1,4 +1,4 @@
-namespace Entities.InternalSyntax.Enums
+namespace FerOmega.Entities.InternalSyntax.Enums
 {
     public enum Arity
     {
