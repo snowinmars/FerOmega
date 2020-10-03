@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Target Name="PrintConfiguration" BeforeTargets="Build">
+        <Message Text="Build info: %0A   Configuration: $(Configuration) %0A   Version: $(AssemblyVersion) %0A   .NET: [$(TargetFramework)] %0A   C#: [$(LangVersion)] %0A   Watermark: [$(Watermark)]" Importance="High" />
+        <Message Text="=========" Importance="High" />
+    </Target>
+</Project>
