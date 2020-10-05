@@ -3,6 +3,13 @@ Data query language provider
 
 The basic idea is to allow a developer to write some equation in frontend, send it to server and get it as an abstraction syntax tree/sql/C# expression/etc in backend.
 
+## Installation
+
+Currently it cannot be installed via nuget or whatever.
+I'll fix some issues, test it on my prod and then I'll provie a nuget package.
+
+Feel free to copypaste it, if you'd like too.
+
 ## Basic usage
 ```
 // di
