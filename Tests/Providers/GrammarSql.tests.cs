@@ -299,7 +299,6 @@ namespace FerOmega.Tests.Providers
                                                   "3", "1",
                                               }).SetName(nameof(OperatorType.Xor));
 
-                
                 yield return new TestCaseData("a & b & c",
                                               "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd)).Ignore("Implement later");
 
