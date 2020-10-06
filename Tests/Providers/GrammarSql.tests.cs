@@ -244,12 +244,6 @@ namespace FerOmega.Tests.Providers
                                                   "1",
                                               }).SetName(nameof(OperatorType.NotEquals) + " js style");
 
-                yield return new TestCaseData("a & b & c",
-                                              "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd));
-
-                yield return new TestCaseData("a | b | c",
-                                              "[a] | [b] | [c]").SetName(nameof(OperatorType.BitwiseOr));
-
                 yield return new TestCaseData("[count] == 1 && [length] < 3",
                                               new[]
                                               {
@@ -305,26 +299,33 @@ namespace FerOmega.Tests.Providers
                                                   "3", "1",
                                               }).SetName(nameof(OperatorType.Xor));
 
+                
+                yield return new TestCaseData("a & b & c",
+                                              "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd)).Ignore("Implement later");
+
+                yield return new TestCaseData("a | b | c",
+                                              "[a] | [b] | [c]").SetName(nameof(OperatorType.BitwiseOr)).Ignore("Implement later");
+                
                 yield return new TestCaseData("a in (b)",
-                                              "[a] in ([b])").SetName(nameof(OperatorType.InRange) + "Length1");
+                                              "[a] in ([b])").SetName(nameof(OperatorType.InRange) + "Length1").Ignore("Implement later");
 
                 yield return new TestCaseData("a in (b, c)",
-                                              "[a] in ([b], [c])").SetName(nameof(OperatorType.InRange) + "Length2");
+                                              "[a] in ([b], [c])").SetName(nameof(OperatorType.InRange) + "Length2").Ignore("Implement later");
 
                 yield return new TestCaseData("a contains b",
-                                              "[a] like \"%b%\"").SetName(nameof(OperatorType.Contains));
+                                              "[a] like \"%b%\"").SetName(nameof(OperatorType.Contains)).Ignore("Implement later");
 
                 yield return new TestCaseData("a startsWith b",
-                                              "[a] like \"b%\"").SetName(nameof(OperatorType.StartsWith));
+                                              "[a] like \"b%\"").SetName(nameof(OperatorType.StartsWith)).Ignore("Implement later");
 
                 yield return new TestCaseData("a endsWith b",
-                                              "[a] like \"%b\"").SetName(nameof(OperatorType.EndsWith));
+                                              "[a] like \"%b\"").SetName(nameof(OperatorType.EndsWith)).Ignore("Implement later");
 
                 yield return new TestCaseData("a,b",
-                                              "[a], [b]").SetName(nameof(OperatorType.Enumerator));
+                                              "[a], [b]").SetName(nameof(OperatorType.Enumerator)).Ignore("Implement later");
 
                 yield return new TestCaseData("a;",
-                                              "[a];").SetName(nameof(OperatorType.Terminator));
+                                              "[a];").SetName(nameof(OperatorType.Terminator)).Ignore("Implement later");
             }
         }
 
