@@ -175,8 +175,10 @@ namespace FerOmega.Services
                 return false;
             }
 
-            var isPrecededByBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
-            var isFollowedByBracket = grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
+            var isPrecededByBracket = token.Previous != default &&
+                                      grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
+            var isFollowedByBracket = token.Next != default && 
+                                      grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
 
             // like -1 - 2
             //      ^

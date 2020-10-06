@@ -5,6 +5,6 @@ namespace FerOmega.Providers.Abstractions
 {
     public interface ISqlProvider
     {
-        string Convert(Tree<AbstractToken> tree);
+        (string sql, object[] parameters) Convert(Tree<AbstractToken> tree, params string[] allowedProperties);
     }
 }

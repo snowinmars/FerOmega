@@ -7,12 +7,12 @@ namespace FerOmega.Entities.InternalSyntax
     {
         public Operand(string value)
             : this(value,
-                   value.StartsWith("[", StringComparison.Ordinal) && value.EndsWith("]", StringComparison.Ordinal)) { }
+                   !value.StartsWith("[", StringComparison.Ordinal) && !value.EndsWith("]", StringComparison.Ordinal)) { }
 
-        public Operand(string value, bool isEscaped)
+        public Operand(string value, bool shouldEscape)
             : base(OperatorType.Literal, int.MaxValue)
         {
-            Value = isEscaped ? value : $"[{value}]";
+            Value = shouldEscape ? $"[{value}]" : value;
         }
 
         public string Value { get; }

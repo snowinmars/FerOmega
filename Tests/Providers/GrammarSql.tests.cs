@@ -9,67 +9,240 @@ namespace FerOmega.Tests.Providers
 {
     internal class GrammarSqlTests : BaseTest
     {
-         private static IEnumerable PositiveGrammarCases
+        private static IEnumerable PositiveGrammarCases
         {
             get
             {
-                yield return new TestCaseData("a + b + c",
-                                             "[a] + [b] + [c]").SetName(nameof(OperatorType.Plus));
+                yield return new TestCaseData("[count] + b + 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "[count] + @1 + @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.Plus));
 
-                yield return new TestCaseData("a - b - c",
-                                              "[a] - [b] - [c]").SetName(nameof(OperatorType.Minus));
+                yield return new TestCaseData("[count] - b - 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "[count] - @1 - @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.Minus));
 
-                yield return new TestCaseData("a * b * c",
-                                              "[a] * [b] * [c]").SetName(nameof(OperatorType.Multiple));
+                yield return new TestCaseData("[count] * b * 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "[count] * @1 * @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.Multiple));
 
-                yield return new TestCaseData("a / b / c",
-                                              "[a] / [b] / [c]").SetName(nameof(OperatorType.Divide));
+                yield return new TestCaseData("[count] / b / 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "[count] / @1 / @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.Divide));
 
-                yield return new TestCaseData("a % b % c",
-                                              "[a] % [b] % [c]").SetName(nameof(OperatorType.Reminder));
+                yield return new TestCaseData("[count] % b % 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "[count] % @1 % @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.Reminder));
 
-                yield return new TestCaseData("+ a + b + c",
-                                              "+ [a] + [b] + [c]").SetName(nameof(OperatorType.UnaryPlus));
+                yield return new TestCaseData("+count + b + 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "+ [count] + @1 + @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.UnaryPlus) + " for property");
 
-                yield return new TestCaseData("- a - b - c",
-                                              "- [a] - [b] - [c]").SetName(nameof(OperatorType.UnaryMinus));
+                yield return new TestCaseData("+b + count + 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "+ @1 + [count] + @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.UnaryPlus) + " for const");
 
-                yield return new TestCaseData("a! - b! - c!",
-                                              "[a]! - [b]! - [c]!").SetName(nameof(OperatorType.Factorial));
+                yield return new TestCaseData("-count - b - 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "- [count] - @1 - @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.UnaryMinus) + " for property");
 
-                yield return new TestCaseData("-a! - b! - c!",
-                                              "-[a]! - [b]! - [c]!").SetName(nameof(OperatorType.UnaryMinus) +
-                                                                       nameof(OperatorType.Factorial));
+                yield return new TestCaseData("-b - count - 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "- @1 - [count] - @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.UnaryMinus) + " for const");
 
-                yield return new TestCaseData("!d!-!b!",
-                                              "![d]!-![b]!").SetName(nameof(OperatorType.Not) + nameof(OperatorType.Factorial));
+                yield return new TestCaseData("!count + b - 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "! [count] + @1 - @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.Not) + " for property");
 
-                yield return new TestCaseData("a + b > c",
-                                              "[a] + [b] > [c]").SetName(nameof(OperatorType.GreaterThan));
+                yield return new TestCaseData("!b + count - 2",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "! @1 + [count] - @0",
+                                              new object[]
+                                              {
+                                                  "2", "b",
+                                              }).SetName(nameof(OperatorType.Not) + " for const");
 
-                yield return new TestCaseData("a + b >= c",
-                                              "[a] + [b] >= [c]").SetName(nameof(OperatorType.GreaterOrEqualsThan));
+                yield return new TestCaseData("[count] + 1 > [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 > [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.GreaterThan));
 
-                yield return new TestCaseData("a + b < c",
-                                              "[a] + [b] < [c]").SetName(nameof(OperatorType.LesserThan));
+                yield return new TestCaseData("[count] + 1 >= [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 >= [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.GreaterOrEqualsThan));
 
-                yield return new TestCaseData("a + b <= c",
-                                              "[a] + [b] <= [c]").SetName(nameof(OperatorType.LesserOrEqualsThan));
+                yield return new TestCaseData("[count] + 1 < [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 < [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.LesserThan));
 
-                yield return new TestCaseData("a + b = c",
-                                              "[a] + [b] = [c]").SetName("sql" + nameof(OperatorType.Equals));
+                yield return new TestCaseData("[count] + 1 <= [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 <= [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.LesserOrEqualsThan));
 
-                yield return new TestCaseData("a + b == c",
-                                              "[a] + [b] = [c]").SetName("c" + nameof(OperatorType.Equals));
+                yield return new TestCaseData("[count] + 1 = [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 = [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.Equals) + " sql style");
 
-                yield return new TestCaseData("a + b === c",
-                                              "[a] + [b] = [c]").SetName("js" + nameof(OperatorType.Equals));
+                yield return new TestCaseData("[count] + 1 == [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 = [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.Equals) + " C style");
 
-                yield return new TestCaseData("a + b <> c",
-                                              "[a] + [b] <> [c]").SetName("sql" + nameof(OperatorType.NotEquals));
+                yield return new TestCaseData("[count] + 1 === [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 = [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.Equals) + " js style");
 
-                yield return new TestCaseData("a + b != c",
-                                              "[a] + [b] <> [c]").SetName("c" + nameof(OperatorType.NotEquals));
+                yield return new TestCaseData("[count] + 1 <> [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 <> [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.NotEquals) + " sql style");
+
+                yield return new TestCaseData("[count] + 1 != [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 <> [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.NotEquals) + " C style");
+
+                yield return new TestCaseData("[count] + 1 !== [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] + @0 <> [length]",
+                                              new object[]
+                                              {
+                                                  "1",
+                                              }).SetName(nameof(OperatorType.NotEquals) + " js style");
 
                 yield return new TestCaseData("a & b & c",
                                               "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd));
@@ -77,14 +250,60 @@ namespace FerOmega.Tests.Providers
                 yield return new TestCaseData("a | b | c",
                                               "[a] | [b] | [c]").SetName(nameof(OperatorType.BitwiseOr));
 
-                yield return new TestCaseData("a && b && c",
-                                              "[a] and [b] and [c]").SetName(nameof(OperatorType.And));
+                yield return new TestCaseData("[count] == 1 && [length] < 3",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] = @1 and [length] < @0",
+                                              new object[]
+                                              {
+                                                  "3", "1",
+                                              }).SetName(nameof(OperatorType.And) + " C style");
 
-                yield return new TestCaseData("a || b || c",
-                                              "[a] or [b] or [c]").SetName(nameof(OperatorType.Or));
+                yield return new TestCaseData("[count] == 1 and [length] < 3",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] = @1 and [length] < @0",
+                                              new object[]
+                                              {
+                                                  "3", "1",
+                                              }).SetName(nameof(OperatorType.And) + " sql style");
 
-                yield return new TestCaseData("a ^ b ^ c",
-                                              "[a] ^ [b] ^ [c]").SetName(nameof(OperatorType.Xor));
+                yield return new TestCaseData("[count] == 1 || [length] < 3",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] = @1 or [length] < @0",
+                                              new object[]
+                                              {
+                                                  "3", "1",
+                                              }).SetName(nameof(OperatorType.Or) + " C style");
+
+                yield return new TestCaseData("[count] == 1 or [length] < 3",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] = @1 or [length] < @0",
+                                              new object[]
+                                              {
+                                                  "3", "1",
+                                              }).SetName(nameof(OperatorType.Or) + " sql style");
+
+                yield return new TestCaseData("[count] == 1 ^ [length] < 3",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "[count] = @1 ^ [length] < @0",
+                                              new object[]
+                                              {
+                                                  "3", "1",
+                                              }).SetName(nameof(OperatorType.Xor));
 
                 yield return new TestCaseData("a in (b)",
                                               "[a] in ([b])").SetName(nameof(OperatorType.InRange) + "Length1");
@@ -100,16 +319,21 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData("a endsWith b",
                                               "[a] like \"%b\"").SetName(nameof(OperatorType.EndsWith));
+
                 yield return new TestCaseData("a,b",
                                               "[a], [b]").SetName(nameof(OperatorType.Enumerator));
+
                 yield return new TestCaseData("a;",
                                               "[a];").SetName(nameof(OperatorType.Terminator));
             }
         }
-        
+
         [Test]
         [TestCaseSource(nameof(PositiveGrammarCases))]
-        public void Smoke(string equation, string expected)
+        public void Grammar(string equation,
+            string[] allowedProperties,
+            string expectedSql,
+            object[] expectedParameters)
         {
             var tokens = TokenizationService.Tokenizate(equation);
 
@@ -125,17 +349,28 @@ namespace FerOmega.Tests.Providers
             }
 
             string sql;
+            object[] parameters;
 
             try
             {
-                sql = SqlProvider.Convert(tree);
+                (sql, parameters) = SqlProvider.Convert(tree, allowedProperties);
             }
             catch (Exception e)
             {
                 throw new Exception("Sql fails", e);
             }
-            
-            Assert.AreEqual(expected, sql);
+
+            Assert.AreEqual(expectedSql, sql);
+
+            Assert.AreEqual(expectedParameters.Length, parameters.Length);
+
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                var expectedParameter = expectedParameters[i];
+                var parameter = parameters[i];
+
+                Assert.AreEqual(expectedParameter, parameter);
+            }
         }
     }
 }

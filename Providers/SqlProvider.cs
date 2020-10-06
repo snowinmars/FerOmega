@@ -19,15 +19,17 @@ namespace FerOmega.Providers
 
         private readonly IGrammarService<SqlGrammarConfig> grammarService;
 
-        public string Convert(Tree<AbstractToken> tree)
+        public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree, params string[] allowedProperties)
         {
             if (tree.IsEmpty)
             {
-                return "";
+                return ("", new object[0]);
             }
             
             var stack = new Stack<string>();
 
+            var parameters = new List<object>();
+            
             tree.DeepFirst(default,
                            (n) =>
                            {
@@ -36,7 +38,21 @@ namespace FerOmega.Providers
                                case OperatorType.Literal:
                                {
                                    var operand = (Operand)n.Body;
-                                   stack.Push(operand.Value);
+
+                                   var unescapedOperand = grammarService.EnsureUnescaped(operand);
+                                   
+                                   var shouldBeEscaped = !allowedProperties.Contains(unescapedOperand.Value);
+
+                                   if (shouldBeEscaped)
+                                   {
+                                       stack.Push($"@{parameters.Count}");
+                                       parameters.Add(unescapedOperand.Value);
+                                   }
+                                   else
+                                   {
+                                       var escapedOperand = grammarService.EnsureEscaped(operand);
+                                       stack.Push(escapedOperand.Value);
+                                   }
 
                                    break;
                                }
@@ -99,7 +115,7 @@ namespace FerOmega.Providers
                 throw new InvalidOperationException();
             }
 
-            return stack.Pop();
+            return (stack.Pop(), parameters.ToArray());
         }
     }
 }
