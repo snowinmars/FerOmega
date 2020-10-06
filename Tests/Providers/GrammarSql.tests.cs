@@ -23,7 +23,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @1 + @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.Plus));
 
                 yield return new TestCaseData("[count] - b - 2",
@@ -34,7 +34,7 @@ namespace FerOmega.Tests.Providers
                                               "count - @1 - @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.Minus));
 
                 yield return new TestCaseData("[count] * b * 2",
@@ -45,7 +45,7 @@ namespace FerOmega.Tests.Providers
                                               "count * @1 * @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.Multiple));
 
                 yield return new TestCaseData("[count] / b / 2",
@@ -56,7 +56,7 @@ namespace FerOmega.Tests.Providers
                                               "count / @1 / @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.Divide));
 
                 yield return new TestCaseData("[count] % b % 2",
@@ -67,7 +67,7 @@ namespace FerOmega.Tests.Providers
                                               "count % @1 % @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.Reminder));
 
                 yield return new TestCaseData("+count + b + 2",
@@ -78,7 +78,7 @@ namespace FerOmega.Tests.Providers
                                               "+ count + @1 + @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.UnaryPlus) + " for property");
 
                 yield return new TestCaseData("+b + count + 2",
@@ -89,7 +89,7 @@ namespace FerOmega.Tests.Providers
                                               "+ @1 + count + @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.UnaryPlus) + " for const");
 
                 yield return new TestCaseData("-count - b - 2",
@@ -100,7 +100,7 @@ namespace FerOmega.Tests.Providers
                                               "- count - @1 - @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.UnaryMinus) + " for property");
 
                 yield return new TestCaseData("-b - count - 2",
@@ -111,7 +111,7 @@ namespace FerOmega.Tests.Providers
                                               "- @1 - count - @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.UnaryMinus) + " for const");
 
                 yield return new TestCaseData("!count + b - 2",
@@ -122,7 +122,7 @@ namespace FerOmega.Tests.Providers
                                               "! count + @1 - @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.Not) + " for property");
 
                 yield return new TestCaseData("!b + count - 2",
@@ -133,7 +133,7 @@ namespace FerOmega.Tests.Providers
                                               "! @1 + count - @0",
                                               new object[]
                                               {
-                                                  "2", "b",
+                                                  2, "b",
                                               }).SetName(nameof(OperatorType.Not) + " for const");
 
                 yield return new TestCaseData("[count] + 1 > [length]",
@@ -144,7 +144,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 > length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.GreaterThan));
 
                 yield return new TestCaseData("[count] + 1 >= [length]",
@@ -155,7 +155,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 >= length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.GreaterOrEqualsThan));
 
                 yield return new TestCaseData("[count] + 1 < [length]",
@@ -166,7 +166,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 < length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.LesserThan));
 
                 yield return new TestCaseData("[count] + 1 <= [length]",
@@ -177,7 +177,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 <= length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.LesserOrEqualsThan));
 
                 yield return new TestCaseData("[count] + 1 = [length]",
@@ -188,7 +188,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 = length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.Equals) + " sql style");
 
                 yield return new TestCaseData("[count] + 1 == [length]",
@@ -199,7 +199,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 = length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.Equals) + " C style");
 
                 yield return new TestCaseData("[count] + 1 === [length]",
@@ -210,7 +210,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 = length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.Equals) + " js style");
 
                 yield return new TestCaseData("[count] + 1 <> [length]",
@@ -221,7 +221,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 <> length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.NotEquals) + " sql style");
 
                 yield return new TestCaseData("[count] + 1 != [length]",
@@ -232,7 +232,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 <> length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.NotEquals) + " C style");
 
                 yield return new TestCaseData("[count] + 1 !== [length]",
@@ -243,7 +243,7 @@ namespace FerOmega.Tests.Providers
                                               "count + @0 <> length",
                                               new object[]
                                               {
-                                                  "1",
+                                                  1,
                                               }).SetName(nameof(OperatorType.NotEquals) + " js style");
 
                 yield return new TestCaseData("[count] == 1 && [length] < 3",
@@ -254,7 +254,7 @@ namespace FerOmega.Tests.Providers
                                               "count = @1 and length < @0",
                                               new object[]
                                               {
-                                                  "3", "1",
+                                                  3, 1,
                                               }).SetName(nameof(OperatorType.And) + " C style");
 
                 yield return new TestCaseData("[count] == 1 and [length] < 3",
@@ -265,7 +265,7 @@ namespace FerOmega.Tests.Providers
                                               "count = @1 and length < @0",
                                               new object[]
                                               {
-                                                  "3", "1",
+                                                  3, 1,
                                               }).SetName(nameof(OperatorType.And) + " sql style");
 
                 yield return new TestCaseData("[count] == 1 || [length] < 3",
@@ -276,7 +276,7 @@ namespace FerOmega.Tests.Providers
                                               "count = @1 or length < @0",
                                               new object[]
                                               {
-                                                  "3", "1",
+                                                  3, 1,
                                               }).SetName(nameof(OperatorType.Or) + " C style");
 
                 yield return new TestCaseData("[count] == 1 or [length] < 3",
@@ -287,7 +287,7 @@ namespace FerOmega.Tests.Providers
                                               "count = @1 or length < @0",
                                               new object[]
                                               {
-                                                  "3", "1",
+                                                  3, 1,
                                               }).SetName(nameof(OperatorType.Or) + " sql style");
 
                 yield return new TestCaseData("[count] == 1 ^ [length] < 3",
@@ -298,7 +298,7 @@ namespace FerOmega.Tests.Providers
                                               "count = @1 ^ length < @0",
                                               new object[]
                                               {
-                                                  "3", "1",
+                                                  3, 1,
                                               }).SetName(nameof(OperatorType.Xor));
 
                 yield return new TestCaseData("a & b & c",

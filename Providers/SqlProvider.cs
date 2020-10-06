@@ -55,7 +55,23 @@ namespace FerOmega.Providers
                                    else
                                    {
                                        stack.Push($"@{parameters.Count}");
-                                       parameters.Add(unescapedOperand);
+
+                                       // support default sql type mapping
+                                       // todo [snow]: extend this list
+                                       if (int.TryParse(unescapedOperand, out var resInt))
+                                       {
+                                           parameters.Add(resInt);
+                                       } else if (double.TryParse(unescapedOperand, out var resDouble))
+                                       {
+                                           parameters.Add(resDouble);
+                                       } else if (Guid.TryParse(unescapedOperand, out var resGuid))
+                                       {
+                                           parameters.Add(resGuid);
+                                       }
+                                       else
+                                       {
+                                           parameters.Add(unescapedOperand);
+                                       }
                                    }
 
                                    break;
