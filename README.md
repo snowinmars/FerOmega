@@ -1,48 +1,91 @@
 # FerOmega
 Data query language provider
 
-The basic idea is to allow a developer to write some equation in frontend, send it to server and get it as an abstraction syntax tree/sql/C# expression/etc in backend.
+The basic idea is to allow a developer to write some equation in frontend, send it to backend and consume it as an abstraction syntax tree, or sql, or C# expression tree or whatever.
+
+## Status
+
+Unstable beta.
+
+The core operators works: `+`, `-`, `*`, `/`, `%`, `>`, `>=`, `<`, `<=`, `=`, `!=`, `()`, `[]`
+Extra operators doesn't work for now: `contains`, `startsWith`, `endsWith`, `in`
 
 ## Installation
 
-Currently it cannot be installed via nuget or whatever.
-I'll fix some issues, test it on my prod and then I'll provie a nuget package.
+Currently I don't recommend you to install it via nuget or whatever.
+I'll fix some issues, test it on my prod and then I'll provie an instructions.
 
-Feel free to copypaste it, if you'd like too.
+Feel free to copypaste it, if you'd like too, but the interfaces will be changed.
 
 ## Basic usage
-```
-// di
+```csharp
+// get these items from anywhere (see 'Dependency injections' section below)
 ITokenizationService tokenizationService;
 IAstService astService;
 ISqlProvider sqlProvider;
 
-const string equation = "count > 3 and (length + 1) * 2 === 14"
+const string equation = "id === [1690ffef-7249-4384-8cba-58842e8d48df] and ((length + 1) * 2 <= 14 or email = [email])"; // [] means escaping
 
 string[] tokens = tokenizationService.Tokenizate(equation);
 Tree<AbstractToken> tree = astService.Convert(tokens);
 
-string[] allowedProperties = new[] 
+PropertyDef[] allowedProperties = new[] 
 {
-  "count",
-  "length",
-}
+  sqlProvider.DefineProperty().From("id").ToSql("id"),
+  sqlProvider.DefineProperty().From("length").ToSql("table.length")
+  sqlProvider.DefineProperty().From("email").ToSql("table2.email")
+};
 
-(string sql, object[] parameters) = sqlProvider.Convert(tree, allowedProperties);
-// "[conut] > @1 and ([length] + @2) * @3 === @4", [3, 1, 2, 14]
+(string where, object[] parameters) = sqlProvider.Convert(tree, allowedProperties);
+// "id = @4 and ((table.length + @3) * @2 <= @1 or table2.email = @0)"
+// [3, 1, 2, 14, "email"]
+
+const string sql = @"select * from table";
+
+db.Execute($"{sql} where {where}", parameters);
 ```
 
-Override any part of the flow if you have to:
+Override any part of the flow if you have to.
+
 - `TokenizationService` should parse string into a list of tokens. This is how you say that in `"-1--1=0` is `"-" "1" "-" "-" "1" "=" "0"`
-- `AstService` convert tokens into abstract syntax tree. It could wrap any literal with escape symbols.
+- `AstService` convert tokens into abstract syntax tree using extended shunting yarn algorithm. It could wrap any literal with escape symbols.
 - `SqlProvider` converts tree into sql string and parameters. It consumes allowed properies to understand what literal should be extracted into sql parameters.
 
+## Dependency injections
+
+FerOmega interfaces are public, but all classes are internal. It makes custom resolves kinda hard, but I have no good solution for it right now.
+
+I implement the following approaches, that should cover 90% of cases:
+
+#### As instances
+
+It will provide default implementations.
+
+```csharp
+var (tokenizationService, astService, sqlProvider) = FerOmegaInjections.ResolveDefault();
+```
+
+#### As services
+
+It will provide default implementations as singletones.
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+  services.AddFerOmega();
+}
+```
+
+## Sql injections
+
+It looks like it's possible to make it fully secured. For now it could depends, but I strongly believe that it's possible to forbid sql injections.
+
 ## Syntax
-The basic syntax describes in `/Services/configs/InternalGrammarConfig.cs`. You can override it with your own grammar config.
+The basic syntax (operator, etc.) describes in `/Services/configs/InternalGrammarConfig.cs`. You can override it with your own grammar config.
 
 If you do it, please, run all tests on your configuration.
 
-```
+```csharp
 IGrammarConfig customGrammarConfig = new CustomGrammarConfig();
 IGrammarService<CustomGrammarConfig> customGrammarService = new GrammarService<CustomGrammarConfig>();
 ITokenizationService tokenizationService  = new TokenizationService(customGrammarService);
@@ -73,3 +116,7 @@ Could be
 **Priority** - operator with priority 3 will be calculated before operator with priority 5
 
 **Denominations** - symbols that presents the operator. One operator can have several denominations. One denomination can present several operators (like '+' is unary and binary plus). Each operator has a main denomination.
+
+## What I don't like
+
+- `db.Execute($"{sql} where {where}");` seems like a bad solution. I mean, not in security, but it's easy to misplace something here. Should I provide a builder?
