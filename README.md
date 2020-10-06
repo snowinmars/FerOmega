@@ -1,26 +1,59 @@
 # FerOmega
 Data query language provider
 
-The basic idea is to allow a developer to write some equation in frontend, send it to server and get it as an abstraction syntax tree in backend.
+The basic idea is to allow a developer to write some equation in frontend, send it to server and get it as an abstraction syntax tree/sql/C# expression/etc in backend.
 
-## Developer map
-  * [DONE] Define main operators with arity and  fixity overloads
-  * [DONE] Implement reverse polish notation algorithm to transform infix equation to abstract syntax tree
-  * [EXEC] Test it as deep as possible
-  * [TODO] Implement Tree providers to convert abstract syntax tree to
-    * c# expression
-    * sql code
+## Installation
 
-## Usage
+Currently it cannot be installed via nuget or whatever.
+I'll fix some issues, test it on my prod and then I'll provie a nuget package.
+
+Feel free to copypaste it, if you'd like too.
+
+## Basic usage
+```
+// di
+ITokenizationService tokenizationService;
+IAstService astService;
+ISqlProvider sqlProvider;
+
+const string equation = "count > 3 and (length + 1) * 2 === 14"
+
+string[] tokens = tokenizationService.Tokenizate(equation);
+Tree<AbstractToken> tree = astService.Convert(tokens);
+
+string[] allowedProperties = new[] 
+{
+  "count",
+  "length",
+}
+
+(string sql, object[] parameters) = sqlProvider.Convert(tree, allowedProperties);
+// "[conut] > @1 and ([length] + @2) * @3 === @4", [3, 1, 2, 14]
+```
+
+Override any part of the flow if you have to:
+- `TokenizationService` should parse string into a list of tokens. This is how you say that in `"-1--1=0` is `"-" "1" "-" "-" "1" "=" "0"`
+- `AstService` convert tokens into abstract syntax tree. It could wrap any literal with escape symbols.
+- `SqlProvider` converts tree into sql string and parameters. It consumes allowed properies to understand what literal should be extracted into sql parameters.
+
+## Syntax
+The basic syntax describes in `/Services/configs/InternalGrammarConfig.cs`. You can override it with your own grammar config.
+
+If you do it, please, run all tests on your configuration.
+
+```
+IGrammarConfig customGrammarConfig = new CustomGrammarConfig();
+IGrammarService<CustomGrammarConfig> customGrammarService = new GrammarService<CustomGrammarConfig>();
+ITokenizationService tokenizationService  = new TokenizationService(customGrammarService);
+```
+
+## Operators
 Every operator has arity, fixity, associativity, priority and denominations.
-
-You could combine operators as you used to bases on their returned types like if you want to check, could a child go to a carousel in a park, you can write
-
-`[age] in [(12,13,14,15,16,17)] and [height] > [150] or [hasMother]`
 
 **Arity** - how many operands the operator consumes.
 Could be 
-  * *Nulary*: operator doesn't consumes operands
+  * *Nulary*: operator doesn't consumes operands (like `,` in `[1, 2]`)
   * *Unary*: operator consumes one operand (like factorial)
   * *Binary*: operator consumes two operands (like plus)
   * *Ternary*: operator consumes three operands (like ?:)
@@ -39,257 +72,4 @@ Could be
 
 **Priority** - operator with priority 3 will be calculated before operator with priority 5
 
-**Denominations** - symbols that presents the operator. One operator can have several denominations. One denomination can present several operators (like '+' is unary and binary plus).
-
-## Current priority list
-TODO check FerOmega.Services.GrammarService::SetOperators() for now
-
-## Operators
-  
-  * OperatorType.Literal = 1
-    * Variable, field or value. Should be explicitly escaped with '[' and ']'. This operator type doesn't includes to the grammar services Operators list
-    * Usage: 
-      * [name]
-      * [54]
-  
-  * OperatorType.Equals = 2
-    * Binary infix operator. 
-      * Denominations: '==', 'eq'
-      * Consumes (left/right): T/T
-      * Returns bool
-    * Usage:
-      * [fee] == [5]
-      * [name] eq [Boris]
-  
-  * OperatorType.NotEquals = 3
-    * Binary infix operator.
-      * Denominations: '!=', '<>', 'neq'
-      * Consumes (left/right): T/T
-      * Returns bool
-    * Usage:
-      * [fee] == [6]
-      * [name] eq [Michael]
-  
-  * OperatorType.Not = 4
-    * Unary prefix operator.
-      * Denominations: '!', 'not'
-      * Consumes (right): bool
-      * Returns bool
-    * Usage:
-      * ![isDone]
-      * not [isBlack]
-  
-  * OperatorType.GreaterThan = 5
-    * Binary infix operator.
-      * Denominations: '>', 'gt'
-      * Consumes (left/right): number/number
-      * Returns bool
-    * Usage:
-      * [seconds] > [40]
-      * [cSharp] gt [java]
-  
-  * OperatorType.LesserThan = 6
-    * Binary infix operator.
-      * Denominations: '<', 'lt'
-      * Consumes (left/right): number/number
-      * Returns bool
-    * Usage:
-      * [count] < 2
-      * [cookies] lt [25]
-  
-  * OperatorType.GreaterOrEqualsThan = 7
-    * Binary infix operator.
-      * Denominations: '>=', 'geq'
-      * Consumes (left/right): number/number
-      * Returns bool
-    * Usage:
-      * [seconds] >= [50]
-      * [money] geq [57]
-  
-  * OperatorType.LesserOrEqualsThan = 8
-    * Binary infix operator.
-      * Denominations: '<=', 'leq'
-      * Consumes (left/right): number/number
-      * Returns bool
-    * Usage:
-      * [count] <= 1
-      * [cookies] leq [20]
-  
-  * OperatorType.InRange = 9
-    * Binary infix operator.
-      * Denominations: 'in'
-      * Consumes (left/right): number/number[]
-      * Returns bool
-    * Usage:
-      * [age] in [(2,3,4,5)]
-  
-  * OperatorType.And = 10
-    * Binary infix operator.
-      * Denominations: '&', '&&', 'and'
-      * Consumes (left/right): bool/bool
-      * Returns bool
-    * Usage:
-      * [isBlack] & [isWhite]
-      * [isHarry] && [isPotter]
-      * [cats] and [cats] and [cats]
-  
-  * OperatorType.Or = 11
-    * Binary infix operator.
-      * Denominations: '|', '||', 'or'
-      * Consumes (left/right): bool/bool
-      * Returns bool
-    * Usage:
-      * [be] | ![be]
-      * [isDead] || [isAlive]
-      * [usePrefixIncrement] or [usePostfixIncrement]
-  
-  * OperatorType.Xor = 12
-    * Binary infix operator.
-      * Denominations: '^' 'xor'
-      * Consumes (left/right): bool/bool
-      * Returns bool
-    * Usage: 
-  
-  * OperatorType.Contains = 13
-    * Binary infix operator.
-      * Denominations: 'con'
-      * Consumes (left/right): string/string
-      * Returns bool
-    * Usage:
-      * [myself] con [self]
-  
-  * OperatorType.StartsWith = 14
-    * Binary infix operator.
-      * Denominations: 'stw'
-      * Consumes (left/right): string/string
-      * Returns bool
-    * Usage:
-      * [motherland] stw [mo]
-  
-  * OperatorType.EndsWith = 15
-    * Binary infix operator.
-      * Denominations: 'edw'
-      * Consumes (left/right): string/string
-      * Returns bool
-    * Usage:
-      * [life] edw [e]
-  
-  * OperatorType.Empty = 16
-    * Unary prefix operator.
-      * Denominations: 'emp'
-      * Consumes (right): T
-      * Returns bool
-    * Usage:
-      * emp [soul]
-  
-  * OperatorType.NotEmpty = 17
-    * Unary prefix operator.
-      * Denominations: 'nep'
-      * Consumes (right): T
-      * Returns bool
-    * Usage:
-      * nep [mind]
-  
-  * OperatorType.UnaryPlus = 18
-    * Unary prefix operator.
-      * Denominations: '+'
-      * Consumes (right): number
-      * Returns number
-    * Usage:
-      * +[5]
-  
-  * OperatorType.Plus = 19
-    * Binary infix operator.
-      * Denominations: '+'
-      * Consumes (left/right): number/number
-      * Returns number
-    * Usage:
-      * [2] + [4]
-  
-  * OperatorType.UnaryMinus = 20
-    * Unary prefix operator.
-      * Denominations: '-'
-      * Consumes (right): number
-      * Returns number
-    * Usage:
-      * -[5]
-  
-  * OperatorType.Minus = 21
-    * Binary infix operator.
-      * Denominations: '-'
-      * Consumes (left/right): number/number
-      * Returns number
-    * Usage:
-      * [6] - [8]
-  
-  * OperatorType.Multiple = 22
-    * Binary infix operator.
-      * Denominations: '\*'
-      * Consumes (left/right): number/number
-      * Returns number
-    * Usage:
-      * [4] * [4]
-  
-  * OperatorType.Reminder = 23
-    * Binary infix operator.
-      * Denominations: '%'
-      * Consumes (left/right): number/number
-      * Returns number
-    * Usage:
-      * [4] % [3]
-  
-  * OperatorType.Divide = 24
-    * Binary infix operator.
-      * Denominations: '/'
-      * Consumes (left/right): number/number
-      * Returns number
-    * Usage:
-      * [4] / [1]
-  
-  * OperatorType.Invert = 25
-    * Binary infix operator.
-      * Denominations: '~'
-      * Consumes (right): bool
-      * Returns bool
-    * Usage:
-      * ~[isOn]
-  
-  * OperatorType.OpenRoundBracket = 26
-    * Multiarity circumflex operator.
-      * Denominations: '('
-      * Consumes (some): operators
-      * Returns T
-  
-  * OperatorType.CloseRoundBracket = 27
-    * Multiarity circumflex operator.
-      * Denominations: ')'
-      * Consumes (some): operators
-      * Returns T
-  
-  * OperatorType.OpenCurlyBracket = 28
-    * Multiarity circumflex operator.
-      * Denominations: '{'
-      * To be developed
-  
-  * OperatorType.CloseCurlyBracket = 29
-    * Multiarity circumflex operator.
-      * Denominations: '}'
-      * To be developed
-  
-  * OperatorType.OpenSquareBracket = 30
-    * Multiarity circumflex operator.
-      * Denominations: '['
-      * To be developed
-  
-  * OperatorType.CloseSquareBracket = 31
-    * Multiarity circumflex operator.
-      * Denominations: ']'
-      * To be developed
-  
-  * OperatorType.Factorial = 32   
-    * Unary postfix operator.
-      * Denominations: '!'
-      * Consumes (left): number
-      * Returns number
-    * Usage:
-      * ![0]
+**Denominations** - symbols that presents the operator. One operator can have several denominations. One denomination can present several operators (like '+' is unary and binary plus). Each operator has a main denomination.
