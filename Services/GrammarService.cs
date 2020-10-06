@@ -76,45 +76,23 @@ namespace FerOmega.Services
             return Operators.Count(x => x.Denotations.Contains(denotation) && x.Fixity == fixity) == 1;
         }
 
-        public Operand EnsureEscaped(Operand operand)
+        public string EnsureEscaped(string vaalue)
         {
-            var value = operand.Value;
-            
-            if (!operand.Value.StartsWith(OpenEscapeOperator.MainDenotation))
-            {
-                value = $"{OpenEscapeOperator.MainDenotation}{operand.Value}";
-            }
-            
-            if (!operand.Value.EndsWith(CloseEscapeOperator.MainDenotation))
-            {
-                value = $"{CloseEscapeOperator.MainDenotation}{operand.Value}";
-            }
-
-            return new Operand(value)
-            {
-                Priority = operand.Priority,
-                OperatorType = operand.OperatorType,
-            };
+            return $"{OpenEscapeOperator.MainDenotation}{vaalue}{CloseEscapeOperator.MainDenotation}";
         }
 
-        public Operand EnsureUnescaped(Operand operand)
+        public string EnsureUnescaped(string value)
         {
-            var value = operand.Value;
-            
-            if (operand.Value.StartsWith(OpenEscapeOperator.MainDenotation) &&
-                operand.Value.EndsWith(CloseEscapeOperator.MainDenotation))
+            if (!value.StartsWith(OpenEscapeOperator.MainDenotation) ||
+                !value.EndsWith(CloseEscapeOperator.MainDenotation))
             {
-                var start = OpenEscapeOperator.MainDenotation.Length;
-                var length = operand.Value.Length - 1 - CloseEscapeOperator.MainDenotation.Length;
-                
-                value = $"{operand.Value.Substring(start, length)}";
+                return value;
             }
-            
-            return new Operand(value, false)
-            {
-                Priority = operand.Priority,
-                OperatorType = operand.OperatorType,
-            };
+
+            var start = OpenEscapeOperator.MainDenotation.Length;
+            var length = value.Length - 1 - CloseEscapeOperator.MainDenotation.Length;
+                
+            return $"{value.Substring(start, length)}";
         }
 
         private Operator[] CheckOperators(Operator[] operators)

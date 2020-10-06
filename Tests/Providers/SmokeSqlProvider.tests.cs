@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Linq;
+using FerOmega.Entities;
 using NUnit.Framework;
 
 namespace FerOmega.Tests.Providers
@@ -10,27 +12,27 @@ namespace FerOmega.Tests.Providers
             get
             {
                 yield return new TestCaseData("a + b + c",
-                                              new[] {"",},
+                                              new string[0],
                                               "@2 + @1 + @0",
                                               new[] {"c","b", "a"}).SetName("Simple");
 
                 yield return new TestCaseData(" a    +         b    +  c   ",
-                                              new[] {"",},
+                                              new string[0],
                                               "@2 + @1 + @0",
                                               new[] {"c","b", "a"}).SetName("Trim");
 
                 yield return new TestCaseData("a + longItem + c",
-                                              new[] {"",},
+                                              new string[0],
                                               "@2 + @1 + @0",
                                               new[] {"c", "longItem", "a",}).SetName("LongOperand");
 
                 yield return new TestCaseData("a+longItem+c",
-                                              new[] {"",},
+                                              new string[0],
                                               "@2 + @1 + @0",
                                               new[] {"c", "longItem", "a",}).SetName("Compact");
 
                 yield return new TestCaseData("a",
-                                              new[] {"",},
+                                              new string[0],
                                               "@0",
                                               new[] {"a",}).SetName("Single");
 
@@ -50,7 +52,8 @@ namespace FerOmega.Tests.Providers
         {
             var tokens = TokenizationService.Tokenizate(equation);
             var tree = AstService.Convert(tokens);
-            var (sql, parameters) = SqlProvider.Convert(tree, allowedProperties);
+            var propertyDefinitions = allowedProperties.Select(x => new PropertyDef(x, x)).ToArray();
+            var (sql, parameters) = SqlProvider.Convert(tree, propertyDefinitions);
             
             Assert.AreEqual(expectedSql, sql);
             

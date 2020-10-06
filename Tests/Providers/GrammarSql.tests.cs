@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Linq;
+using FerOmega.Entities;
 using FerOmega.Entities.AbstractSyntax;
 using FerOmega.Entities.InternalSyntax;
 using FerOmega.Entities.InternalSyntax.Enums;
@@ -353,7 +355,8 @@ namespace FerOmega.Tests.Providers
 
             try
             {
-                (sql, parameters) = SqlProvider.Convert(tree, allowedProperties);
+                var propertyDefinitions = allowedProperties.Select(x => new PropertyDef(x, x)).ToArray();
+                (sql, parameters) = SqlProvider.Convert(tree, propertyDefinitions);
             }
             catch (Exception e)
             {

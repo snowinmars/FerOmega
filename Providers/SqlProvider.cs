@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FerOmega.Entities;
 using FerOmega.Entities.AbstractSyntax;
 using FerOmega.Entities.InternalSyntax;
 using FerOmega.Entities.InternalSyntax.Enums;
@@ -20,7 +21,8 @@ namespace FerOmega.Providers
 
         private readonly IGrammarService<T> grammarService;
 
-        public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree, params string[] allowedProperties)
+        public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree, 
+            params PropertyDef[] properties)
         {
             if (tree.IsEmpty)
             {
@@ -40,19 +42,20 @@ namespace FerOmega.Providers
                                {
                                    var operand = (Operand)n.Body;
 
-                                   var unescapedOperand = grammarService.EnsureUnescaped(operand);
-                                   
-                                   var shouldBeEscaped = !allowedProperties.Contains(unescapedOperand.Value);
+                                   var unescapedOperand = grammarService.EnsureUnescaped(operand.Value);
 
-                                   if (shouldBeEscaped)
+                                   var isSqlColumn = properties.Any(x => x.From == unescapedOperand);
+
+                                   if (isSqlColumn)
                                    {
-                                       stack.Push($"@{parameters.Count}");
-                                       parameters.Add(unescapedOperand.Value);
+                                       var sqlProperty = properties.First(x => x.From == unescapedOperand).To;
+                                       var escapedOperand = grammarService.EnsureEscaped(sqlProperty);
+                                       stack.Push(escapedOperand);
                                    }
                                    else
                                    {
-                                       var escapedOperand = grammarService.EnsureEscaped(operand);
-                                       stack.Push(escapedOperand.Value);
+                                       stack.Push($"@{parameters.Count}");
+                                       parameters.Add(unescapedOperand);
                                    }
 
                                    break;

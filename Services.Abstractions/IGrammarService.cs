@@ -32,8 +32,8 @@ namespace FerOmega.Services.Abstractions
 
         bool IsUniqueByFixity(string denotation, Fixity fixity);
 
-        Operand EnsureEscaped(Operand operand);
+        string EnsureEscaped(string value);
 
-        Operand EnsureUnescaped(Operand operand);
+        string EnsureUnescaped(string value);
     }
 }
