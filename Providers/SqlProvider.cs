@@ -49,8 +49,8 @@ namespace FerOmega.Providers
                                    if (isSqlColumn)
                                    {
                                        var sqlProperty = properties.First(x => x.From == unescapedOperand).To;
-                                       var escapedOperand = grammarService.EnsureEscaped(sqlProperty);
-                                       stack.Push(escapedOperand);
+                                       var columnName = grammarService.EnsureUnescaped(sqlProperty);
+                                       stack.Push(columnName);
                                    }
                                    else
                                    {
