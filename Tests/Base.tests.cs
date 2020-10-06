@@ -20,12 +20,12 @@ namespace FerOmega.Tests
         {
             var internalGrammarConfig = new InternalGrammarConfig();
             var internalGrammarService = new GrammarService<InternalGrammarConfig>(internalGrammarConfig);
-            TokenizationService = new TokenizationService(internalGrammarService);
+            TokenizationService = new TokenizationService<InternalGrammarConfig>(internalGrammarService);
             var operatorService = new OperatorService(internalGrammarService);
             AstService = new AstService(internalGrammarService, operatorService);
             var sqlGrammarConfig = new SqlGrammarConfig();
             var sqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
-            SqlProvider = new SqlProvider(sqlGrammarService);
+            SqlProvider = new SqlProvider<SqlGrammarConfig>(sqlGrammarService);
         }
     }
 }

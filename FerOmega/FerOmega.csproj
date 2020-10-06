@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <AssemblyName>FerOmega.Providers</AssemblyName>
-        <RootNamespace>FerOmega.Providers</RootNamespace>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <AssemblyName>FerOmega.FerOmega</AssemblyName>
+        <RootNamespace>FerOmega.FerOmega</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>FerOmega</PackageId>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Entities\Entities.csproj" />
-      <ProjectReference Include="..\Providers.Abstractions\Providers.Abstractions.csproj" />
-      <ProjectReference Include="..\Services.Abstractions\Services.Abstractions.csproj" />
+      <ProjectReference Include="..\Providers\Providers.csproj" />
       <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 
@@ -17,6 +17,10 @@
       <Compile Include="..\_configuration\build\dotnet\CommonAssemblyAttributes.cs">
         <Link>AssemblyInfo\CommonAssemblyAttributes.cs</Link>
       </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.8" />
     </ItemGroup>
 
 </Project>

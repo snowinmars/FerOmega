@@ -10,14 +10,15 @@ using FerOmega.Services.configs;
 
 namespace FerOmega.Providers
 {
-    internal class SqlProvider : ISqlProvider
+    internal class SqlProvider<T> : ISqlProvider
+        where T : IGrammarConfig
     {
-        public SqlProvider(IGrammarService<SqlGrammarConfig> grammarService)
+        public SqlProvider(IGrammarService<T> grammarService)
         {
             this.grammarService = grammarService;
         }
 
-        private readonly IGrammarService<SqlGrammarConfig> grammarService;
+        private readonly IGrammarService<T> grammarService;
 
         public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree, params string[] allowedProperties)
         {

@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Providers", "Providers\Prov
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Providers.Abstractions", "Providers.Abstractions\Providers.Abstractions.csproj", "{1E63F535-2BF9-4C00-8F76-BD2D1EE03C0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FerOmega", "FerOmega\FerOmega.csproj", "{D20EDC67-A7A0-400F-BE1C-68856EA1D771}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,5 +53,9 @@ Global
 		{1E63F535-2BF9-4C00-8F76-BD2D1EE03C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E63F535-2BF9-4C00-8F76-BD2D1EE03C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E63F535-2BF9-4C00-8F76-BD2D1EE03C0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D20EDC67-A7A0-400F-BE1C-68856EA1D771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D20EDC67-A7A0-400F-BE1C-68856EA1D771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D20EDC67-A7A0-400F-BE1C-68856EA1D771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D20EDC67-A7A0-400F-BE1C-68856EA1D771}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

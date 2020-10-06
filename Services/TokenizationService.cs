@@ -5,14 +5,15 @@ using FerOmega.Services.configs;
 
 namespace FerOmega.Services
 {
-    internal class TokenizationService : ITokenizationService
+    internal class TokenizationService<T> : ITokenizationService
+        where T : IGrammarConfig
     {
-        public TokenizationService(IGrammarService<InternalGrammarConfig> grammarService)
+        public TokenizationService(IGrammarService<T> grammarService)
         {
             this.grammarService = grammarService;
         }
 
-        private readonly IGrammarService<InternalGrammarConfig> grammarService;
+        private readonly IGrammarService<T> grammarService;
 
         public string[] Tokenizate(string equation)
         {

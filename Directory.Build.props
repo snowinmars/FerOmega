@@ -18,20 +18,20 @@
 
     <PropertyGroup>
         <Version>$(AssemblyVersion)</Version>
-        <Authors>snowinmars TODO</Authors>
-        <Company>snowinmars TODO</Company>
-        <Product>Book-Service-$(Watermark)</Product>
+        <Authors>snowinmars</Authors>
+        <Company>snowinmars</Company>
+        <Product>FerOmega-$(Watermark)</Product>
         <AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
         <FileVersion>$(AssemblyVersion)</FileVersion>
         <NeutralLanguage>en</NeutralLanguage>
-        <Description>$(Watermark)</Description>
+        <Description>An oData implementation: convert a string equation into sql where clause or anything else</Description>
         <Copyright>GNU/GPL 3.0</Copyright>
         <PackageLicenseUrl>https://www.gnu.org/licenses/gpl-3.0.html</PackageLicenseUrl>
         <PackageProjectUrl>https://www.gnu.org</PackageProjectUrl>
-        <PackageIconUrl>TODO: [DT]</PackageIconUrl>
-        <RepositoryUrl>https://ya.ru/TODO:[DT]</RepositoryUrl>
+        <PackageIconUrl></PackageIconUrl>
+        <RepositoryUrl></RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>TODO: [DT]</PackageTags>
-        <PackageReleaseNotes>TODO: [DT]</PackageReleaseNotes>
+        <PackageTags>oData</PackageTags>
+        <PackageReleaseNotes></PackageReleaseNotes>
     </PropertyGroup>
 </Project>
