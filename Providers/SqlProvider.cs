@@ -129,6 +129,42 @@ namespace FerOmega.Providers
                                    break;
                                }
 
+                               case OperatorType.Separator:
+                               {
+                                   var leftOperand = stack.Pop();
+                                   var rightOperand = stack.Pop();
+
+                                   var internalOperator = (Operator)node.Body;
+
+                                   var sqlOperator =
+                                       sqlGrammarService.Operators.FirstOrDefault(x => x.OperatorType ==
+                                           internalOperator.OperatorType);
+
+                                   if (sqlOperator == default)
+                                   {
+                                       throw new ArgumentOutOfRangeException();
+                                   }
+
+                                   var result = $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}";
+
+                                   stack.Push(result);
+
+                                   break;
+                               }
+
+                               case OperatorType.InRange:
+                               {
+                                   // InRange doesn't allow the right operand to be unwrapped with brackets
+                                   // and InRange doesn't allow the 'a in (1)' syntax
+                                   // Literal - because if there is any operator here, there are implicit brackets
+                                   if (node.Children.Last().Body.OperatorType == OperatorType.Literal)
+                                   {
+                                       throw new InvalidOperationException($"{nameof(OperatorType.InRange)} requires right operand to be wrapped with {nameof(OperatorType.OpenPriorityBracket)} {nameof(OperatorType.ClosePriorityBracket)} and InRange operator required right operand list have length greater then one");
+                                   }
+
+                                   goto default;
+                               }
+
                                // most operators go here
                                default:
                                {
@@ -171,14 +207,6 @@ namespace FerOmega.Providers
                                        var rightOperand = stack.Pop();
 
                                        var sb = new StringBuilder();
-
-                                       // never change separators
-                                       if (node.Body.OperatorType == OperatorType.Separator)
-                                       {
-                                           result = $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}";
-
-                                           break;
-                                       }
 
                                        // restore brackets from ast
                                        // there are only two children here

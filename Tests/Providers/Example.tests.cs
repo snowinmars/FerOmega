@@ -154,7 +154,7 @@ namespace FerOmega.Tests.Providers
         [Test]
         public void StringLike()
         {
-            const string input = "[name] contains [and] or ([name] startsWith [Alex] and [name] endsWith [ndr])";
+            const string input = "[name] contains [and] or ([name]   startsWith   [Alex] and [name]endsWith[ndr])";
             const string expectedSql = "name like '%@2%' or name like '@1%' and name like '%@0'";
 
             var expectedParameters = new object[]
