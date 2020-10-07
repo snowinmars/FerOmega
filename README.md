@@ -9,12 +9,15 @@ Unstable beta.
 
 The core operators works: `+`, `-`, `*`, `/`, `%`, `>`, `>=`, `<`, `<=`, `=`, `!=`, `()`, `[]`, `contains`, `startsWith`, `endsWith`, `in`.
 
+See [examples](TranslationExamples.md).
+
 ## Installation
 
-Currently I don't recommend you to install it via nuget or whatever.
-I'll fix some issues, test it on my prod and then I'll provie an instructions.
+Currently I don't recommend you to install it via nuget or whatever. It's simply unstable.
 
-Feel free to copypaste it, if you'd like too, but the interfaces will be changed.
+I'll fix some issues, test it on my prod and then I'll provide an instructions.
+
+Feel free to copypaste it, if you'd like too. Check out the nuget `FerOmega` package, but on your own risk.
 
 ## Basic usage
 ```csharp
@@ -23,7 +26,7 @@ ITokenizationService tokenizationService;
 IAstService astService;
 ISqlProvider sqlProvider;
 
-const string equation = "id === [1690ffef-7249-4384-8cba-58842e8d48df] and ((length + 1) * 2 <= 14 or email = [email])"; // [] means escaping
+const string equation = "[id] === [1690ffef-7249-4384-8cba-58842e8d48df] and (([length] + 1) * 2 <= 14 or [email] = [email])"; // [] means escaping
 
 string[] tokens = tokenizationService.Tokenizate(equation);
 Tree<AbstractToken> tree = astService.Convert(tokens);
@@ -31,16 +34,16 @@ Tree<AbstractToken> tree = astService.Convert(tokens);
 PropertyDef[] allowedProperties = new[] 
 {
   sqlProvider.DefineProperty().From("id").ToSql("id"),
-  sqlProvider.DefineProperty().From("length").ToSql("table.length")
-  sqlProvider.DefineProperty().From("email").ToSql("table2.email")
+  sqlProvider.DefineProperty().From("length").ToSql("table.length"),
+  sqlProvider.DefineProperty().From("email").ToSql("table2.email"),
 };
 
 (string where, object[] parameters) = sqlProvider.Convert(tree, allowedProperties);
-// "id = @4 and ((table.length + @3) * @2 <= @1 or table2.email = @0)"
-// [3, 1, 2, 14, "email"]
+// "id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )"
+// ["email", 14, 2, 1, Guid.Parse("1690ffef-7249-4384-8cba-58842e8d48df")]
 
+// use it in your query it any way kinda like
 const string sql = @"select * from table";
-
 db.Execute($"{sql} where {where}", parameters);
 ```
 
@@ -49,6 +52,11 @@ Override any part of the flow if you have to.
 - `TokenizationService` should parse string into a list of tokens. This is how you say that in `"-1--1=0` is `"-" "1" "-" "-" "1" "=" "0"`
 - `AstService` convert tokens into abstract syntax tree using extended shunting yarn algorithm. It could wrap any literal with escape symbols.
 - `SqlProvider` converts tree into sql string and parameters. It consumes allowed properies to understand what literal should be extracted into sql parameters.
+
+## What I don't like
+
+- `db.Execute($"{sql} where {where}");` seems like a bad solution. I mean, not in security, but it's easy to misplace something here. Should I provide a builder?
+- How to call sql functions?
 
 ## Dependency injections
 
@@ -116,6 +124,31 @@ Could be
 
 **Denominations** - symbols that presents the operator. One operator can have several denominations. One denomination can present several operators (like '+' is unary and binary plus). Each operator has a main denomination.
 
-## What I don't like
+#### List
+- `+2` = 2
+- `-2` = -2
 
-- `db.Execute($"{sql} where {where}");` seems like a bad solution. I mean, not in security, but it's easy to misplace something here. Should I provide a builder?
+- `2 + 3` = 5
+- `2 - 3` = -1
+- `2 * 3` = 6
+- `2 / 3` = 0
+- `2 % 3` = 2
+- `2 + 2 * 2` = 6
+- `(2 + 2) * 2` = 8
+
+- `2 > 2` = false
+- `2 >= 2` = true
+- `2 < 2` = false
+- `2 <= 2` = true
+- `2 == 2` = true
+- `2 != 2` = false
+
+- `true and false` = false
+- `true or false` = true
+- `true xor false` = true
+- `not true` = false
+
+- `[name] contains [am]` = true
+- `[name] startsWith [am]` = false
+- `[name] endsWith [am]` = false
+- `2 in (1, 2, 3)` = true

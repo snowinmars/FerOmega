@@ -8,5 +8,7 @@ namespace FerOmega.Providers.Abstractions
     {
         (string sql, object[] parameters) Convert(Tree<AbstractToken> tree,
             params PropertyDef[] properties);
+
+        PropertyDef.IBuilderFrom DefineProperty();
     }
 }

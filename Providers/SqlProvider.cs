@@ -206,6 +206,11 @@ namespace FerOmega.Providers
             return (stack.Pop(), parameters.ToArray());
         }
 
+        public PropertyDef.IBuilderFrom DefineProperty()
+        {
+            return new PropertyDef.BuilderFrom();
+        }
+
         private string HandleLike(Node<AbstractToken> n, string leftOperand, string rightOperand, string format)
         {
             var internalOperator = (Operator)n.Body;
