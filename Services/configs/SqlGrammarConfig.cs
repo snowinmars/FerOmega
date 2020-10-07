@@ -168,6 +168,11 @@ namespace FerOmega.Services.configs
                                                                "in"))
                                 .AddOperatorGroup(new Operator(Arity.Binary,
                                                                Associativity.Left,
+                                                               OperatorType.Separator,
+                                                               Fixity.Infix,
+                                                               ","))
+                                .AddOperatorGroup(new Operator(Arity.Binary,
+                                                               Associativity.Left,
                                                                OperatorType.And,
                                                                Fixity.Infix,
                                                                "and"))

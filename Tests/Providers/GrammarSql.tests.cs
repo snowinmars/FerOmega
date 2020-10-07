@@ -323,6 +323,17 @@ namespace FerOmega.Tests.Providers
                                                   0, 2, 1, 1,
                                               }).SetName("Nesting brackets");
 
+                yield return new TestCaseData("[count] in (1, 2, 3)",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "count in ( @2 , @1 , @0 )",
+                                              new object[]
+                                              {
+                                                  3, 2, 1,
+                                              }).SetName(nameof(OperatorType.InRange));
+
                 yield return new TestCaseData("a & b & c",
                                               "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd))
                                                                 .Ignore("Implement later");

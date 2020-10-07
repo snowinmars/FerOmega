@@ -172,10 +172,32 @@ namespace FerOmega.Services
                         break;
                     }
 
+                    case Arity.Multiarity:
+                    {
+                        // right operand of multiarity operator should be wrapped in priority brackets
+                        // like a in (1, 2)
+                        //           ^----^
+                        // there's a way to avoid it: https://blog.kallisti.net.nz/2008/02/extension-to-the-shunting-yard-algorithm-to-allow-variable-numbers-of-arguments-to-functions/
+
+                        var nextOperators = grammarService.GetPossibleOperators(token.Next);
+
+                        var isOpenPriorityBracket = nextOperators.Length == 1 &&
+                                                    nextOperators.First().OperatorType ==
+                                                    OperatorType.OpenPriorityBracket;
+
+                        if (!isOpenPriorityBracket)
+                        {
+                            throw new InvalidOperationException();
+                        }
+
+                        stack.Push(@operator);
+
+                        break;
+                    }
+
                     case Arity.Nulary:
                     case Arity.Ternary:
                     case Arity.Kvatery:
-                    case Arity.Multiarity:
                     {
                         throw new NotSupportedException();
                     }

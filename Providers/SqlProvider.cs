@@ -115,7 +115,7 @@ namespace FerOmega.Providers
                                        {
                                            var leftOperand = stack.Pop();
                                            var rightOperand = stack.Pop();
-                                           var sb = new StringBuilder(); // restore parenthesis
+                                           var sb = new StringBuilder(); // restore brackets
 
                                            // there are only two children here
                                            // first means left

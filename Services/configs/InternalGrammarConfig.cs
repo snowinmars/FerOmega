@@ -186,7 +186,7 @@ namespace FerOmega.Services.configs
                                                                "!==",
                                                                "<>",
                                                                "neq"))
-                                .AddOperatorGroup(new Operator(Arity.Multiarity,
+                                .AddOperatorGroup(new Operator(Arity.Binary,
                                                                Associativity.Left,
                                                                OperatorType.InRange,
                                                                Fixity.Infix,
@@ -206,6 +206,11 @@ namespace FerOmega.Services.configs
                                                                OperatorType.EndsWith,
                                                                Fixity.Infix,
                                                                "endsWith"))
+                                .AddOperatorGroup(new Operator(Arity.Binary,
+                                                               Associativity.Left,
+                                                               OperatorType.Separator,
+                                                               Fixity.Infix,
+                                                               ","))
                                 .AddOperatorGroup(new Operator(Arity.Binary,
                                                                Associativity.Left,
                                                                OperatorType.And,
@@ -246,12 +251,7 @@ namespace FerOmega.Services.configs
                                                                Fixity.Circumflex,
                                                                "]"))
                                 .AddOperatorGroup(new Operator(Arity.Nulary,
-                                                               Associativity.Ambivalent,
-                                                               OperatorType.Separator,
-                                                               Fixity.Infix,
-                                                               ","),
-                                                  new Operator(Arity.Nulary,
-                                                               Associativity.Ambivalent,
+                                                               Associativity.Left,
                                                                OperatorType.Terminator,
                                                                Fixity.Postfix,
                                                                ";"))
