@@ -66,15 +66,25 @@ I implement the following approaches, that should cover 90% of cases:
 
 #### As instances
 
-It will provide default implementations.
+It will provide default implementations as singletons.
 
 ```csharp
-var (tokenizationService, astService, sqlProvider) = FerOmegaInjections.ResolveDefault();
+// main
+var tokenizationService = FerOmegaInjections.TokenizationService;
+var astService = FerOmegaInjections.AstService;
+var sqlProvider = FerOmegaInjections.SqlProvider;
+
+// extra
+var internalGrammarConfig = FerOmegaInjections.InternalGrammarConfig;
+var internalGrammarService = FerOmegaInjections.InternalGrammarService;
+var operatorService = FerOmegaInjections.OperatorService;
+var sqlGrammarConfig = FerOmegaInjections.SqlGrammarConfig;
+var sqlGrammarService = FerOmegaInjections.SqlGrammarService;
 ```
 
 #### As services
 
-It will provide default implementations as singletones.
+It will provide default implementations as singletons.
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -85,7 +95,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ## Sql injections
 
-It looks like it's possible to make it fully secured. For now it could depends, but I strongly believe that it's possible to forbid sql injections.
+It looks like it's possible to make it fully secured.
 
 ## Syntax
 The basic syntax (operator, etc.) describes in `/Services/configs/InternalGrammarConfig.cs`. You can override it with your own grammar config.
@@ -98,27 +108,31 @@ IGrammarService<CustomGrammarConfig> customGrammarService = new GrammarService<C
 ITokenizationService tokenizationService  = new TokenizationService(customGrammarService);
 ```
 
+## Providers
+
+For now, the only one provider exists: sql provider. But it's possible to implement any ast>custom syntax provider.
+
 ## Operators
 Every operator has arity, fixity, associativity, priority and denominations.
 
 **Arity** - how many operands the operator consumes.
 Could be 
-  * *Nulary*: operator doesn't consumes operands (like `,` in `[1, 2]`)
-  * *Unary*: operator consumes one operand (like factorial)
-  * *Binary*: operator consumes two operands (like plus)
-  * *Ternary*: operator consumes three operands (like ?:)
+  * *Nulary*: operator doesn't consumes operands
+  * *Unary*: operator consumes one operand (like ! (factorial))
+  * *Binary*: operator consumes two operands (like + (binary plus))
+  * *Ternary*: operator consumes three operands (like ?: (ternary))
   * *Kvatery*: operator consumes four operands
   * *Multiarity*: operator consumes several operands (like round brackets: its' operands are other operators and it consumes several operands)
 
 **Fixity** - operator positioning
 Could be
-  * *Prefix*: operator before operand (like unary minus)
-  * *Postfix*: operator after operand (like factorial)
-  * *Infix*: operator between operands (like multiply)
+  * *Prefix*: operator before operand (like - (unary minus))
+  * *Postfix*: operator after operand (like ! (factorial))
+  * *Infix*: operator between operands (like * (multiply))
   * *Circumflex*: operator around operands (like brackets)
-  * *Postcircumflex*: postfix operator to first operand and circumflex operator to second operand (like array itterator: arr[i]: 'arr' and 'i' are operands)
+  * *Postcircumflex*: postfix operator to first operand and circumflex operator to second operand (like array iterator: arr[i]: 'arr' and 'i' are operands)
 
-**Assotiativity** - Should the operator be calculated from left to right or from right to left
+**Associativity** - Should the operator be calculated from left to right or from right to left
 
 **Priority** - operator with priority 3 will be calculated before operator with priority 5
 

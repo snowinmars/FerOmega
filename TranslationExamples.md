@@ -3,7 +3,7 @@
 ## Advices
 
 - Do escape with `[]` every string. Because `[boring]` will be translated as `'boring'`, but `boring` - as `'b' or 'ing'`.
-
+- Beware of operators' priority. Check out the `/Services/configs/` config prioritize. By default, the sql provider will restore all ambivalent brackets, f.e. `1 + 2 + 3` will be transformed into `( 1 + 2 ) + 3` to expose that it's ok.
 ## Examples
 
 #### Simple math
@@ -19,7 +19,7 @@ It removes unnecessary brackets.
 
 #### Range math
 
-Each operator will be wrapped with spaces.
+Each sql operator will be wrapped with spaces.
 
 - Input query: `[location] in ([Moscow], [St. Petersburg]) and [country] in ([ru], [us])`
 - Allowed properties:
@@ -42,7 +42,9 @@ It will allow filtering for complex queries.
 
 #### String like
 
-- Input query: `[name] contains [and] or ([name] startsWith [Alex] and [name] endsWith [ndr])`
+Having more/less then enough spaces is fine
+
+- Input query: `[name] contains [and] or ([name]   startsWith   [Alex] and [name]endsWith[ndr])`
 - Allowed properties:
     - `'name' -> 'name'`
 - Output query: `name like '%@2%' or name like '@1%' and name like '%@0'`
