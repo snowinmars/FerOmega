@@ -13,7 +13,7 @@ namespace FerOmega.Entities.InternalSyntax
             : base(operatorType, -1)
 
         // priority will be calculated in runtime based on operators declaration in config files
-        // otherwise it will be hard to maintain priority
+        // otherwise it will be hard to maintain it properly
         {
             Arity = arity;
             Associativity = associativity;

@@ -9,13 +9,13 @@ namespace FerOmega.Entities.InternalSyntax
             Next = i == tokens.Length - 1 ? NonExistingOperator : tokens[i + 1];
         }
 
-        public static readonly string NonExistingOperator = default;
+        public static readonly string NonExistingOperator = "None";
 
-        public string Current { get; set; }
+        public string Current { get; }
 
-        public string Next { get; set; }
+        public string Next { get; }
 
-        public string Previous { get; set; }
+        public string Previous { get; }
 
         public override string ToString()
         {

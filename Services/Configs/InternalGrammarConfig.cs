@@ -6,91 +6,8 @@ using FerOmega.Services.Abstractions;
 
 namespace FerOmega.Services.configs
 {
-    public class InternalGrammarConfig : IGrammarConfig
+    internal class InternalGrammarConfig : AbstractGrammarConfig, IGrammarConfig
     {
-        private static IEnumerable<string> Escape(IEnumerable<string> denotations)
-        {
-            foreach (var denotation in denotations)
-            {
-                switch (denotation)
-                {
-                case "+":
-                    yield return @"\+";
-
-                    break;
-
-                case "=":
-                case "==":
-                case "===":
-                    yield return "=+";
-
-                    break;
-
-                case "&":
-                case "&&":
-                    yield return "&+";
-
-                    break;
-
-                case "*":
-                    yield return @"\*";
-
-                    break;
-
-                case "^":
-                    yield return @"\^";
-
-                    break;
-
-                case "/":
-                    yield return @"\/";
-
-                    break;
-
-                case "|":
-                case "||":
-                    yield return @"\|+";
-
-                    break;
-
-                case "(":
-                    yield return @"\(";
-
-                    break;
-
-                case ")":
-                    yield return @"\)";
-
-                    break;
-
-                case "[":
-                    yield return ""; // ?
-
-                    break;
-
-                case "]":
-                    yield return ""; // ?
-
-                    break;
-
-                case "{":
-                    yield return @"\{";
-
-                    break;
-
-                case "}":
-                    yield return @"\}";
-
-                    break;
-
-                default:
-                    yield return denotation;
-
-                    break;
-                }
-            }
-        }
-
         public Operator[] ConfigOperators()
         {
             // there are less priority operators at the bottom and more priority operators at the top
@@ -256,24 +173,6 @@ namespace FerOmega.Services.configs
                                                                Fixity.Postfix,
                                                                ";"))
                                 .Build();
-        }
-
-        public string GetOperatorsAsRegex(IEnumerable<string> denotations)
-        {
-            // OrderByDescending - see the difference between '(!=|!|=)' and '(!|=|!=)' regexes?
-            var escapes = Escape(denotations.OrderByDescending(x => x.Length))
-                          .Distinct()                                 // I can have overloaded operators
-                          .Where(x => !string.IsNullOrWhiteSpace(x)); // I want to ignore some operators
-
-            // f.e.,
-            //      input: a>5  &&  b+7  ==2
-            //      regex: >|   &+| \+|  =+
-            var operatorRegex = string.Join("|", escapes);
-
-            const string valueRegex = "\\[.*?\\]";
-
-            // if regex pattern is in the global scope, the delimiters will be included to the Matches collection
-            return $"({valueRegex}|{operatorRegex})";
         }
     }
 }

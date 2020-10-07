@@ -10,7 +10,7 @@ namespace FerOmega.Entities.InternalSyntax
             Priority = priority;
         }
 
-        public OperatorType OperatorType { get; set; }
+        public OperatorType OperatorType { get; }
 
         public int Priority { get; set; }
 

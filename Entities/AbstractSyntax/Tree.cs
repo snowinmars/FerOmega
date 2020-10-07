@@ -32,7 +32,14 @@ namespace FerOmega.Entities.AbstractSyntax
             return tree.Root;
         }
 
-        public void BreadthFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave = null)
+        public void ResetColor()
+        {
+            Root.Color = NodeColor.White;
+
+            BreadthFirst(default, node => node.Color = NodeColor.White);
+        }
+
+        private void BreadthFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave = null)
         {
             var queue = new Queue<Node<T>>();
 
@@ -56,6 +63,8 @@ namespace FerOmega.Entities.AbstractSyntax
 
                 onLeave?.Invoke(node);
             }
+
+            // how to reset colors here?
         }
 
         public void DeepFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave = null)
@@ -98,6 +107,8 @@ namespace FerOmega.Entities.AbstractSyntax
                     throw new ArgumentOutOfRangeException();
                 }
             }
+
+            ResetColor();
         }
     }
 }

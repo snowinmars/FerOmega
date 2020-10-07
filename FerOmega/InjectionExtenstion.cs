@@ -38,18 +38,18 @@ namespace FerOmega.FerOmega
             var internalGrammarConfig = new InternalGrammarConfig();
             var internalGrammarService = new GrammarService<InternalGrammarConfig>(internalGrammarConfig);
 
-            services.AddSingleton<ITokenizationService, TokenizationService<InternalGrammarConfig>>((_) =>
+            services.AddSingleton<ITokenizationService, TokenizationService<InternalGrammarConfig>>(_ =>
                 new TokenizationService<InternalGrammarConfig>(internalGrammarService));
 
             var operatorService = new OperatorService(internalGrammarService);
 
-            services.AddSingleton<IAstService, AstService>((_) =>
+            services.AddSingleton<IAstService, AstService>(_ =>
                                                                new AstService(internalGrammarService, operatorService));
 
             var sqlGrammarConfig = new SqlGrammarConfig();
             var sqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
 
-            services.AddSingleton<ISqlProvider, SqlProvider<SqlGrammarConfig>>((_) =>
+            services.AddSingleton<ISqlProvider, SqlProvider<SqlGrammarConfig>>(_ =>
                                                                                    new SqlProvider<SqlGrammarConfig
                                                                                    >(sqlGrammarService));
 

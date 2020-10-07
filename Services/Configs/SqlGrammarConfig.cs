@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FerOmega.Entities.InternalSyntax;
@@ -6,91 +7,12 @@ using FerOmega.Services.Abstractions;
 
 namespace FerOmega.Services.configs
 {
-    public class SqlGrammarConfig : IGrammarConfig
+    internal class SqlGrammarConfig : AbstractGrammarConfig, IGrammarConfig
     {
-        private static IEnumerable<string> Escape(IEnumerable<string> denotations)
-        {
-            foreach (var denotation in denotations)
-            {
-                switch (denotation)
-                {
-                case "+":
-                    yield return @"\+";
-
-                    break;
-
-                case "=":
-                    yield return "=+";
-
-                    break;
-
-                case "&&":
-                    yield return "&+";
-
-                    break;
-
-                case "*":
-                    yield return @"\*";
-
-                    break;
-
-                case "^":
-                    yield return @"\^";
-
-                    break;
-
-                case "/":
-                    yield return @"\/";
-
-                    break;
-
-                case "||":
-                    yield return @"\|+";
-
-                    break;
-
-                case "(":
-                    yield return @"\(";
-
-                    break;
-
-                case ")":
-                    yield return @"\)";
-
-                    break;
-
-                case "[":
-                    yield return ""; // ?
-
-                    break;
-
-                case "]":
-                    yield return ""; // ?
-
-                    break;
-
-                case "{":
-                    yield return @"\{";
-
-                    break;
-
-                case "}":
-                    yield return @"\}";
-
-                    break;
-
-                default:
-                    yield return denotation;
-
-                    break;
-                }
-            }
-        }
-
         public Operator[] ConfigOperators()
         {
             // there are less priority operators at the bottom and more priority operators at the top
-            return ConfigBuilder.Start()
+            var operators = ConfigBuilder.Start()
                                 .AddOperatorGroup(new Operator(Arity.Unary,
                                                                Associativity.Right,
                                                                OperatorType.Not,
@@ -222,24 +144,15 @@ namespace FerOmega.Services.configs
                                                                Fixity.Circumflex,
                                                                "]"))
                                 .Build();
-        }
 
-        public string GetOperatorsAsRegex(IEnumerable<string> denotations)
-        {
-            // OrderByDescending - see the difference between '(!=|!|=)' and '(!|=|!=)' regexes?
-            var escapes = Escape(denotations.OrderByDescending(x => x.Length))
-                          .Distinct()                                 // I can have overloaded operators
-                          .Where(x => !string.IsNullOrWhiteSpace(x)); // I want to ignore some operators
+            var wrongOperator = operators.FirstOrDefault(x => x.Denotations.Length != 1);
 
-            // f.e.,
-            //      input: a>5  &&  b+7  ==2
-            //      regex: >|   &+| \+|  =+
-            var operatorRegex = string.Join("|", escapes);
+            if (wrongOperator != default)
+            {
+                throw new InvalidOperationException($"Sql operators can have only one denotation, check out {wrongOperator}");
+            }
 
-            const string valueRegex = "\\[.*?\\]";
-
-            // if regex pattern is in the global scope, the delimiters will be included to the Matches collection
-            return $"({valueRegex}|{operatorRegex})";
+            return operators;
         }
     }
 }

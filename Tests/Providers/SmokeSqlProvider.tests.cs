@@ -13,7 +13,7 @@ namespace FerOmega.Tests.Providers
             {
                 yield return new TestCaseData("a + b + c",
                                               new string[0],
-                                              "@2 + @1 + @0",
+                                              "( @2 + @1 ) + @0",
                                               new[]
                                               {
                                                   "c", "b", "a"
@@ -27,17 +27,17 @@ namespace FerOmega.Tests.Providers
                                                   "c", "b", "a"
                                               }).SetName("Brackets");
 
-                yield return new TestCaseData("(a + b) + c",
+                yield return new TestCaseData("a + (b + c)",
                                               new string[0],
-                                              "@2 + @1 + @0",
+                                              "@2 + ( @1 + @0 )",
                                               new[]
                                               {
-                                                  "c", "b", "a"
-                                              }).SetName("Remove unnecessary brackets");
+                                                  "c", "b", "a",
+                                              }).SetName("Save unnecessary brackets");
 
                 yield return new TestCaseData(" a    +         b    +  c   ",
                                               new string[0],
-                                              "@2 + @1 + @0",
+                                              "( @2 + @1 ) + @0",
                                               new[]
                                               {
                                                   "c", "b", "a"
@@ -45,7 +45,7 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData("a + longItem + c",
                                               new string[0],
-                                              "@2 + @1 + @0",
+                                              "( @2 + @1 ) + @0",
                                               new[]
                                               {
                                                   "c", "longItem", "a",
@@ -53,7 +53,7 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData("a+longItem+c",
                                               new string[0],
-                                              "@2 + @1 + @0",
+                                              "( @2 + @1 ) + @0",
                                               new[]
                                               {
                                                   "c", "longItem", "a",
