@@ -14,40 +14,64 @@ namespace FerOmega.Tests.Providers
                 yield return new TestCaseData("a + b + c",
                                               new string[0],
                                               "@2 + @1 + @0",
-                                              new[] {"c","b", "a"}).SetName("Simple");
+                                              new[]
+                                              {
+                                                  "c", "b", "a"
+                                              }).SetName("Simple");
 
                 yield return new TestCaseData("(a + b) * c",
                                               new string[0],
                                               "( @2 + @1 ) * @0",
-                                              new[] {"c", "b", "a"}).SetName("Brackets");
+                                              new[]
+                                              {
+                                                  "c", "b", "a"
+                                              }).SetName("Brackets");
 
                 yield return new TestCaseData("(a + b) + c",
                                               new string[0],
                                               "@2 + @1 + @0",
-                                              new[] {"c", "b", "a"}).SetName("Remove unnecessary brackets");
+                                              new[]
+                                              {
+                                                  "c", "b", "a"
+                                              }).SetName("Remove unnecessary brackets");
 
                 yield return new TestCaseData(" a    +         b    +  c   ",
                                               new string[0],
                                               "@2 + @1 + @0",
-                                              new[] {"c","b", "a"}).SetName("Trim");
+                                              new[]
+                                              {
+                                                  "c", "b", "a"
+                                              }).SetName("Trim");
 
                 yield return new TestCaseData("a + longItem + c",
                                               new string[0],
                                               "@2 + @1 + @0",
-                                              new[] {"c", "longItem", "a",}).SetName("LongOperand");
+                                              new[]
+                                              {
+                                                  "c", "longItem", "a",
+                                              }).SetName("LongOperand");
 
                 yield return new TestCaseData("a+longItem+c",
                                               new string[0],
                                               "@2 + @1 + @0",
-                                              new[] {"c", "longItem", "a",}).SetName("Compact");
+                                              new[]
+                                              {
+                                                  "c", "longItem", "a",
+                                              }).SetName("Compact");
 
                 yield return new TestCaseData("a",
                                               new string[0],
                                               "@0",
-                                              new[] {"a",}).SetName("Single");
+                                              new[]
+                                              {
+                                                  "a",
+                                              }).SetName("Single");
 
                 yield return new TestCaseData("   ",
-                                              new[] {"",},
+                                              new[]
+                                              {
+                                                  "",
+                                              },
                                               "",
                                               new string[0]).SetName("Empty");
             }

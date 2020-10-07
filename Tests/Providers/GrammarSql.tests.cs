@@ -324,31 +324,40 @@ namespace FerOmega.Tests.Providers
                                               }).SetName("Nesting brackets");
 
                 yield return new TestCaseData("a & b & c",
-                                              "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd)).Ignore("Implement later");
+                                              "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd))
+                                                                .Ignore("Implement later");
 
                 yield return new TestCaseData("a | b | c",
-                                              "[a] | [b] | [c]").SetName(nameof(OperatorType.BitwiseOr)).Ignore("Implement later");
+                                              "[a] | [b] | [c]").SetName(nameof(OperatorType.BitwiseOr))
+                                                                .Ignore("Implement later");
 
                 yield return new TestCaseData("a in (b)",
-                                              "[a] in ([b])").SetName(nameof(OperatorType.InRange) + "Length1").Ignore("Implement later");
+                                              "[a] in ([b])").SetName(nameof(OperatorType.InRange) + "Length1")
+                                                             .Ignore("Implement later");
 
                 yield return new TestCaseData("a in (b, c)",
-                                              "[a] in ([b], [c])").SetName(nameof(OperatorType.InRange) + "Length2").Ignore("Implement later");
+                                              "[a] in ([b], [c])").SetName(nameof(OperatorType.InRange) + "Length2")
+                                                                  .Ignore("Implement later");
 
                 yield return new TestCaseData("a contains b",
-                                              "[a] like \"%b%\"").SetName(nameof(OperatorType.Contains)).Ignore("Implement later");
+                                              "[a] like \"%b%\"").SetName(nameof(OperatorType.Contains))
+                                                                 .Ignore("Implement later");
 
                 yield return new TestCaseData("a startsWith b",
-                                              "[a] like \"b%\"").SetName(nameof(OperatorType.StartsWith)).Ignore("Implement later");
+                                              "[a] like \"b%\"").SetName(nameof(OperatorType.StartsWith))
+                                                                .Ignore("Implement later");
 
                 yield return new TestCaseData("a endsWith b",
-                                              "[a] like \"%b\"").SetName(nameof(OperatorType.EndsWith)).Ignore("Implement later");
+                                              "[a] like \"%b\"").SetName(nameof(OperatorType.EndsWith))
+                                                                .Ignore("Implement later");
 
                 yield return new TestCaseData("a,b",
-                                              "[a], [b]").SetName(nameof(OperatorType.Separator)).Ignore("Implement later");
+                                              "[a], [b]").SetName(nameof(OperatorType.Separator))
+                                                         .Ignore("Implement later");
 
                 yield return new TestCaseData("a;",
-                                              "[a];").SetName(nameof(OperatorType.Terminator)).Ignore("Implement later");
+                                              "[a];").SetName(nameof(OperatorType.Terminator))
+                                                     .Ignore("Implement later");
             }
         }
 

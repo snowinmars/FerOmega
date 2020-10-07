@@ -33,6 +33,25 @@ namespace FerOmega.Services
 
         public Operator CloseEscapeOperator => Operators.First(x => x.OperatorType == OperatorType.CloseEscapeOperator);
 
+        public string EnsureEscaped(string vaalue)
+        {
+            return $"{OpenEscapeOperator.MainDenotation}{vaalue}{CloseEscapeOperator.MainDenotation}";
+        }
+
+        public string EnsureUnescaped(string value)
+        {
+            if (!value.StartsWith(OpenEscapeOperator.MainDenotation) ||
+                !value.EndsWith(CloseEscapeOperator.MainDenotation))
+            {
+                return value;
+            }
+
+            var start = OpenEscapeOperator.MainDenotation.Length;
+            var length = value.Length - 1 - CloseEscapeOperator.MainDenotation.Length;
+
+            return $"{value.Substring(start, length)}";
+        }
+
         public Operator[] GetPossibleOperators(string denotation, Arity? arity = null, Fixity? fixity = null)
         {
             var query = Operators.AsQueryable().Where(x => x.Denotations.Contains(denotation));
@@ -88,25 +107,6 @@ namespace FerOmega.Services
         public bool IsUniqueByFixity(string denotation, Fixity fixity)
         {
             return Operators.Count(x => x.Denotations.Contains(denotation) && x.Fixity == fixity) == 1;
-        }
-
-        public string EnsureEscaped(string vaalue)
-        {
-            return $"{OpenEscapeOperator.MainDenotation}{vaalue}{CloseEscapeOperator.MainDenotation}";
-        }
-
-        public string EnsureUnescaped(string value)
-        {
-            if (!value.StartsWith(OpenEscapeOperator.MainDenotation) ||
-                !value.EndsWith(CloseEscapeOperator.MainDenotation))
-            {
-                return value;
-            }
-
-            var start = OpenEscapeOperator.MainDenotation.Length;
-            var length = value.Length - 1 - CloseEscapeOperator.MainDenotation.Length;
-
-            return $"{value.Substring(start, length)}";
         }
 
         private Operator[] CheckOperators(Operator[] operators)

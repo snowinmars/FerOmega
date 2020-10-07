@@ -176,7 +176,8 @@ namespace FerOmega.Services
             }
 
             var isPrecededByOpenBracket = token.Previous != default &&
-                                      grammarService.OpenPriorityBracket.Denotations.Contains(token.Previous);
+                                          grammarService.OpenPriorityBracket.Denotations.Contains(token.Previous);
+
             var isFollowedByBracket = token.Next != default &&
                                       grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
 

@@ -22,6 +22,10 @@ namespace FerOmega.Services.Abstractions
 
         Operator ClosePriorityBracket { get; }
 
+        string EnsureEscaped(string value);
+
+        string EnsureUnescaped(string value);
+
         Operator[] GetPossibleOperators(string denotation, Arity? arity = null, Fixity? fixity = null);
 
         bool IsOperand(string input);
@@ -33,9 +37,5 @@ namespace FerOmega.Services.Abstractions
         bool IsUniqueByDenotation(string denotation);
 
         bool IsUniqueByFixity(string denotation, Fixity fixity);
-
-        string EnsureEscaped(string value);
-
-        string EnsureUnescaped(string value);
     }
 }

@@ -184,13 +184,15 @@ namespace FerOmega.Tests.Tokenization
                                               {
                                                   "a", "endsWith", "b",
                                               }).SetName(nameof(OperatorType.EndsWith));
+
                 yield return new TestCaseData("a,b",
-                                              new []
+                                              new[]
                                               {
                                                   "a", ",", "b",
                                               }).SetName(nameof(OperatorType.Separator));
+
                 yield return new TestCaseData("a;",
-                                              new []
+                                              new[]
                                               {
                                                   "a", ";",
                                               }).SetName(nameof(OperatorType.Terminator));

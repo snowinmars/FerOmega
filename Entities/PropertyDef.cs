@@ -7,7 +7,7 @@ namespace FerOmega.Entities
             From = from;
             To = to;
         }
-            
+
         /// <summary>
         /// Ui property
         /// </summary>

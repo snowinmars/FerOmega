@@ -21,7 +21,7 @@ namespace FerOmega.FerOmega
 
             var operatorService = new OperatorService(internalGrammarService);
 
-            var astService = new AstService(internalGrammarService, operatorService); 
+            var astService = new AstService(internalGrammarService, operatorService);
 
             var sqlGrammarConfig = new SqlGrammarConfig();
             var sqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
@@ -32,7 +32,7 @@ namespace FerOmega.FerOmega
                     astService,
                     sqlProvider);
         }
-    
+
         public static IServiceCollection AddFerOmega(this IServiceCollection services)
         {
             var internalGrammarConfig = new InternalGrammarConfig();
@@ -44,14 +44,15 @@ namespace FerOmega.FerOmega
             var operatorService = new OperatorService(internalGrammarService);
 
             services.AddSingleton<IAstService, AstService>((_) =>
-                new AstService(internalGrammarService, operatorService));
-            
+                                                               new AstService(internalGrammarService, operatorService));
+
             var sqlGrammarConfig = new SqlGrammarConfig();
             var sqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
 
             services.AddSingleton<ISqlProvider, SqlProvider<SqlGrammarConfig>>((_) =>
-                new SqlProvider<SqlGrammarConfig>(sqlGrammarService));
-            
+                                                                                   new SqlProvider<SqlGrammarConfig
+                                                                                   >(sqlGrammarService));
+
             return services;
         }
     }

@@ -8,7 +8,6 @@ using FerOmega.Entities.InternalSyntax;
 using FerOmega.Entities.InternalSyntax.Enums;
 using FerOmega.Providers.Abstractions;
 using FerOmega.Services.Abstractions;
-using FerOmega.Services.configs;
 
 namespace FerOmega.Providers
 {
@@ -62,10 +61,12 @@ namespace FerOmega.Providers
                                        if (int.TryParse(unescapedOperand, out var resInt))
                                        {
                                            parameters.Add(resInt);
-                                       } else if (double.TryParse(unescapedOperand, out var resDouble))
+                                       }
+                                       else if (double.TryParse(unescapedOperand, out var resDouble))
                                        {
                                            parameters.Add(resDouble);
-                                       } else if (Guid.TryParse(unescapedOperand, out var resGuid))
+                                       }
+                                       else if (Guid.TryParse(unescapedOperand, out var resGuid))
                                        {
                                            parameters.Add(resGuid);
                                        }

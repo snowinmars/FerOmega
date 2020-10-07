@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using FerOmega.Services.Abstractions;
-using FerOmega.Services.configs;
 
 namespace FerOmega.Services
 {
