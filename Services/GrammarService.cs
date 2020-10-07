@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using FerOmega.Entities.InternalSyntax;
 using FerOmega.Entities.InternalSyntax.Enums;
@@ -13,7 +14,24 @@ namespace FerOmega.Services
         {
             Operators = CheckOperators(grammarConfig.ConfigOperators());
             OperatorDenotations = Operators.SelectMany(x => x.Denotations).ToArray();
-            OperatorsRegex = grammarConfig.GetOperatorsAsRegex(Operators.SelectMany(x => x.Denotations));
+            OperatorsRegex = grammarConfig.GetOperatorsAsRegex(OperatorDenotations);
+
+            // it uses below in getters
+            var requiredOperators = new[]
+            {
+                OperatorType.Separator,
+                OperatorType.OpenPriorityBracket,
+                OperatorType.ClosePriorityBracket,
+                OperatorType.OpenEscapeOperator,
+                OperatorType.CloseEscapeOperator,
+            };
+
+            var possibleOperators = Operators.Select(x => x.OperatorType);
+
+            if (!new HashSet<OperatorType>(requiredOperators).IsSubsetOf(possibleOperators))
+            {
+                throw new Exception($"Not enough operators was determined in {typeof(T).Name} grammar config");
+            }
         }
 
         public string OperatorsRegex { get; }
@@ -33,13 +51,20 @@ namespace FerOmega.Services
 
         public Operator CloseEscapeOperator => Operators.First(x => x.OperatorType == OperatorType.CloseEscapeOperator);
 
-        public string EnsureEscaped(string vaalue)
+        public string EnsureEscaped(string value)
         {
-            return $"{OpenEscapeOperator.MainDenotation}{vaalue}{CloseEscapeOperator.MainDenotation}";
+            var unescapedValue = EnsureUnescaped(value);
+
+            return $"{OpenEscapeOperator.MainDenotation}{unescapedValue}{CloseEscapeOperator.MainDenotation}";
         }
 
         public string EnsureUnescaped(string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentNullException();
+            }
+
             if (!value.StartsWith(OpenEscapeOperator.MainDenotation) ||
                 !value.EndsWith(CloseEscapeOperator.MainDenotation))
             {
@@ -54,6 +79,11 @@ namespace FerOmega.Services
 
         public Operator[] GetPossibleOperators(string denotation, Arity? arity = null, Fixity? fixity = null)
         {
+            if (string.IsNullOrWhiteSpace(denotation))
+            {
+                throw new ArgumentNullException();
+            }
+
             var query = Operators.AsQueryable().Where(x => x.Denotations.Contains(denotation));
 
             if (arity != null)
@@ -71,9 +101,9 @@ namespace FerOmega.Services
 
         public bool IsOperand(string input)
         {
-            if (input == default)
+            if (string.IsNullOrWhiteSpace(input))
             {
-                return false;
+                throw new ArgumentNullException();
             }
 
             var isEscaped = input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal) &&
@@ -86,9 +116,9 @@ namespace FerOmega.Services
 
         public bool IsOperator(string input)
         {
-            if (input == default)
+            if (string.IsNullOrWhiteSpace(input))
             {
-                return false;
+                throw new ArgumentNullException();
             }
 
             return !IsOperand(input) && OperatorDenotations.Contains(input);
@@ -96,16 +126,31 @@ namespace FerOmega.Services
 
         public bool IsUniqueByArity(string denotation, Arity arity)
         {
+            if (string.IsNullOrWhiteSpace(denotation))
+            {
+                throw new ArgumentNullException();
+            }
+
             return Operators.Count(x => x.Denotations.Contains(denotation) && x.Arity == arity) == 1;
         }
 
         public bool IsUniqueByDenotation(string denotation)
         {
+            if (string.IsNullOrWhiteSpace(denotation))
+            {
+                throw new ArgumentNullException();
+            }
+
             return GetPossibleOperators(denotation).Length == 1;
         }
 
         public bool IsUniqueByFixity(string denotation, Fixity fixity)
         {
+            if (string.IsNullOrWhiteSpace(denotation))
+            {
+                throw new ArgumentNullException();
+            }
+
             return Operators.Count(x => x.Denotations.Contains(denotation) && x.Fixity == fixity) == 1;
         }
 
