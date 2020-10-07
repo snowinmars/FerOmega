@@ -7,8 +7,7 @@ The basic idea is to allow a developer to write some equation in frontend, send 
 
 Unstable beta.
 
-The core operators works: `+`, `-`, `*`, `/`, `%`, `>`, `>=`, `<`, `<=`, `=`, `!=`, `()`, `[]`
-Extra operators doesn't work for now: `contains`, `startsWith`, `endsWith`, `in`
+The core operators works: `+`, `-`, `*`, `/`, `%`, `>`, `>=`, `<`, `<=`, `=`, `!=`, `()`, `[]`, `contains`, `startsWith`, `endsWith`, `in`.
 
 ## Installation
 
