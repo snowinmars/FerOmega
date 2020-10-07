@@ -79,6 +79,43 @@ namespace FerOmega.Providers
                                    break;
                                }
 
+                               case OperatorType.Contains:
+                               {
+                                   var leftOperand = stack.Pop();
+                                   var rightOperand = stack.Pop();
+
+                                   var result = HandleLike(n, leftOperand, rightOperand, "'%{0}%'"); // this is the only difference
+
+                                   stack.Push(result);
+
+                                   break;
+                               }
+
+                               case OperatorType.StartsWith:
+                               {
+                                   var leftOperand = stack.Pop();
+                                   var rightOperand = stack.Pop();
+
+                                   var result = HandleLike(n, leftOperand, rightOperand, "'{0}%'"); // this is the only difference
+
+                                   stack.Push(result);
+
+                                   break;
+                               }
+
+                               case OperatorType.EndsWith:
+                               {
+                                   var leftOperand = stack.Pop();
+                                   var rightOperand = stack.Pop();
+
+                                   var result = HandleLike(n, leftOperand, rightOperand, "'%{0}'"); // this is the only difference
+
+                                   stack.Push(result);
+
+                                   break;
+                               }
+
+
                                default:
                                {
                                    var internalOperator = (Operator)n.Body;
@@ -115,8 +152,10 @@ namespace FerOmega.Providers
                                        {
                                            var leftOperand = stack.Pop();
                                            var rightOperand = stack.Pop();
-                                           var sb = new StringBuilder(); // restore brackets
 
+                                           var sb = new StringBuilder();
+
+                                           // restore brackets from ast
                                            // there are only two children here
                                            // first means left
                                            // last means right
@@ -165,6 +204,26 @@ namespace FerOmega.Providers
             }
 
             return (stack.Pop(), parameters.ToArray());
+        }
+
+        private string HandleLike(Node<AbstractToken> n, string leftOperand, string rightOperand, string format)
+        {
+            var internalOperator = (Operator)n.Body;
+
+            var sqlOperator =
+                grammarService.Operators.FirstOrDefault(x => x.OperatorType ==
+                                                             internalOperator.OperatorType);
+
+            if (sqlOperator == default)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+
+            rightOperand = string.Format(format, rightOperand);
+            var result = $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}";
+
+            return result;
         }
     }
 }

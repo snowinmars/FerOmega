@@ -353,24 +353,46 @@ namespace FerOmega.Tests.Providers
                                                   3, 2, 1,
                                               }).SetName(nameof(OperatorType.InRange)+ " with range length of three");
 
+                yield return new TestCaseData("[count] contains [value]",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "count like '%@0%'",
+                                              new object[]
+                                              {
+                                                  "value",
+                                              }).SetName(nameof(OperatorType.Contains));
+
+                yield return new TestCaseData("[count] startsWith [value]",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "count like '@0%'",
+                                              new object[]
+                                              {
+                                                  "value",
+                                              }).SetName(nameof(OperatorType.StartsWith));
+
+
+                yield return new TestCaseData("[count] endsWith [value]",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "count like '%@0'",
+                                              new object[]
+                                              {
+                                                  "value",
+                                              }).SetName(nameof(OperatorType.EndsWith));
+
                 yield return new TestCaseData("a & b & c",
                                               "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd))
                                                                 .Ignore("Implement later");
 
                 yield return new TestCaseData("a | b | c",
                                               "[a] | [b] | [c]").SetName(nameof(OperatorType.BitwiseOr))
-                                                                .Ignore("Implement later");
-
-                yield return new TestCaseData("a contains b",
-                                              "[a] like \"%b%\"").SetName(nameof(OperatorType.Contains))
-                                                                 .Ignore("Implement later");
-
-                yield return new TestCaseData("a startsWith b",
-                                              "[a] like \"b%\"").SetName(nameof(OperatorType.StartsWith))
-                                                                .Ignore("Implement later");
-
-                yield return new TestCaseData("a endsWith b",
-                                              "[a] like \"%b\"").SetName(nameof(OperatorType.EndsWith))
                                                                 .Ignore("Implement later");
 
                 yield return new TestCaseData("a;",
