@@ -60,9 +60,7 @@ Override any part of the flow if you have to.
 
 ## Dependency injections
 
-FerOmega interfaces are public, but all classes are internal. It makes custom resolves kinda hard, but I have no good solution for it right now.
-
-I implement the following approaches, that should cover 90% of cases:
+It should cover 90% of cases:
 
 #### As instances
 
