@@ -351,7 +351,7 @@ namespace FerOmega.Tests.Providers
                                               new object[]
                                               {
                                                   3, 2, 1,
-                                              }).SetName(nameof(OperatorType.InRange)+ " with range length of three");
+                                              }).SetName(nameof(OperatorType.InRange) + " with range length of three");
 
                 yield return new TestCaseData("[count] contains [value]",
                                               new[]
@@ -374,7 +374,6 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "value",
                                               }).SetName(nameof(OperatorType.StartsWith));
-
 
                 yield return new TestCaseData("[count] endsWith [value]",
                                               new[]

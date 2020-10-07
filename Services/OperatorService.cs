@@ -18,7 +18,8 @@ namespace FerOmega.Services
 
         public Operator Resolve(StringToken token, Operator[] possibleOperators)
         {
-            if (token == default || possibleOperators == default)
+            if (token == default ||
+                possibleOperators == default)
             {
                 throw new ArgumentNullException();
             }
@@ -189,7 +190,7 @@ namespace FerOmega.Services
                                           grammarService.OpenPriorityBracket.Denotations.Contains(token.Previous);
 
             var isFollowedByOpenBracket = token.Next != default &&
-                                      grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
+                                          grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
 
             // like -1 - 2
             //      ^

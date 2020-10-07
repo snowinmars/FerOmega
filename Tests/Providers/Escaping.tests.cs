@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using FerOmega.Entities.InternalSyntax.Enums;
 using NUnit.Framework;
@@ -35,29 +33,36 @@ namespace FerOmega.Tests.Providers
                              {
                                  OperatorType.Contains, OperatorType.StartsWith, OperatorType.EndsWith
                              }.Contains(internalOperator.OperatorType) // different pattern
-                select new
-                {
-                    Input = $"[{allowedProperty}] {internalOperatorDenotation} [{allowedProperty}]",
-                    Sql = $"{allowedProperty} {sqlOperator.MainDenotation} @0",
-                })
-                .Concat(new[]
-            {
-                new
-                {
-                    Input = $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.Contains).MainDenotation} [{allowedProperty}]",
-                    Sql = $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.Contains).MainDenotation} '%@0%'",
-                },
-                new
-                {
-                    Input = $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.StartsWith).MainDenotation} [{allowedProperty}]",
-                    Sql = $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.StartsWith).MainDenotation} '@0%'",
-                },
-                new
-                {
-                    Input = $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.EndsWith).MainDenotation} [{allowedProperty}]",
-                    Sql = $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.EndsWith).MainDenotation} '%@0'",
-                },
-            }).ToArray();
+                             select new
+                             {
+                                 Input = $"[{allowedProperty}] {internalOperatorDenotation} [{allowedProperty}]",
+                                 Sql = $"{allowedProperty} {sqlOperator.MainDenotation} @0",
+                             })
+                            .Concat(new[]
+                            {
+                                new
+                                {
+                                    Input =
+                                        $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.Contains).MainDenotation} [{allowedProperty}]",
+                                    Sql =
+                                        $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.Contains).MainDenotation} '%@0%'",
+                                },
+                                new
+                                {
+                                    Input =
+                                        $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.StartsWith).MainDenotation} [{allowedProperty}]",
+                                    Sql =
+                                        $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.StartsWith).MainDenotation} '@0%'",
+                                },
+                                new
+                                {
+                                    Input =
+                                        $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.EndsWith).MainDenotation} [{allowedProperty}]",
+                                    Sql =
+                                        $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.EndsWith).MainDenotation} '%@0'",
+                                },
+                            })
+                            .ToArray();
 
             foreach (var equation in equations)
             {
@@ -66,8 +71,11 @@ namespace FerOmega.Tests.Providers
 
                 var tokens = TokenizationService.Tokenizate(inputEquation);
                 var tree = AstService.Convert(tokens);
+
                 var (actualSql, actualParameters) = SqlProvider.Convert(tree,
-                                                                        SqlProvider.DefineProperty().From(allowedProperty).ToSql(allowedProperty));
+                                                                        SqlProvider.DefineProperty()
+                                                                            .From(allowedProperty)
+                                                                            .ToSql(allowedProperty));
 
                 Assert.AreEqual(expectedSql, actualSql);
                 Assert.AreEqual(1, actualParameters.Length);

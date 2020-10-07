@@ -220,7 +220,8 @@ namespace FerOmega.Services
 
             if (forest.Count != 1)
             {
-                throw new InvalidOperationException("The forest is broken. That means that some operators is unable to find required operands");
+                throw new
+                    InvalidOperationException("The forest is broken. That means that some operators is unable to find required operands");
             }
 
             return forest[0];

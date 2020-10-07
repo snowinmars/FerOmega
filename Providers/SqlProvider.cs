@@ -136,7 +136,7 @@ namespace FerOmega.Providers
 
                                    var sqlOperator =
                                        sqlGrammarService.Operators.FirstOrDefault(x => x.OperatorType ==
-                                                                                   internalOperator.OperatorType);
+                                           internalOperator.OperatorType);
 
                                    if (sqlOperator == default)
                                    {
@@ -235,7 +235,7 @@ namespace FerOmega.Providers
         {
             var sqlOperator =
                 sqlGrammarService.Operators.FirstOrDefault(x => x.OperatorType ==
-                                                             internalOperator.OperatorType);
+                                                                internalOperator.OperatorType);
 
             if (sqlOperator == default)
             {
