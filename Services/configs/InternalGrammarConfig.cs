@@ -247,7 +247,7 @@ namespace FerOmega.Services.configs
                                                                "]"))
                                 .AddOperatorGroup(new Operator(Arity.Nulary,
                                                                Associativity.Ambivalent,
-                                                               OperatorType.Enumerator,
+                                                               OperatorType.Separator,
                                                                Fixity.Infix,
                                                                ","),
                                                   new Operator(Arity.Nulary,

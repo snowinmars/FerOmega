@@ -22,6 +22,8 @@ namespace FerOmega.Services
 
         public string[] OperatorDenotations { get; }
 
+        public Operator Separator => Operators.First(x => x.OperatorType == OperatorType.Separator);
+
         public Operator OpenPriorityBracket => Operators.First(x => x.OperatorType == OperatorType.OpenPriorityBracket);
 
         public Operator ClosePriorityBracket =>
@@ -31,9 +33,21 @@ namespace FerOmega.Services
 
         public Operator CloseEscapeOperator => Operators.First(x => x.OperatorType == OperatorType.CloseEscapeOperator);
 
-        public Operator[] GetPossibleOperators(string denotation)
+        public Operator[] GetPossibleOperators(string denotation, Arity? arity = null, Fixity? fixity = null)
         {
-            return Operators.Where(x => x.Denotations.Contains(denotation)).ToArray();
+            var query = Operators.AsQueryable().Where(x => x.Denotations.Contains(denotation));
+
+            if (arity != null)
+            {
+                query = query.Where(x => x.Arity == arity.Value);
+            }
+
+            if (fixity != null)
+            {
+                query = query.Where(x => x.Fixity == fixity.Value);
+            }
+
+            return query.ToArray();
         }
 
         public bool IsOperand(string input)
@@ -42,7 +56,7 @@ namespace FerOmega.Services
             {
                 return false;
             }
-            
+
             var isEscaped = input.StartsWith(OpenEscapeOperator.MainDenotation, StringComparison.Ordinal) &&
                             input.EndsWith(CloseEscapeOperator.MainDenotation, StringComparison.Ordinal);
 
@@ -57,7 +71,7 @@ namespace FerOmega.Services
             {
                 return false;
             }
-            
+
             return !IsOperand(input) && OperatorDenotations.Contains(input);
         }
 
@@ -91,7 +105,7 @@ namespace FerOmega.Services
 
             var start = OpenEscapeOperator.MainDenotation.Length;
             var length = value.Length - 1 - CloseEscapeOperator.MainDenotation.Length;
-                
+
             return $"{value.Substring(start, length)}";
         }
 

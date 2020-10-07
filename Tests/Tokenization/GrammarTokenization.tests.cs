@@ -188,7 +188,7 @@ namespace FerOmega.Tests.Tokenization
                                               new []
                                               {
                                                   "a", ",", "b",
-                                              }).SetName(nameof(OperatorType.Enumerator));
+                                              }).SetName(nameof(OperatorType.Separator));
                 yield return new TestCaseData("a;",
                                               new []
                                               {

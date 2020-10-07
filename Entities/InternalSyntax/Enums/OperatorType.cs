@@ -93,7 +93,7 @@ namespace FerOmega.Entities.InternalSyntax.Enums
         CloseEscapeOperator,
 
         /// ,
-        Enumerator,
+        Separator,
 
         /// ;
         Terminator,

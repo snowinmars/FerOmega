@@ -16,6 +16,16 @@ namespace FerOmega.Tests.Providers
                                               "@2 + @1 + @0",
                                               new[] {"c","b", "a"}).SetName("Simple");
 
+                yield return new TestCaseData("(a + b) * c",
+                                              new string[0],
+                                              "( @2 + @1 ) * @0",
+                                              new[] {"c", "b", "a"}).SetName("Brackets");
+
+                yield return new TestCaseData("(a + b) + c",
+                                              new string[0],
+                                              "@2 + @1 + @0",
+                                              new[] {"c", "b", "a"}).SetName("Remove unnecessary brackets");
+
                 yield return new TestCaseData(" a    +         b    +  c   ",
                                               new string[0],
                                               "@2 + @1 + @0",
@@ -42,7 +52,7 @@ namespace FerOmega.Tests.Providers
                                               new string[0]).SetName("Empty");
             }
         }
-        
+
         [Test]
         [TestCaseSource(nameof(PositiveSmokeCases))]
         public void Smoke(string equation,
@@ -54,9 +64,9 @@ namespace FerOmega.Tests.Providers
             var tree = AstService.Convert(tokens);
             var propertyDefinitions = allowedProperties.Select(x => new PropertyDef(x, x)).ToArray();
             var (sql, parameters) = SqlProvider.Convert(tree, propertyDefinitions);
-            
+
             Assert.AreEqual(expectedSql, sql);
-            
+
             Assert.AreEqual(expectedParameters.Length, parameters.Length);
 
             for (var i = 0; i < parameters.Length; i++)

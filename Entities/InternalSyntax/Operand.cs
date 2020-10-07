@@ -10,7 +10,7 @@ namespace FerOmega.Entities.InternalSyntax
                    !value.StartsWith("[", StringComparison.Ordinal) && !value.EndsWith("]", StringComparison.Ordinal)) { }
 
         public Operand(string value, bool shouldEscape)
-            : base(OperatorType.Literal, int.MaxValue)
+            : base(OperatorType.Literal, 0)
         {
             Value = shouldEscape ? $"[{value}]" : value;
         }

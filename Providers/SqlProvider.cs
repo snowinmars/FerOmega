@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using FerOmega.Entities;
 using FerOmega.Entities.AbstractSyntax;
 using FerOmega.Entities.InternalSyntax;
@@ -21,18 +22,18 @@ namespace FerOmega.Providers
 
         private readonly IGrammarService<T> grammarService;
 
-        public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree, 
+        public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree,
             params PropertyDef[] properties)
         {
             if (tree.IsEmpty)
             {
                 return ("", new object[0]);
             }
-            
+
             var stack = new Stack<string>();
 
             var parameters = new List<object>();
-            
+
             tree.DeepFirst(default,
                            (n) =>
                            {
@@ -109,14 +110,41 @@ namespace FerOmega.Providers
                                    }
                                    case Arity.Binary:
                                    {
-                                       var leftOperand = stack.Pop();
-                                       var rightOperand = stack.Pop();
-
-                                       result = internalOperator.Fixity switch
+                                       if (internalOperator.Fixity == Fixity.Infix)
                                        {
-                                           Fixity.Infix => $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}",
-                                           _ => throw new ArgumentOutOfRangeException(),
-                                       };
+                                           var leftOperand = stack.Pop();
+                                           var rightOperand = stack.Pop();
+                                           var sb = new StringBuilder(); // restore parenthesis
+
+                                           // there are only two children here
+                                           // first means left
+                                           // last means right
+                                           if (n.Children.First().Body.Priority > n.Body.Priority)
+                                           {
+                                               sb.Append($"{grammarService.OpenPriorityBracket.MainDenotation} {leftOperand} {grammarService.ClosePriorityBracket.MainDenotation}");
+                                           }
+                                           else
+                                           {
+                                               sb.Append(leftOperand);
+                                           }
+
+                                           sb.Append($" {sqlOperator.MainDenotation} ");
+
+                                           if (n.Children.Last().Body.Priority > n.Body.Priority)
+                                           {
+                                               sb.Append($"{grammarService.OpenPriorityBracket.MainDenotation} {rightOperand} {grammarService.ClosePriorityBracket.MainDenotation}");
+                                           }
+                                           else
+                                           {
+                                               sb.Append(rightOperand);
+                                           }
+
+                                           result = sb.ToString();
+                                       }
+                                       else
+                                       {
+                                           throw new ArgumentOutOfRangeException();
+                                       }
 
                                        break;
                                    }

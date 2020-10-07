@@ -301,12 +301,34 @@ namespace FerOmega.Tests.Providers
                                                   3, 1,
                                               }).SetName(nameof(OperatorType.Xor));
 
+                yield return new TestCaseData("([count] + 1) * 2 < [length]",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "( count + @1 ) * @0 < length",
+                                              new object[]
+                                              {
+                                                  2, 1,
+                                              }).SetName("Simple brackets");
+
+                yield return new TestCaseData("(([count] + 1) / ([length] - 1)) * 2 > 0",
+                                              new[]
+                                              {
+                                                  "count", "length",
+                                              },
+                                              "( count + @3 ) / ( length - @2 ) * @1 > @0",
+                                              new object[]
+                                              {
+                                                  0, 2, 1, 1,
+                                              }).SetName("Nesting brackets");
+
                 yield return new TestCaseData("a & b & c",
                                               "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd)).Ignore("Implement later");
 
                 yield return new TestCaseData("a | b | c",
                                               "[a] | [b] | [c]").SetName(nameof(OperatorType.BitwiseOr)).Ignore("Implement later");
-                
+
                 yield return new TestCaseData("a in (b)",
                                               "[a] in ([b])").SetName(nameof(OperatorType.InRange) + "Length1").Ignore("Implement later");
 
@@ -323,7 +345,7 @@ namespace FerOmega.Tests.Providers
                                               "[a] like \"%b\"").SetName(nameof(OperatorType.EndsWith)).Ignore("Implement later");
 
                 yield return new TestCaseData("a,b",
-                                              "[a], [b]").SetName(nameof(OperatorType.Enumerator)).Ignore("Implement later");
+                                              "[a], [b]").SetName(nameof(OperatorType.Separator)).Ignore("Implement later");
 
                 yield return new TestCaseData("a;",
                                               "[a];").SetName(nameof(OperatorType.Terminator)).Ignore("Implement later");

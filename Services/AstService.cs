@@ -32,7 +32,7 @@ namespace FerOmega.Services
             {
                 return new Tree<AbstractToken>();
             }
-            
+
             var stack = new Stack<Operator>(tokens.Length);
             var trees = new List<Tree<AbstractToken>>();
 

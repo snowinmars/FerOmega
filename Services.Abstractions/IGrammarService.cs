@@ -12,6 +12,8 @@ namespace FerOmega.Services.Abstractions
 
         string[] OperatorDenotations { get; }
 
+        Operator Separator { get; }
+
         Operator OpenEscapeOperator { get; }
 
         Operator CloseEscapeOperator { get; }
@@ -20,7 +22,7 @@ namespace FerOmega.Services.Abstractions
 
         Operator ClosePriorityBracket { get; }
 
-        Operator[] GetPossibleOperators(string denotation);
+        Operator[] GetPossibleOperators(string denotation, Arity? arity = null, Fixity? fixity = null);
 
         bool IsOperand(string input);
 
