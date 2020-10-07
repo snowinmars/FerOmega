@@ -1,3 +1,4 @@
+using FerOmega.FerOmega;
 using FerOmega.Providers;
 using FerOmega.Providers.Abstractions;
 using FerOmega.Services;
@@ -11,9 +12,9 @@ namespace FerOmega.Tests
     {
         protected IAstService AstService;
 
-        protected IGrammarService<InternalGrammarConfig> InternalGrammarService;
+        protected IGrammarService<IGrammarConfig> InternalGrammarService;
 
-        protected IGrammarService<SqlGrammarConfig> SqlGrammarService;
+        protected IGrammarService<IGrammarConfig> SqlGrammarService;
 
         protected ISqlProvider SqlProvider;
 
@@ -22,14 +23,11 @@ namespace FerOmega.Tests
         [OneTimeSetUp]
         public void Init()
         {
-            var internalGrammarConfig = new InternalGrammarConfig();
-            InternalGrammarService = new GrammarService<InternalGrammarConfig>(internalGrammarConfig);
-            TokenizationService = new TokenizationService<InternalGrammarConfig>(InternalGrammarService);
-            var operatorService = new OperatorService(InternalGrammarService);
-            AstService = new AstService(InternalGrammarService, operatorService);
-            var sqlGrammarConfig = new SqlGrammarConfig();
-            SqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
-            SqlProvider = new SqlProvider<SqlGrammarConfig>(SqlGrammarService);
+            InternalGrammarService = FerOmegaInjections.InternalGrammarService;
+            TokenizationService = FerOmegaInjections.TokenizationService;
+            AstService = FerOmegaInjections.AstService;
+            SqlGrammarService = FerOmegaInjections.SqlGrammarService;
+            SqlProvider = FerOmegaInjections.SqlProvider;
         }
     }
 }

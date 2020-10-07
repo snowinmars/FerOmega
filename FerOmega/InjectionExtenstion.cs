@@ -9,49 +9,50 @@ namespace FerOmega.FerOmega
 {
     public static class FerOmegaInjections
     {
-        public static (
-            ITokenizationService tokenizationService,
-            IAstService astService,
-            ISqlProvider sqlProvider) ResolveDefault()
+        static FerOmegaInjections()
         {
-            var internalGrammarConfig = new InternalGrammarConfig();
-            var internalGrammarService = new GrammarService<InternalGrammarConfig>(internalGrammarConfig);
+            InternalGrammarConfig = new InternalGrammarConfig();
+            InternalGrammarService = new GrammarService<IGrammarConfig>(InternalGrammarConfig);
 
-            var tokenizationService = new TokenizationService<InternalGrammarConfig>(internalGrammarService);
+            TokenizationService = new TokenizationService<IGrammarConfig>(InternalGrammarService);
 
-            var operatorService = new OperatorService(internalGrammarService);
+            OperatorService = new OperatorService(InternalGrammarService);
 
-            var astService = new AstService(internalGrammarService, operatorService);
+            AstService = new AstService(InternalGrammarService, OperatorService);
 
-            var sqlGrammarConfig = new SqlGrammarConfig();
-            var sqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
+            SqlGrammarConfig = new SqlGrammarConfig();
+            SqlGrammarService = new GrammarService<IGrammarConfig>(SqlGrammarConfig);
 
-            var sqlProvider = new SqlProvider<SqlGrammarConfig>(sqlGrammarService);
-
-            return (tokenizationService,
-                    astService,
-                    sqlProvider);
+            SqlProvider = new SqlProvider<IGrammarConfig>(SqlGrammarService);
         }
 
+        public static IGrammarConfig InternalGrammarConfig { get; }
+
+        public static IGrammarService<IGrammarConfig> InternalGrammarService { get; }
+
+        public static ITokenizationService TokenizationService { get; }
+
+        public static IOperatorService OperatorService { get; }
+
+        public static IAstService AstService { get; }
+
+        public static IGrammarConfig SqlGrammarConfig { get; }
+
+        public static IGrammarService<IGrammarConfig> SqlGrammarService { get; }
+
+        public static ISqlProvider SqlProvider { get; }
+
+        // ReSharper disable once UnusedMember.Global
         public static IServiceCollection AddFerOmega(this IServiceCollection services)
         {
-            var internalGrammarConfig = new InternalGrammarConfig();
-            var internalGrammarService = new GrammarService<InternalGrammarConfig>(internalGrammarConfig);
-
-            services.AddSingleton<ITokenizationService, TokenizationService<InternalGrammarConfig>>(_ =>
-                new TokenizationService<InternalGrammarConfig>(internalGrammarService));
-
-            var operatorService = new OperatorService(internalGrammarService);
+            services.AddSingleton<ITokenizationService, TokenizationService<IGrammarConfig>>(_ =>
+                new TokenizationService<IGrammarConfig>(InternalGrammarService));
 
             services.AddSingleton<IAstService, AstService>(_ =>
-                                                               new AstService(internalGrammarService, operatorService));
+                new AstService(InternalGrammarService, OperatorService));
 
-            var sqlGrammarConfig = new SqlGrammarConfig();
-            var sqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
-
-            services.AddSingleton<ISqlProvider, SqlProvider<SqlGrammarConfig>>(_ =>
-                                                                                   new SqlProvider<SqlGrammarConfig
-                                                                                   >(sqlGrammarService));
+            services.AddSingleton<ISqlProvider, SqlProvider<IGrammarConfig>>(_ =>
+                new SqlProvider<IGrammarConfig>(SqlGrammarService));
 
             return services;
         }

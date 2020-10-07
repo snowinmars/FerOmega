@@ -11,13 +11,13 @@ namespace FerOmega.Services
 {
     internal class AstService : IAstService
     {
-        public AstService(IGrammarService<InternalGrammarConfig> grammarService, IOperatorService operatorService)
+        public AstService(IGrammarService<IGrammarConfig> grammarService, IOperatorService operatorService)
         {
             this.grammarService = grammarService;
             this.operatorService = operatorService;
         }
 
-        private readonly IGrammarService<InternalGrammarConfig> grammarService;
+        private readonly IGrammarService<IGrammarConfig> grammarService;
 
         private readonly IOperatorService operatorService;
 

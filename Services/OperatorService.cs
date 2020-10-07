@@ -9,12 +9,12 @@ namespace FerOmega.Services
 {
     internal class OperatorService : IOperatorService
     {
-        public OperatorService(IGrammarService<InternalGrammarConfig> grammarService)
+        public OperatorService(IGrammarService<IGrammarConfig> grammarService)
         {
             this.grammarService = grammarService;
         }
 
-        private readonly IGrammarService<InternalGrammarConfig> grammarService;
+        private readonly IGrammarService<IGrammarConfig> grammarService;
 
         public Operator Resolve(StringToken token, Operator[] possibleOperators)
         {
