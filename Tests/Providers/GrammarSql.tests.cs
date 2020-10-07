@@ -20,7 +20,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "count + @1 + @0",
+                                              "( count + @1 ) + @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -31,7 +31,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "count - @1 - @0",
+                                              "( count - @1 ) - @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -42,7 +42,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "count * @1 * @0",
+                                              "( count * @1 ) * @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -53,7 +53,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "count / @1 / @0",
+                                              "( count / @1 ) / @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -64,7 +64,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "count % @1 % @0",
+                                              "( count % @1 ) % @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -75,7 +75,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "+ count + @1 + @0",
+                                              "( + count + @1 ) + @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -86,7 +86,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "+ @1 + count + @0",
+                                              "( + @1 + count ) + @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -97,7 +97,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "- count - @1 - @0",
+                                              "( - count - @1 ) - @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -108,7 +108,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "- @1 - count - @0",
+                                              "( - @1 - count ) - @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -119,7 +119,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "! count + @1 - @0",
+                                              "( ! count + @1 ) - @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -130,7 +130,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "! @1 + count - @0",
+                                              "( ! @1 + count ) - @0",
                                               new object[]
                                               {
                                                   2, "b",
@@ -317,7 +317,7 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count", "length",
                                               },
-                                              "( count + @3 ) / ( length - @2 ) * @1 > @0",
+                                              "( ( count + @3 ) / ( length - @2 ) ) * @1 > @0",
                                               new object[]
                                               {
                                                   0, 2, 1, 1,
@@ -351,7 +351,7 @@ namespace FerOmega.Tests.Providers
                                               new object[]
                                               {
                                                   3, 2, 1,
-                                              }).SetName(nameof(OperatorType.InRange)+ " with range length of three");
+                                              }).SetName(nameof(OperatorType.InRange) + " with range length of three");
 
                 yield return new TestCaseData("[count] contains [value]",
                                               new[]
@@ -374,7 +374,6 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "value",
                                               }).SetName(nameof(OperatorType.StartsWith));
-
 
                 yield return new TestCaseData("[count] endsWith [value]",
                                               new[]

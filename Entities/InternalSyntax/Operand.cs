@@ -8,7 +8,7 @@ namespace FerOmega.Entities.InternalSyntax
         public Operand(string value)
             : this(value,
                    !value.StartsWith("[", StringComparison.Ordinal) &&
-                   !value.EndsWith("]", StringComparison.Ordinal)) { }
+                   !value.EndsWith("]", StringComparison.Ordinal)) { } // do I need escaping here?
 
         public Operand(string value, bool shouldEscape)
             : base(OperatorType.Literal, 0)

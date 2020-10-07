@@ -32,32 +32,6 @@ namespace FerOmega.Entities.AbstractSyntax
             return tree.Root;
         }
 
-        public void BreadthFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave = null)
-        {
-            var queue = new Queue<Node<T>>();
-
-            queue.Enqueue(Root);
-
-            while (queue.Count > 0)
-            {
-                var node = queue.Dequeue();
-
-                onEnter?.Invoke(node);
-
-                node.Color = NodeColor.Black;
-
-                foreach (var child in node.Children
-                                          .Where(x => x.Color == NodeColor.White &&
-                                                      !queue.Contains(x)))
-                {
-                    child.Color = NodeColor.Grey;
-                    queue.Enqueue(child);
-                }
-
-                onLeave?.Invoke(node);
-            }
-        }
-
         public void DeepFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave = null)
         {
             var stack = new Stack<Node<T>>();
@@ -98,6 +72,43 @@ namespace FerOmega.Entities.AbstractSyntax
                     throw new ArgumentOutOfRangeException();
                 }
             }
+
+            ResetColor();
+        }
+
+        public void ResetColor()
+        {
+            Root.Color = NodeColor.White;
+
+            BreadthFirst(default, node => node.Color = NodeColor.White);
+        }
+
+        private void BreadthFirst(Action<Node<T>> onEnter = null, Action<Node<T>> onLeave = null)
+        {
+            var queue = new Queue<Node<T>>();
+
+            queue.Enqueue(Root);
+
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+
+                onEnter?.Invoke(node);
+
+                node.Color = NodeColor.Black;
+
+                foreach (var child in node.Children
+                                          .Where(x => x.Color == NodeColor.White &&
+                                                      !queue.Contains(x)))
+                {
+                    child.Color = NodeColor.Grey;
+                    queue.Enqueue(child);
+                }
+
+                onLeave?.Invoke(node);
+            }
+
+            // how to reset colors here?
         }
     }
 }

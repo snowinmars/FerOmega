@@ -2,7 +2,7 @@ namespace FerOmega.Entities.InternalSyntax.Enums
 {
     public enum Arity
     {
-        /// , ;
+        /// ?
         Nulary = 0,
 
         /// +1

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using FerOmega.Entities.InternalSyntax.Enums;
 using NUnit.Framework;
 
 namespace FerOmega.Tests.Providers
@@ -8,23 +6,29 @@ namespace FerOmega.Tests.Providers
     internal class ExampleTests : BaseTest
     {
         [Test]
-        public void StringLike()
+        public void Mess()
         {
-            const string input = "[name] contains [and] or ([name] startsWith [Alex] and [name] endsWith [ndr])";
-            const string expectedSql = "name like '%@2%' or name like '@1%' and name like '%@0'";
+            const string input =
+                "[id] === [1690ffef-7249-4384-8cba-58842e8d48df] and (([length] + 1) * 2 <= 14 or [email] = [email])";
+
+            const string expectedSql = "id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )";
 
             var expectedParameters = new object[]
             {
-                "ndr", "Alex", "and",
+                "email", 14, 2, 1, Guid.Parse("1690ffef-7249-4384-8cba-58842e8d48df"),
             };
 
             var tokens = TokenizationService.Tokenizate(input);
             var tree = AstService.Convert(tokens);
 
             var (actualSql, actualParameters) = SqlProvider.Convert(tree,
+                                                                    SqlProvider.DefineProperty().From("id").ToSql("id"),
                                                                     SqlProvider.DefineProperty()
-                                                                               .From("name")
-                                                                               .ToSql("name"));
+                                                                               .From("length")
+                                                                               .ToSql("table.length"),
+                                                                    SqlProvider.DefineProperty()
+                                                                               .From("email")
+                                                                               .ToSql("table2.email"));
 
             Assert.AreEqual(expectedSql, actualSql);
 
@@ -52,10 +56,17 @@ namespace FerOmega.Tests.Providers
 
             var tokens = TokenizationService.Tokenizate(input);
             var tree = AstService.Convert(tokens);
+
             var (actualSql, actualParameters) = SqlProvider.Convert(tree,
-                                                                    SqlProvider.DefineProperty().From("storesCount").ToSql("storesCount"),
-                                                                    SqlProvider.DefineProperty().From("salaryCostsPerMonth").ToSql("salarySlice.perMonth"),
-                                                                    SqlProvider.DefineProperty().From("dollarCourse").ToSql("bank.currentDollarCourse"));
+                                                                    SqlProvider.DefineProperty()
+                                                                               .From("storesCount")
+                                                                               .ToSql("storesCount"),
+                                                                    SqlProvider.DefineProperty()
+                                                                               .From("salaryCostsPerMonth")
+                                                                               .ToSql("salarySlice.perMonth"),
+                                                                    SqlProvider.DefineProperty()
+                                                                               .From("dollarCourse")
+                                                                               .ToSql("bank.currentDollarCourse"));
 
             Assert.AreEqual(expectedSql, actualSql);
 
@@ -83,9 +94,14 @@ namespace FerOmega.Tests.Providers
 
             var tokens = TokenizationService.Tokenizate(input);
             var tree = AstService.Convert(tokens);
+
             var (actualSql, actualParameters) = SqlProvider.Convert(tree,
-                                                                    SqlProvider.DefineProperty().From("location").ToSql("location"),
-                                                                    SqlProvider.DefineProperty().From("country").ToSql("country"));
+                                                                    SqlProvider.DefineProperty()
+                                                                               .From("location")
+                                                                               .ToSql("location"),
+                                                                    SqlProvider.DefineProperty()
+                                                                               .From("country")
+                                                                               .ToSql("country"));
 
             Assert.AreEqual(expectedSql, actualSql);
 
@@ -113,9 +129,14 @@ namespace FerOmega.Tests.Providers
 
             var tokens = TokenizationService.Tokenizate(input);
             var tree = AstService.Convert(tokens);
+
             var (actualSql, actualParameters) = SqlProvider.Convert(tree,
-                                                                    SqlProvider.DefineProperty().From("age").ToSql("age"),
-                                                                    SqlProvider.DefineProperty().From("country").ToSql("country"));
+                                                                    SqlProvider.DefineProperty()
+                                                                               .From("age")
+                                                                               .ToSql("age"),
+                                                                    SqlProvider.DefineProperty()
+                                                                               .From("country")
+                                                                               .ToSql("country"));
 
             Assert.AreEqual(expectedSql, actualSql);
 
@@ -131,27 +152,23 @@ namespace FerOmega.Tests.Providers
         }
 
         [Test]
-        public void Mess()
+        public void StringLike()
         {
-            const string input = "[id] === [1690ffef-7249-4384-8cba-58842e8d48df] and (([length] + 1) * 2 <= 14 or [email] = [email])";
-            const string expectedSql = "id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )";
+            const string input = "[name] contains [and] or ([name] startsWith [Alex] and [name] endsWith [ndr])";
+            const string expectedSql = "name like '%@2%' or name like '@1%' and name like '%@0'";
 
             var expectedParameters = new object[]
             {
-                "email", 14, 2, 1, Guid.Parse("1690ffef-7249-4384-8cba-58842e8d48df"),
+                "ndr", "Alex", "and",
             };
 
             var tokens = TokenizationService.Tokenizate(input);
             var tree = AstService.Convert(tokens);
 
             var (actualSql, actualParameters) = SqlProvider.Convert(tree,
-                                                                    SqlProvider.DefineProperty().From("id").ToSql("id"),
                                                                     SqlProvider.DefineProperty()
-                                                                               .From("length")
-                                                                               .ToSql("table.length"),
-                                                                    SqlProvider.DefineProperty()
-                                                                               .From("email")
-                                                                               .ToSql("table2.email"));
+                                                                               .From("name")
+                                                                               .ToSql("name"));
 
             Assert.AreEqual(expectedSql, actualSql);
 

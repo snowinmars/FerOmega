@@ -34,7 +34,7 @@ namespace FerOmega.Services
             }
 
             var stack = new Stack<Operator>(tokens.Length);
-            var trees = new List<Tree<AbstractToken>>();
+            var forest = new List<Tree<AbstractToken>>();
 
             for (var i = 0; i < tokens.Length; i++)
             {
@@ -46,7 +46,7 @@ namespace FerOmega.Services
 
                     var tree = new Tree<AbstractToken>(operand);
 
-                    trees.Add(tree);
+                    forest.Add(tree);
 
                     continue;
                 }
@@ -57,8 +57,7 @@ namespace FerOmega.Services
 
                     var @operator = operatorService.Resolve(token, possibleOperators);
 
-                    // two ifs check brackets
-
+                    // check brackets
                     if (@operator == grammarService.OpenPriorityBracket)
                     {
                         stack.Push(@operator);
@@ -82,7 +81,7 @@ namespace FerOmega.Services
                                 break;
                             }
 
-                            MergeTreesByOperator(trees, abstractToken);
+                            MergeTreesByOperator(forest, abstractToken);
                         }
 
                         continue;
@@ -93,14 +92,13 @@ namespace FerOmega.Services
                     {
                     case Arity.Unary when @operator.Fixity == Fixity.Postfix:
                     {
-                        MergeTreesByOperator(trees, @operator);
+                        MergeTreesByOperator(forest, @operator);
 
                         break;
                     }
 
                     case Arity.Unary when @operator.Fixity == Fixity.Prefix:
                     {
-                        // TODO: [snow]
                         stack.Push(@operator);
 
                         break;
@@ -119,29 +117,29 @@ namespace FerOmega.Services
                         {
                         case Associativity.Left:
                         {
-                            var popedOperator = stack.Peek();
+                            var topOperator = stack.Peek();
 
-                            if (popedOperator.Priority <= @operator.Priority &&
+                            if (topOperator.Priority <= @operator.Priority &&
                                 stack.Count > 0)
                             {
-                                popedOperator = stack.Pop();
+                                topOperator = stack.Pop();
                             }
 
-                            while (popedOperator.Priority <= @operator.Priority)
+                            while (topOperator.Priority <= @operator.Priority)
                             {
-                                MergeTreesByOperator(trees, popedOperator);
+                                MergeTreesByOperator(forest, topOperator);
 
                                 if (stack.Count == 0)
                                 {
                                     break;
                                 }
 
-                                popedOperator = stack.Peek();
+                                topOperator = stack.Peek();
 
-                                if (popedOperator.Priority <= @operator.Priority &&
+                                if (topOperator.Priority <= @operator.Priority &&
                                     stack.Count > 0)
                                 {
-                                    popedOperator = stack.Pop();
+                                    topOperator = stack.Pop();
                                 }
                             }
 
@@ -152,12 +150,12 @@ namespace FerOmega.Services
 
                         case Associativity.Right:
                         {
-                            var popedOperator = stack.Peek();
+                            var topOperator = stack.Peek();
 
-                            if (popedOperator.Priority <= @operator.Priority &&
+                            if (topOperator.Priority <= @operator.Priority &&
                                 stack.Count > 0)
                             {
-                                MergeTreesByOperator(trees, stack.Pop());
+                                MergeTreesByOperator(forest, stack.Pop());
                             }
 
                             stack.Push(@operator);
@@ -178,6 +176,7 @@ namespace FerOmega.Services
                         // like a in (1, 2)
                         //           ^----^
                         // there's a way to avoid it: https://blog.kallisti.net.nz/2008/02/extension-to-the-shunting-yard-algorithm-to-allow-variable-numbers-of-arguments-to-functions/
+                        // snowinmars@yandex.ru has a copy of the article
 
                         var nextOperators = grammarService.GetPossibleOperators(token.Next);
 
@@ -187,7 +186,8 @@ namespace FerOmega.Services
 
                         if (!isOpenPriorityBracket)
                         {
-                            throw new InvalidOperationException();
+                            throw new
+                                InvalidOperationException($"The {nameof(OperatorType.InRange)} operator should be followed by {nameof(OperatorType.OpenPriorityBracket)}");
                         }
 
                         stack.Push(@operator);
@@ -196,11 +196,14 @@ namespace FerOmega.Services
                     }
 
                     case Arity.Nulary:
+                        throw new
+                            NotSupportedException($"Ast service doesn't support {nameof(Arity.Nulary)} operator {@operator} implicitly");
                     case Arity.Ternary:
+                        throw new
+                            NotSupportedException($"Ast service doesn't support {nameof(Arity.Ternary)} operator {@operator} implicitly");
                     case Arity.Kvatery:
-                    {
-                        throw new NotSupportedException();
-                    }
+                        throw new
+                            NotSupportedException($"Ast service doesn't support {nameof(Arity.Kvatery)} operator {@operator} implicitly");
 
                     default:
                     {
@@ -212,15 +215,16 @@ namespace FerOmega.Services
 
             while (stack.Count > 0)
             {
-                MergeTreesByOperator(trees, stack.Pop());
+                MergeTreesByOperator(forest, stack.Pop());
             }
 
-            if (trees.Count != 1)
+            if (forest.Count != 1)
             {
-                throw new InvalidOperationException();
+                throw new
+                    InvalidOperationException("The forest is broken. That means that some operators is unable to find required operands");
             }
 
-            return trees[0];
+            return forest[0];
         }
 
         private void MergeTreesByOperator(List<Tree<AbstractToken>> trees, Operator @operator)
@@ -259,13 +263,18 @@ namespace FerOmega.Services
                 break;
             }
 
-            case Arity.Nulary:
-            case Arity.Ternary:
-            case Arity.Kvatery:
             case Arity.Multiarity:
-            {
-                throw new NotSupportedException();
-            }
+                throw new
+                    NotSupportedException($"Ast service doesn't support tree merging with {nameof(Arity.Nulary)} operator {@operator}");
+            case Arity.Nulary:
+                throw new
+                    NotSupportedException($"Ast service doesn't support tree merging with {nameof(Arity.Nulary)} operator {@operator}");
+            case Arity.Ternary:
+                throw new
+                    NotSupportedException($"Ast service doesn't support tree merging with {nameof(Arity.Ternary)} operator {@operator}");
+            case Arity.Kvatery:
+                throw new
+                    NotSupportedException($"Ast service doesn't support tree merging with {nameof(Arity.Kvatery)} operator {@operator}");
 
             default:
             {

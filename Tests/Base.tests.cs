@@ -11,13 +11,13 @@ namespace FerOmega.Tests
     {
         protected IAstService AstService;
 
-        protected ISqlProvider SqlProvider;
-
-        protected ITokenizationService TokenizationService;
-
         protected IGrammarService<InternalGrammarConfig> InternalGrammarService;
 
         protected IGrammarService<SqlGrammarConfig> SqlGrammarService;
+
+        protected ISqlProvider SqlProvider;
+
+        protected ITokenizationService TokenizationService;
 
         [OneTimeSetUp]
         public void Init()

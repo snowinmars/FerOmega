@@ -18,6 +18,17 @@ namespace FerOmega.Services
 
         public Operator Resolve(StringToken token, Operator[] possibleOperators)
         {
+            if (token == default ||
+                possibleOperators == default)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (!possibleOperators.Any())
+            {
+                throw new InvalidOperationException("Operators collection is empty");
+            }
+
             if (possibleOperators.Length == 1)
             {
                 return possibleOperators[0];
@@ -34,7 +45,7 @@ namespace FerOmega.Services
                 if (acceptedOperators.Length != 1)
                 {
                     throw
-                        new InvalidOperationException("Can't resolve operator overloaded by non-fixity and non-arity");
+                        new InvalidOperationException($"Can't resolve operator: {token}");
                 }
 
                 return acceptedOperators[0];
@@ -51,7 +62,7 @@ namespace FerOmega.Services
                 if (acceptedOperators.Length != 1)
                 {
                     throw
-                        new InvalidOperationException("Can't resolve operator overloaded by non-fixity and non-arity");
+                        new InvalidOperationException($"Can't resolve operator: {token}");
                 }
 
                 return acceptedOperators[0];
@@ -68,7 +79,7 @@ namespace FerOmega.Services
                 if (acceptedOperators.Length != 1)
                 {
                     throw
-                        new InvalidOperationException("Can't resolve operator overloaded by non-fixity and non-arity");
+                        new InvalidOperationException($"Can't resolve operator: {token}");
                 }
 
                 return acceptedOperators[0];
@@ -84,8 +95,8 @@ namespace FerOmega.Services
                 return false;
             }
 
-            var isPrecededByBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
-            var isFollowedByBracket = grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
+            var isPrecededByCloseBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
+            var isFollowedByOpenBracket = grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
 
             // like 5 + 2
             //        ^
@@ -94,11 +105,11 @@ namespace FerOmega.Services
             // like 5 + (2 + 3)
             //        ^
             var isInfixBinaryCase2 = grammarService.IsOperand(token.Previous) &&
-                                     isFollowedByBracket;
+                                     isFollowedByOpenBracket;
 
             // like (2 + 3) + 5
             //              ^
-            var isInfixBinaryCase3 = isPrecededByBracket &&
+            var isInfixBinaryCase3 = isPrecededByCloseBracket &&
                                      grammarService.IsOperand(token.Next);
 
             // like 5! + 3
@@ -109,9 +120,9 @@ namespace FerOmega.Services
 
             // like (1 + 2) + (3 + 4)
             //              ^
-            var isInfixBinaryCase5 = isPrecededByBracket &&
+            var isInfixBinaryCase5 = isPrecededByCloseBracket &&
                                      grammarService.IsOperator(token.Current) &&
-                                     isFollowedByBracket;
+                                     isFollowedByOpenBracket;
 
             return isInfixBinaryCase1 ||
                    isInfixBinaryCase2 ||
@@ -127,8 +138,8 @@ namespace FerOmega.Services
                 return false;
             }
 
-            var isPrecededByBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
-            var isFollowedByBracket = grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
+            var isPrecededByCloseBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Previous);
+            var isFollowedByCloseBracket = grammarService.ClosePriorityBracket.Denotations.Contains(token.Next);
 
             // like 2 + 3!
             //           ^
@@ -137,7 +148,7 @@ namespace FerOmega.Services
 
             // like (2 + 3!)
             //            ^
-            var isPostfixCase2 = grammarService.IsOperand(token.Previous) && grammarService.IsOperator(token.Next);
+            var isPostfixCase2 = grammarService.IsOperand(token.Previous) && isFollowedByCloseBracket;
 
             // like 2! + 3
             //       ^
@@ -145,19 +156,19 @@ namespace FerOmega.Services
 
             // like ((2 + 3)! )
             //              ^
-            var isPostfixCase4 = isPrecededByBracket &&
+            var isPostfixCase4 = isPrecededByCloseBracket &&
                                  grammarService.IsOperator(token.Current) &&
-                                 isFollowedByBracket;
+                                 isFollowedByCloseBracket;
 
             // like (2 + 3)! + 2
             //             ^
-            var isPostfixCase5 = isPrecededByBracket &&
+            var isPostfixCase5 = isPrecededByCloseBracket &&
                                  grammarService.IsOperator(token.Current) &&
                                  grammarService.IsOperator(token.Next);
 
             // like (2 + 3)!
             //             ^
-            var isPostfixCase6 = isPrecededByBracket &&
+            var isPostfixCase6 = isPrecededByCloseBracket &&
                                  token.Next == StringToken.NonExistingOperator;
 
             return isPostfixCase1 ||
@@ -178,8 +189,8 @@ namespace FerOmega.Services
             var isPrecededByOpenBracket = token.Previous != default &&
                                           grammarService.OpenPriorityBracket.Denotations.Contains(token.Previous);
 
-            var isFollowedByBracket = token.Next != default &&
-                                      grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
+            var isFollowedByOpenBracket = token.Next != default &&
+                                          grammarService.OpenPriorityBracket.Denotations.Contains(token.Next);
 
             // like -1 - 2
             //      ^
@@ -194,14 +205,14 @@ namespace FerOmega.Services
 
             // like -(1 - 2)
             //      ^
-            var isPrefixCase3 = isFollowedByBracket &&
+            var isPrefixCase3 = isFollowedByOpenBracket &&
                                 token.Previous == StringToken.NonExistingOperator;
 
             // like ( -(1 - 2))
             //        ^
             var isPrefixCase4 = isPrecededByOpenBracket &&
                                 grammarService.IsOperator(token.Current) &&
-                                isFollowedByBracket;
+                                isFollowedByOpenBracket;
 
             // like (-5)
             //       ^
@@ -209,7 +220,11 @@ namespace FerOmega.Services
                                 grammarService.IsOperator(token.Current) &&
                                 grammarService.IsOperand(token.Next);
 
-            return isPrefixCase1 || isPrefixCase2 || isPrefixCase3 || isPrefixCase4 || isPrefixCase5;
+            return isPrefixCase1 ||
+                   isPrefixCase2 ||
+                   isPrefixCase3 ||
+                   isPrefixCase4 ||
+                   isPrefixCase5;
         }
     }
 }

@@ -5,9 +5,6 @@ namespace FerOmega.Entities.AbstractSyntax
 {
     public class Node<T>
     {
-        public Node()
-            : this(default(T)) { }
-
         public Node(T body)
         {
             Id = Guid.NewGuid();
@@ -19,7 +16,7 @@ namespace FerOmega.Entities.AbstractSyntax
 
         public NodeColor Color { get; set; }
 
-        public T Body { get; set; }
+        public T Body { get; }
 
         public IEnumerable<Node<T>> Children => children;
 

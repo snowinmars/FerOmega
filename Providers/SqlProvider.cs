@@ -14,33 +14,12 @@ namespace FerOmega.Providers
     internal class SqlProvider<T> : ISqlProvider
         where T : IGrammarConfig
     {
-        public SqlProvider(IGrammarService<T> grammarService)
+        public SqlProvider(IGrammarService<T> sqlGrammarService)
         {
-            this.grammarService = grammarService;
+            this.sqlGrammarService = sqlGrammarService;
         }
 
-        object Parse(string value)
-        {
-            // todo [snow]: extend this list
-
-            if (int.TryParse(value, out var resInt))
-            {
-                return resInt;
-            }
-
-            if (double.TryParse(value, out var resDouble))
-            {
-                return resDouble;
-            }
-
-            if (Guid.TryParse(value, out var resGuid))
-            {
-                return resGuid;
-            }
-            return value;
-        }
-
-        private readonly IGrammarService<T> grammarService;
+        private readonly IGrammarService<T> sqlGrammarService;
 
         public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree,
             params PropertyDef[] properties)
@@ -55,22 +34,22 @@ namespace FerOmega.Providers
             var parameters = new List<object>();
 
             tree.DeepFirst(default,
-                           (n) =>
+                           node =>
                            {
-                               switch (n.Body.OperatorType)
+                               switch (node.Body.OperatorType)
                                {
                                case OperatorType.Literal:
                                {
-                                   var operand = (Operand)n.Body;
+                                   var internalOperand = (Operand)node.Body;
 
-                                   var unescapedOperand = grammarService.EnsureUnescaped(operand.Value);
+                                   var unescapedOperand = sqlGrammarService.EnsureUnescaped(internalOperand.Value);
 
                                    var isSqlColumn = properties.Any(x => x.From == unescapedOperand);
 
                                    if (isSqlColumn)
                                    {
                                        var sqlProperty = properties.First(x => x.From == unescapedOperand).To;
-                                       var columnName = grammarService.EnsureUnescaped(sqlProperty);
+                                       var columnName = sqlGrammarService.EnsureUnescaped(sqlProperty);
 
                                        // case: where table.name = 'name'
                                        // resolve: replace any 'name' with parameter
@@ -80,20 +59,16 @@ namespace FerOmega.Providers
 
                                            if (previousValue == columnName)
                                            {
-                                               stack.Pop(); // replace in correct order
+                                               stack.Pop(); // replace in correct (beeline) order
                                                stack.Push($"@{parameters.Count}");
                                                stack.Push(columnName);
                                                parameters.Add(Parse(unescapedOperand));
-                                           }
-                                           else
-                                           {
-                                               stack.Push(columnName); // todo [snow]: refactor
+
+                                               break;
                                            }
                                        }
-                                       else
-                                       {
-                                           stack.Push(columnName);
-                                       }
+
+                                       stack.Push(columnName);
                                    }
                                    else
                                    {
@@ -111,7 +86,11 @@ namespace FerOmega.Providers
                                    var leftOperand = stack.Pop();
                                    var rightOperand = stack.Pop();
 
-                                   var result = HandleLike(n, leftOperand, rightOperand, "'%{0}%'"); // this is the only difference
+                                   var result =
+                                       HandleLike((Operator)node.Body,
+                                                  leftOperand,
+                                                  rightOperand,
+                                                  "'%{0}%'"); // this is the only difference
 
                                    stack.Push(result);
 
@@ -123,7 +102,11 @@ namespace FerOmega.Providers
                                    var leftOperand = stack.Pop();
                                    var rightOperand = stack.Pop();
 
-                                   var result = HandleLike(n, leftOperand, rightOperand, "'{0}%'"); // this is the only difference
+                                   var result =
+                                       HandleLike((Operator)node.Body,
+                                                  leftOperand,
+                                                  rightOperand,
+                                                  "'{0}%'"); // this is the only difference
 
                                    stack.Push(result);
 
@@ -135,21 +118,25 @@ namespace FerOmega.Providers
                                    var leftOperand = stack.Pop();
                                    var rightOperand = stack.Pop();
 
-                                   var result = HandleLike(n, leftOperand, rightOperand, "'%{0}'"); // this is the only difference
+                                   var result =
+                                       HandleLike((Operator)node.Body,
+                                                  leftOperand,
+                                                  rightOperand,
+                                                  "'%{0}'"); // this is the only difference
 
                                    stack.Push(result);
 
                                    break;
                                }
 
-
+                               // most operators go here
                                default:
                                {
-                                   var internalOperator = (Operator)n.Body;
+                                   var internalOperator = (Operator)node.Body;
 
                                    var sqlOperator =
-                                       grammarService.Operators.FirstOrDefault(x => x.OperatorType ==
-                                                                                   internalOperator.OperatorType);
+                                       sqlGrammarService.Operators.FirstOrDefault(x => x.OperatorType ==
+                                           internalOperator.OperatorType);
 
                                    if (sqlOperator == default)
                                    {
@@ -175,43 +162,49 @@ namespace FerOmega.Providers
                                    }
                                    case Arity.Binary:
                                    {
-                                       if (internalOperator.Fixity == Fixity.Infix)
-                                       {
-                                           var leftOperand = stack.Pop();
-                                           var rightOperand = stack.Pop();
-
-                                           var sb = new StringBuilder();
-
-                                           // restore brackets from ast
-                                           // there are only two children here
-                                           // first means left
-                                           // last means right
-                                           if (n.Children.First().Body.Priority > n.Body.Priority)
-                                           {
-                                               sb.Append($"{grammarService.OpenPriorityBracket.MainDenotation} {leftOperand} {grammarService.ClosePriorityBracket.MainDenotation}");
-                                           }
-                                           else
-                                           {
-                                               sb.Append(leftOperand);
-                                           }
-
-                                           sb.Append($" {sqlOperator.MainDenotation} ");
-
-                                           if (n.Children.Last().Body.Priority > n.Body.Priority)
-                                           {
-                                               sb.Append($"{grammarService.OpenPriorityBracket.MainDenotation} {rightOperand} {grammarService.ClosePriorityBracket.MainDenotation}");
-                                           }
-                                           else
-                                           {
-                                               sb.Append(rightOperand);
-                                           }
-
-                                           result = sb.ToString();
-                                       }
-                                       else
+                                       if (internalOperator.Fixity != Fixity.Infix)
                                        {
                                            throw new ArgumentOutOfRangeException();
                                        }
+
+                                       var leftOperand = stack.Pop();
+                                       var rightOperand = stack.Pop();
+
+                                       var sb = new StringBuilder();
+
+                                       // never change separators
+                                       if (node.Body.OperatorType == OperatorType.Separator)
+                                       {
+                                           result = $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}";
+
+                                           break;
+                                       }
+
+                                       // restore brackets from ast
+                                       // there are only two children here
+                                       // first means left
+                                       // last means right
+                                       if (node.Children.First().Body.Priority >= node.Body.Priority)
+                                       {
+                                           sb.Append($"{sqlGrammarService.OpenPriorityBracket.MainDenotation} {leftOperand} {sqlGrammarService.ClosePriorityBracket.MainDenotation}");
+                                       }
+                                       else
+                                       {
+                                           sb.Append(leftOperand);
+                                       }
+
+                                       sb.Append($" {sqlOperator.MainDenotation} ");
+
+                                       if (node.Children.Last().Body.Priority >= node.Body.Priority)
+                                       {
+                                           sb.Append($"{sqlGrammarService.OpenPriorityBracket.MainDenotation} {rightOperand} {sqlGrammarService.ClosePriorityBracket.MainDenotation}");
+                                       }
+                                       else
+                                       {
+                                           sb.Append(rightOperand);
+                                       }
+
+                                       result = sb.ToString();
 
                                        break;
                                    }
@@ -233,29 +226,48 @@ namespace FerOmega.Providers
             return (stack.Pop(), parameters.ToArray());
         }
 
-        public PropertyDef.IBuilderFrom DefineProperty()
+        public IPropertyBuilderFrom DefineProperty()
         {
-            return new PropertyDef.BuilderFrom();
+            return new PropertyPropertyPropertyBuilder();
         }
 
-        private string HandleLike(Node<AbstractToken> n, string leftOperand, string rightOperand, string format)
+        private string HandleLike(Operator internalOperator, string leftOperand, string rightOperand, string format)
         {
-            var internalOperator = (Operator)n.Body;
-
             var sqlOperator =
-                grammarService.Operators.FirstOrDefault(x => x.OperatorType ==
-                                                             internalOperator.OperatorType);
+                sqlGrammarService.Operators.FirstOrDefault(x => x.OperatorType ==
+                                                                internalOperator.OperatorType);
 
             if (sqlOperator == default)
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-
             rightOperand = string.Format(format, rightOperand);
             var result = $"{leftOperand} {sqlOperator.MainDenotation} {rightOperand}";
 
             return result;
+        }
+
+        private object Parse(string value)
+        {
+            // todo [snow]: extend this list
+
+            if (int.TryParse(value, out var resInt))
+            {
+                return resInt;
+            }
+
+            if (double.TryParse(value, out var resDouble))
+            {
+                return resDouble;
+            }
+
+            if (Guid.TryParse(value, out var resGuid))
+            {
+                return resGuid;
+            }
+
+            return value;
         }
     }
 }
