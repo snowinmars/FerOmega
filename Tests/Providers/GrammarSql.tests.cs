@@ -323,6 +323,14 @@ namespace FerOmega.Tests.Providers
                                                   0, 2, 1, 1,
                                               }).SetName("Nesting brackets");
 
+                yield return new TestCaseData("1, 2, 3",
+                                              new string[0],
+                                              "@2 , @1 , @0",
+                                              new object[]
+                                              {
+                                                  3, 2, 1,
+                                              }).SetName(nameof(OperatorType.Separator));
+
                 yield return new TestCaseData("[count] in (1)",
                                               new[]
                                               {
@@ -364,10 +372,6 @@ namespace FerOmega.Tests.Providers
                 yield return new TestCaseData("a endsWith b",
                                               "[a] like \"%b\"").SetName(nameof(OperatorType.EndsWith))
                                                                 .Ignore("Implement later");
-
-                yield return new TestCaseData("a,b",
-                                              "[a], [b]").SetName(nameof(OperatorType.Separator))
-                                                         .Ignore("Implement later");
 
                 yield return new TestCaseData("a;",
                                               "[a];").SetName(nameof(OperatorType.Terminator))
