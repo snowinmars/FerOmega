@@ -74,7 +74,7 @@ namespace FerOmega.Services
                 return acceptedOperators[0];
             }
 
-            throw new InvalidOperationException("Can't resolve fixity");
+            throw new InvalidOperationException($"Can't resolve fixity for {token}");
         }
 
         private bool IsInfixBinary(StringToken token, Operator[] possibleOperators)

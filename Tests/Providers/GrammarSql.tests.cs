@@ -387,6 +387,17 @@ namespace FerOmega.Tests.Providers
                                                   "value",
                                               }).SetName(nameof(OperatorType.EndsWith));
 
+                yield return new TestCaseData("[count] = [count]",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "count = @0",
+                                              new object[]
+                                              {
+                                                  "count",
+                                              }).SetName("Escaping");
+
                 yield return new TestCaseData("a & b & c",
                                               "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd))
                                                                 .Ignore("Implement later");

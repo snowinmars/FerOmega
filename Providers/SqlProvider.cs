@@ -19,6 +19,27 @@ namespace FerOmega.Providers
             this.grammarService = grammarService;
         }
 
+        object Parse(string value)
+        {
+            // todo [snow]: extend this list
+
+            if (int.TryParse(value, out var resInt))
+            {
+                return resInt;
+            }
+
+            if (double.TryParse(value, out var resDouble))
+            {
+                return resDouble;
+            }
+
+            if (Guid.TryParse(value, out var resGuid))
+            {
+                return resGuid;
+            }
+            return value;
+        }
+
         private readonly IGrammarService<T> grammarService;
 
         public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree,
@@ -50,30 +71,36 @@ namespace FerOmega.Providers
                                    {
                                        var sqlProperty = properties.First(x => x.From == unescapedOperand).To;
                                        var columnName = grammarService.EnsureUnescaped(sqlProperty);
-                                       stack.Push(columnName);
+
+                                       // case: where table.name = 'name'
+                                       // resolve: replace any 'name' with parameter
+                                       if (stack.Count != 0)
+                                       {
+                                           var previousValue = stack.Peek();
+
+                                           if (previousValue == columnName)
+                                           {
+                                               stack.Pop(); // replace in correct order
+                                               stack.Push($"@{parameters.Count}");
+                                               stack.Push(columnName);
+                                               parameters.Add(Parse(unescapedOperand));
+                                           }
+                                           else
+                                           {
+                                               stack.Push(columnName); // todo [snow]: refactor
+                                           }
+                                       }
+                                       else
+                                       {
+                                           stack.Push(columnName);
+                                       }
                                    }
                                    else
                                    {
                                        stack.Push($"@{parameters.Count}");
 
                                        // support default sql type mapping
-                                       // todo [snow]: extend this list
-                                       if (int.TryParse(unescapedOperand, out var resInt))
-                                       {
-                                           parameters.Add(resInt);
-                                       }
-                                       else if (double.TryParse(unescapedOperand, out var resDouble))
-                                       {
-                                           parameters.Add(resDouble);
-                                       }
-                                       else if (Guid.TryParse(unescapedOperand, out var resGuid))
-                                       {
-                                           parameters.Add(resGuid);
-                                       }
-                                       else
-                                       {
-                                           parameters.Add(unescapedOperand);
-                                       }
+                                       parameters.Add(Parse(unescapedOperand));
                                    }
 
                                    break;

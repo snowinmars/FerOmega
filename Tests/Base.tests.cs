@@ -15,17 +15,21 @@ namespace FerOmega.Tests
 
         protected ITokenizationService TokenizationService;
 
+        protected IGrammarService<InternalGrammarConfig> InternalGrammarService;
+
+        protected IGrammarService<SqlGrammarConfig> SqlGrammarService;
+
         [OneTimeSetUp]
         public void Init()
         {
             var internalGrammarConfig = new InternalGrammarConfig();
-            var internalGrammarService = new GrammarService<InternalGrammarConfig>(internalGrammarConfig);
-            TokenizationService = new TokenizationService<InternalGrammarConfig>(internalGrammarService);
-            var operatorService = new OperatorService(internalGrammarService);
-            AstService = new AstService(internalGrammarService, operatorService);
+            InternalGrammarService = new GrammarService<InternalGrammarConfig>(internalGrammarConfig);
+            TokenizationService = new TokenizationService<InternalGrammarConfig>(InternalGrammarService);
+            var operatorService = new OperatorService(InternalGrammarService);
+            AstService = new AstService(InternalGrammarService, operatorService);
             var sqlGrammarConfig = new SqlGrammarConfig();
-            var sqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
-            SqlProvider = new SqlProvider<SqlGrammarConfig>(sqlGrammarService);
+            SqlGrammarService = new GrammarService<SqlGrammarConfig>(sqlGrammarConfig);
+            SqlProvider = new SqlProvider<SqlGrammarConfig>(SqlGrammarService);
         }
     }
 }
