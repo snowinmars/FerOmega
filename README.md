@@ -1,5 +1,5 @@
 # FerOmega
-Data query language provider
+Data query language provider, inspired by oData.
 
 The basic idea is to allow a developer to write some equation in frontend, send it to backend and consume it as an abstraction syntax tree, or sql, or C# expression tree or whatever.
 
