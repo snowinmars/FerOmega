@@ -323,6 +323,17 @@ namespace FerOmega.Tests.Providers
                                                   0, 2, 1, 1,
                                               }).SetName("Nesting brackets");
 
+                yield return new TestCaseData("[count] in (1)",
+                                              new[]
+                                              {
+                                                  "count",
+                                              },
+                                              "count in ( @0 )",
+                                              new object[]
+                                              {
+                                                  3, 2, 1,
+                                              }).SetName(nameof(OperatorType.InRange) + " with range length of one");
+
                 yield return new TestCaseData("[count] in (1, 2, 3)",
                                               new[]
                                               {
@@ -332,7 +343,7 @@ namespace FerOmega.Tests.Providers
                                               new object[]
                                               {
                                                   3, 2, 1,
-                                              }).SetName(nameof(OperatorType.InRange));
+                                              }).SetName(nameof(OperatorType.InRange)+ " with range length of three");
 
                 yield return new TestCaseData("a & b & c",
                                               "[a] & [b] & [c]").SetName(nameof(OperatorType.BitwiseAnd))
@@ -341,14 +352,6 @@ namespace FerOmega.Tests.Providers
                 yield return new TestCaseData("a | b | c",
                                               "[a] | [b] | [c]").SetName(nameof(OperatorType.BitwiseOr))
                                                                 .Ignore("Implement later");
-
-                yield return new TestCaseData("a in (b)",
-                                              "[a] in ([b])").SetName(nameof(OperatorType.InRange) + "Length1")
-                                                             .Ignore("Implement later");
-
-                yield return new TestCaseData("a in (b, c)",
-                                              "[a] in ([b], [c])").SetName(nameof(OperatorType.InRange) + "Length2")
-                                                                  .Ignore("Implement later");
 
                 yield return new TestCaseData("a contains b",
                                               "[a] like \"%b%\"").SetName(nameof(OperatorType.Contains))
