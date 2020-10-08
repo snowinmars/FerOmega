@@ -38,13 +38,15 @@ PropertyDef[] allowedProperties = new[]
   sqlProvider.DefineProperty().From("email").ToSql("table2.email"),
 };
 
-(string where, object[] parameters) = sqlProvider.Convert(tree, allowedProperties);
+(SqlFilter where, object[] parameters) = sqlProvider.Convert(tree, allowedProperties);
 // "where id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )"
 // ["email", 14, 2, 1, Guid.Parse("1690ffef-7249-4384-8cba-58842e8d48df")]
 
+where.AppPage(0).AddCount(10); // adds 'limit 10 offset 0'
+
 // use it in your query it any way kinda like
 const string sql = @"select * from table";
-db.Execute($"{sql} where {where}", parameters);
+db.Execute($"{sql} {where}", parameters);
 ```
 
 Override any part of the flow if you have to.
