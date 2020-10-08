@@ -42,6 +42,7 @@ PropertyDef[] allowedProperties = new[]
 // "where id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )"
 // ["email", 14, 2, 1, Guid.Parse("1690ffef-7249-4384-8cba-58842e8d48df")]
 
+// no 'order by' is allowed for now
 where.AppPage(0).AddCount(10); // adds 'limit 10 offset 0'
 
 // use it in your query it any way kinda like
@@ -55,10 +56,12 @@ Override any part of the flow if you have to.
 - `AstService` convert tokens into abstract syntax tree using extended shunting yarn algorithm. It could wrap any literal with escape symbols.
 - `SqlProvider` converts tree into sql string and parameters. It consumes allowed properies to understand what literal should be extracted into sql parameters.
 
-## What I don't like
+## Todo
 
 - `db.Execute($"{sql} where {where}");` seems like a bad solution. I mean, not in security, but it's easy to misplace something here. Should I provide a builder?
 - How to call sql functions?
+- Add `order by`.
+- Add a sql dialect switch.
 
 ## Dependency injections
 

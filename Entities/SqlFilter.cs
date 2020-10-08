@@ -25,6 +25,11 @@ namespace FerOmega.Entities
         {
             var sb = new StringBuilder();
 
+            if (HasPage && !HasCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), "Cannot calculate sql with 'page' but without 'count per page'");
+            }
+            
             if (HasWhere)
             {
                 sb.Append($"where {where}");
