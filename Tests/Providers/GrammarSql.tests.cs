@@ -358,10 +358,10 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "count like '%@0%'",
+                                              "count like @0",
                                               new object[]
                                               {
-                                                  "value",
+                                                  "%value%",
                                               }).SetName(nameof(OperatorType.Contains));
 
                 yield return new TestCaseData("[count] startsWith [value]",
@@ -369,10 +369,10 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "count like '@0%'",
+                                              "count like @0",
                                               new object[]
                                               {
-                                                  "value",
+                                                  "value%",
                                               }).SetName(nameof(OperatorType.StartsWith));
 
                 yield return new TestCaseData("[count] endsWith [value]",
@@ -380,10 +380,10 @@ namespace FerOmega.Tests.Providers
                                               {
                                                   "count",
                                               },
-                                              "count like '%@0'",
+                                              "count like @0",
                                               new object[]
                                               {
-                                                  "value",
+                                                  "%value",
                                               }).SetName(nameof(OperatorType.EndsWith));
 
                 yield return new TestCaseData("[count] = [count]",

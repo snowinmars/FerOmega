@@ -29,39 +29,11 @@ namespace FerOmega.Tests.Providers
                              join sqlOperator in SqlGrammarService.Operators
                                  on internalOperator.OperatorType equals sqlOperator.OperatorType
                              where internalOperator.Arity == Arity.Binary && sqlOperator.Arity == Arity.Binary
-                             where !new[]
-                             {
-                                 OperatorType.Contains, OperatorType.StartsWith, OperatorType.EndsWith
-                             }.Contains(internalOperator.OperatorType) // different pattern
                              select new
                              {
                                  Input = $"[{allowedProperty}] {internalOperatorDenotation} [{allowedProperty}]",
                                  Sql = $"{allowedProperty} {sqlOperator.MainDenotation} @0",
                              })
-                            .Concat(new[]
-                            {
-                                new
-                                {
-                                    Input =
-                                        $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.Contains).MainDenotation} [{allowedProperty}]",
-                                    Sql =
-                                        $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.Contains).MainDenotation} '%@0%'",
-                                },
-                                new
-                                {
-                                    Input =
-                                        $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.StartsWith).MainDenotation} [{allowedProperty}]",
-                                    Sql =
-                                        $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.StartsWith).MainDenotation} '@0%'",
-                                },
-                                new
-                                {
-                                    Input =
-                                        $"[{allowedProperty}] {InternalGrammarService.Operators.First(x => x.OperatorType == OperatorType.EndsWith).MainDenotation} [{allowedProperty}]",
-                                    Sql =
-                                        $"{allowedProperty} {SqlGrammarService.Operators.First(x => x.OperatorType == OperatorType.EndsWith).MainDenotation} '%@0'",
-                                },
-                            })
                             .ToArray();
 
             foreach (var equation in equations)
@@ -79,6 +51,7 @@ namespace FerOmega.Tests.Providers
 
                 Assert.AreEqual(expectedSql, actualSql);
                 Assert.AreEqual(1, actualParameters.Length);
+                
                 Assert.AreEqual(allowedProperty, actualParameters[0]);
             }
         }

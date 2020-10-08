@@ -83,50 +83,23 @@ namespace FerOmega.Providers
 
                                case OperatorType.Contains:
                                {
-                                   var leftOperand = stack.Pop();
-                                   var rightOperand = stack.Pop();
+                                   parameters[^1] = $"%{parameters[^1]}%"; // % should be inside parameter, not in sql query
 
-                                   var result =
-                                       HandleLike((Operator)node.Body,
-                                                  leftOperand,
-                                                  rightOperand,
-                                                  "'%{0}%'"); // this is the only difference
-
-                                   stack.Push(result);
-
-                                   break;
+                                   goto default;
                                }
-
+                                   
                                case OperatorType.StartsWith:
                                {
-                                   var leftOperand = stack.Pop();
-                                   var rightOperand = stack.Pop();
+                                   parameters[^1] = $"{parameters[^1]}%"; // % should be inside parameter, not in sql query
 
-                                   var result =
-                                       HandleLike((Operator)node.Body,
-                                                  leftOperand,
-                                                  rightOperand,
-                                                  "'{0}%'"); // this is the only difference
-
-                                   stack.Push(result);
-
-                                   break;
+                                   goto default;
                                }
-
+                                   
                                case OperatorType.EndsWith:
                                {
-                                   var leftOperand = stack.Pop();
-                                   var rightOperand = stack.Pop();
+                                   parameters[^1] = $"%{parameters[^1]}"; // % should be inside parameter, not in sql query
 
-                                   var result =
-                                       HandleLike((Operator)node.Body,
-                                                  leftOperand,
-                                                  rightOperand,
-                                                  "'%{0}'"); // this is the only difference
-
-                                   stack.Push(result);
-
-                                   break;
+                                   goto default;
                                }
 
                                case OperatorType.Separator:

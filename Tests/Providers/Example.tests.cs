@@ -155,11 +155,11 @@ namespace FerOmega.Tests.Providers
         public void StringLike()
         {
             const string input = "[name] contains [and] or ([name]   startsWith   [Alex] and [name]endsWith[ndr])";
-            const string expectedSql = "name like '%@2%' or name like '@1%' and name like '%@0'";
+            const string expectedSql = "name like @2 or name like @1 and name like @0";
 
             var expectedParameters = new object[]
             {
-                "ndr", "Alex", "and",
+                "%ndr", "Alex%", "%and%",
             };
 
             var tokens = TokenizationService.Tokenizate(input);

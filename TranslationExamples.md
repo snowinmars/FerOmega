@@ -47,5 +47,5 @@ Having more/less then enough spaces is fine
 - Input query: `[name] contains [and] or ([name]   startsWith   [Alex] and [name]endsWith[ndr])`
 - Allowed properties:
     - `'name' -> 'name'`
-- Output query: `name like '%@2%' or name like '@1%' and name like '%@0'`
-- Output properties: `["ndr", "Alex", "and"]`
+- Output query: `name like @2 or name like @1 and name like @0`
+- Output properties: `["%ndr", "Alex%", "%and%"]`
