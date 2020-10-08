@@ -6,7 +6,7 @@ namespace FerOmega.Providers.Abstractions
 {
     public interface ISqlProvider
     {
-        (string sql, object[] parameters) Convert(Tree<AbstractToken> tree,
+        (SqlFilter sql, object[] parameters) Convert(Tree<AbstractToken> tree,
             params PropertyDef[] properties);
 
         IPropertyBuilderFrom DefineProperty();

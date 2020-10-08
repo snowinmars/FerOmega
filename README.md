@@ -39,7 +39,7 @@ PropertyDef[] allowedProperties = new[]
 };
 
 (string where, object[] parameters) = sqlProvider.Convert(tree, allowedProperties);
-// "id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )"
+// "where id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )"
 // ["email", 14, 2, 1, Guid.Parse("1690ffef-7249-4384-8cba-58842e8d48df")]
 
 // use it in your query it any way kinda like

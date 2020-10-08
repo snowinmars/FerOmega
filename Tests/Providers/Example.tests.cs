@@ -11,7 +11,7 @@ namespace FerOmega.Tests.Providers
             const string input =
                 "[id] === [1690ffef-7249-4384-8cba-58842e8d48df] and (([length] + 1) * 2 <= 14 or [email] = [email])";
 
-            const string expectedSql = "id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )";
+            const string expectedSql = "where id = @4 and ( ( table.length + @3 ) * @2 <= @1 or table2.email = @0 )";
 
             var expectedParameters = new object[]
             {
@@ -30,7 +30,7 @@ namespace FerOmega.Tests.Providers
                                                                                .From("email")
                                                                                .ToSql("table2.email"));
 
-            Assert.AreEqual(expectedSql, actualSql);
+            Assert.AreEqual(expectedSql, actualSql.ToString());
 
             Assert.AreEqual(expectedParameters.Length, actualParameters.Length);
 
@@ -47,7 +47,7 @@ namespace FerOmega.Tests.Providers
         public void PropertyRemapping()
         {
             const string input = "[storesCount] > 3 or [salaryCostsPerMonth] > 10000 * [dollarCourse]";
-            const string expectedSql = "storesCount > @1 or salarySlice.perMonth > @0 * bank.currentDollarCourse";
+            const string expectedSql = "where storesCount > @1 or salarySlice.perMonth > @0 * bank.currentDollarCourse";
 
             var expectedParameters = new object[]
             {
@@ -68,7 +68,7 @@ namespace FerOmega.Tests.Providers
                                                                                .From("dollarCourse")
                                                                                .ToSql("bank.currentDollarCourse"));
 
-            Assert.AreEqual(expectedSql, actualSql);
+            Assert.AreEqual(expectedSql, actualSql.ToString());
 
             Assert.AreEqual(expectedParameters.Length, actualParameters.Length);
 
@@ -85,7 +85,7 @@ namespace FerOmega.Tests.Providers
         public void RangeMath()
         {
             const string input = "[location] in ([Moscow], [St. Petersburg]) and [country] in ([ru], [us])";
-            const string expectedSql = "location in ( @3 , @2 ) and country in ( @1 , @0 )";
+            const string expectedSql = "where location in ( @3 , @2 ) and country in ( @1 , @0 )";
 
             var expectedParameters = new object[]
             {
@@ -103,7 +103,7 @@ namespace FerOmega.Tests.Providers
                                                                                .From("country")
                                                                                .ToSql("country"));
 
-            Assert.AreEqual(expectedSql, actualSql);
+            Assert.AreEqual(expectedSql, actualSql.ToString());
 
             Assert.AreEqual(expectedParameters.Length, actualParameters.Length);
 
@@ -120,7 +120,7 @@ namespace FerOmega.Tests.Providers
         public void SimpleMath()
         {
             const string input = "([age] >= 16 and [country] == [ru]) or ([age] >= 13 and [country] === [ja])";
-            const string expectedSql = "age >= @3 and country = @2 or age >= @1 and country = @0";
+            const string expectedSql = "where age >= @3 and country = @2 or age >= @1 and country = @0";
 
             var expectedParameters = new object[]
             {
@@ -138,7 +138,7 @@ namespace FerOmega.Tests.Providers
                                                                                .From("country")
                                                                                .ToSql("country"));
 
-            Assert.AreEqual(expectedSql, actualSql);
+            Assert.AreEqual(expectedSql, actualSql.ToString());
 
             Assert.AreEqual(expectedParameters.Length, actualParameters.Length);
 
@@ -155,7 +155,7 @@ namespace FerOmega.Tests.Providers
         public void StringLike()
         {
             const string input = "[name] contains [and] or ([name]   startsWith   [Alex] and [name]endsWith[ndr])";
-            const string expectedSql = "name like @2 or name like @1 and name like @0";
+            const string expectedSql = "where name like @2 or name like @1 and name like @0";
 
             var expectedParameters = new object[]
             {
@@ -170,7 +170,7 @@ namespace FerOmega.Tests.Providers
                                                                                .From("name")
                                                                                .ToSql("name"));
 
-            Assert.AreEqual(expectedSql, actualSql);
+            Assert.AreEqual(expectedSql, actualSql.ToString());
 
             Assert.AreEqual(expectedParameters.Length, actualParameters.Length);
 

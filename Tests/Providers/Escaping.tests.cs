@@ -32,7 +32,7 @@ namespace FerOmega.Tests.Providers
                              select new
                              {
                                  Input = $"[{allowedProperty}] {internalOperatorDenotation} [{allowedProperty}]",
-                                 Sql = $"{allowedProperty} {sqlOperator.MainDenotation} @0",
+                                 Sql = $"where {allowedProperty} {sqlOperator.MainDenotation} @0",
                              })
                             .ToArray();
 
@@ -49,7 +49,7 @@ namespace FerOmega.Tests.Providers
                                                                             .From(allowedProperty)
                                                                             .ToSql(allowedProperty));
 
-                Assert.AreEqual(expectedSql, actualSql);
+                Assert.AreEqual(expectedSql, actualSql.ToString());
                 Assert.AreEqual(1, actualParameters.Length);
                 
                 Assert.AreEqual(allowedProperty, actualParameters[0]);

@@ -21,12 +21,12 @@ namespace FerOmega.Providers
 
         private readonly IGrammarService<T> sqlGrammarService;
 
-        public (string sql, object[] parameters) Convert(Tree<AbstractToken> tree,
+        public (SqlFilter sql, object[] parameters) Convert(Tree<AbstractToken> tree,
             params PropertyDef[] properties)
         {
             if (tree.IsEmpty)
             {
-                return ("", new object[0]);
+                return (new SqlFilter(""), new object[0]);
             }
 
             var stack = new Stack<string>();
@@ -224,14 +224,14 @@ namespace FerOmega.Providers
                 throw new InvalidOperationException();
             }
 
-            return (stack.Pop(), parameters.ToArray());
+            return (new SqlFilter(stack.Pop()), parameters.ToArray());
         }
 
         public IPropertyBuilderFrom DefineProperty()
         {
             return new PropertyPropertyPropertyBuilder();
         }
-
+        
         private string HandleLike(Operator internalOperator, string leftOperand, string rightOperand, string format)
         {
             var sqlOperator =
@@ -249,6 +249,7 @@ namespace FerOmega.Providers
             return result;
         }
 
+        
         private object Parse(string value)
         {
             // todo [snow]: extend this list

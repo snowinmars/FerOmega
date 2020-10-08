@@ -13,7 +13,7 @@ namespace FerOmega.Tests.Providers
             {
                 yield return new TestCaseData("a + b + c",
                                               new string[0],
-                                              "( @2 + @1 ) + @0",
+                                              "where ( @2 + @1 ) + @0",
                                               new[]
                                               {
                                                   "c", "b", "a"
@@ -21,7 +21,7 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData("(a + b) * c",
                                               new string[0],
-                                              "( @2 + @1 ) * @0",
+                                              "where ( @2 + @1 ) * @0",
                                               new[]
                                               {
                                                   "c", "b", "a"
@@ -29,7 +29,7 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData("a + (b + c)",
                                               new string[0],
-                                              "@2 + ( @1 + @0 )",
+                                              "where @2 + ( @1 + @0 )",
                                               new[]
                                               {
                                                   "c", "b", "a",
@@ -37,7 +37,7 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData(" a    +         b    +  c   ",
                                               new string[0],
-                                              "( @2 + @1 ) + @0",
+                                              "where ( @2 + @1 ) + @0",
                                               new[]
                                               {
                                                   "c", "b", "a"
@@ -45,7 +45,7 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData("a + longItem + c",
                                               new string[0],
-                                              "( @2 + @1 ) + @0",
+                                              "where ( @2 + @1 ) + @0",
                                               new[]
                                               {
                                                   "c", "longItem", "a",
@@ -53,7 +53,7 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData("a+longItem+c",
                                               new string[0],
-                                              "( @2 + @1 ) + @0",
+                                              "where ( @2 + @1 ) + @0",
                                               new[]
                                               {
                                                   "c", "longItem", "a",
@@ -61,7 +61,7 @@ namespace FerOmega.Tests.Providers
 
                 yield return new TestCaseData("a",
                                               new string[0],
-                                              "@0",
+                                              "where @0",
                                               new[]
                                               {
                                                   "a",
@@ -89,7 +89,7 @@ namespace FerOmega.Tests.Providers
             var propertyDefinitions = allowedProperties.Select(x => new PropertyDef(x, x)).ToArray();
             var (sql, parameters) = SqlProvider.Convert(tree, propertyDefinitions);
 
-            Assert.AreEqual(expectedSql, sql);
+            Assert.AreEqual(expectedSql, sql.ToString());
 
             Assert.AreEqual(expectedParameters.Length, parameters.Length);
 
